@@ -1,5 +1,9 @@
+import React from "react";
 import type {Metadata} from "next";
 import localFont from "next/font/local";
+import {Montserrat} from "next/font/google";
+import {ThemeProvider} from "@/components/theme-provider";
+import {AuthProvider} from "@/app/auth-provider";
 import "./globals.css";
 
 const geistSans = localFont({
@@ -12,6 +16,7 @@ const geistMono = localFont({
     variable: "--font-geist-mono",
     weight: "100 900",
 });
+const montserrat = Montserrat({subsets: ["latin"]});
 
 export const metadata: Metadata = {
     title: "Create Next App",
@@ -24,12 +29,19 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
-        {children}
-        </body>
-        </html>
+        <AuthProvider>
+            <html lang="en">
+            <body
+                className={`${montserrat.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="system"
+                enableSystem
+                disableTransitionOnChange
+            >{children}</ThemeProvider>
+            </body>
+            </html>
+        </AuthProvider>
     );
 }
