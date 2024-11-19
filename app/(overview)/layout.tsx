@@ -1,8 +1,7 @@
 import React from "react";
 import {redirect} from "next/navigation";
 import {authentication} from "@/lib/kinde-imports";
-import {NavigationTab} from "@/components/reusable";
-import {ModeToggle} from "@/components/reusable";
+import {NavigationTab} from "@/components/components";
 import {NavigationSheet} from "@/components/client";
 
 export default async function Layout({children}: {children: React.ReactNode}) {
@@ -13,7 +12,6 @@ export default async function Layout({children}: {children: React.ReactNode}) {
         return <>
             <NavigationTab>
                 <div className={"flex gap-2.5"}>
-                    <ModeToggle/>
                     <NavigationSheet/>
                 </div>
             </NavigationTab>

@@ -32,7 +32,7 @@ export default async function RootLayout({
         <AuthProvider>
             <html lang="en">
             <body
-                className={`${montserrat.className} ${geistSans.variable} ${geistMono.variable} antialiased`}
+                className={`${montserrat.className} ${geistSans.variable} ${geistMono.variable} antialiased font-medium`}
             >
             <ThemeProvider
                 attribute="class"

@@ -10,21 +10,9 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
 import {useTheme} from "next-themes"
 import {MoonIcon, SunIcon} from "lucide-react"
 
@@ -32,28 +20,31 @@ const orbitron = Orbitron({subsets: ["latin"]})
 
 export const NavigationTab = ({children}: { children?: React.ReactNode }) => {
     return (
-        <NavigationMenu>
-            <NavigationMenuList>
+        <NavigationMenu className={"w-full"}>
+            <NavigationMenuList className={"w-full"}>
                 <NavigationMenuItem
                     className={
-                        "flex flex-row justify-end items-center h-20 px-4 rounded-2xl"
+                        "w-dvw flex items-center justify-between h-20 px-4"
                     }
                 >
-                    <Link
-                        href="/"
-                        legacyBehavior
-                        passHref
-                    >
-                        <NavigationMenuLink className={`${orbitron.className}`}>
-                            <Button
-                                variant={"link"}
-                                className={"text-[24px]"}
-                            >
-                                HORIZONS
-                            </Button>
-                        </NavigationMenuLink>
-                    </Link>
                     <div>
+                        <Link
+                            href="/"
+                            legacyBehavior
+                            passHref
+                        >
+                            <NavigationMenuLink className={`${orbitron.className}`}>
+                                <Button
+                                    variant={"link"}
+                                    className={"text-[24px]"}
+                                >
+                                    HORIZONS
+                                </Button>
+                            </NavigationMenuLink>
+                        </Link>
+                    </div>
+                    <div className={"flex gap-2.5"}>
+                        <ModeToggle/>
                         {children}
                     </div>
                 </NavigationMenuItem>
@@ -62,7 +53,7 @@ export const NavigationTab = ({children}: { children?: React.ReactNode }) => {
     )
 }
 
-export const ModeToggle = ()=> {
+export const ModeToggle = () => {
     const {setTheme} = useTheme()
     return (
         <DropdownMenu>
@@ -105,7 +96,7 @@ interface Card {
     className?: string
 }
 
-export const ReusableCard = (props: Card)=> {
+export const ReusableCard = (props: Card) => {
     return (
         <Card
             className={props.className}
