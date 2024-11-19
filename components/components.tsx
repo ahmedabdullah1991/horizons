@@ -13,6 +13,7 @@ import {
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {useTheme} from "next-themes"
 import {MoonIcon, SunIcon} from "lucide-react"
 
@@ -119,3 +120,14 @@ export const ReusableCard = (props: Card) => {
     )
 }
 
+export function Avatars() {
+    return (
+        <Avatar>
+            <AvatarImage
+                src="https://github.com/shadcn.png"
+                alt="avatar-image"
+            />
+            <AvatarFallback>AB</AvatarFallback>
+        </Avatar>
+    )
+}

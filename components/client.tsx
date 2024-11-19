@@ -14,13 +14,13 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import {Button} from "@/components/ui/button"
-import {Ham} from "lucide-react"
+import {Menu} from "lucide-react"
 
 export function NavigationSheet() {
     const pathname = usePathname()
     const links = [
         {name: "Horizons", href: "/"},
-        {name: "Jobs", href: "/listings"},
+        {name: "Jobs", href: "/jobs"},
         {name: "Dashboard", href: "/dashboard"},
         {name: "Profile", href: "/profile"},
     ]
@@ -33,7 +33,7 @@ export function NavigationSheet() {
                         variant="ghost"
                         className={"h-12 w-12"}
                     >
-                        <Ham
+                        <Menu
                             className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100"/>
                     </Button>
                 </SheetTrigger>
