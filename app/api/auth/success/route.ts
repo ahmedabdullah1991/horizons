@@ -1,6 +1,8 @@
-import prisma from "@/lib/db";
+import {PrismaClient} from "@prisma/client";
 import {user} from "@/lib/kinde-imports";
 import {NextResponse} from "next/server";
+
+const prisma = new PrismaClient();
 
 export async function GET() {
     const User = await user()
