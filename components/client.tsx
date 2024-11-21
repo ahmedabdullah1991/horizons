@@ -21,12 +21,12 @@ export function NavigationSheet() {
     if (pathname !== "/") {
         return (
             <Sheet>
+                <SheetTrigger>
+                    <Button variant={"link"} className={"text-lg h-[50px] px-[25px]"}>
+                        <Menu/>
+                    </Button>
+                </SheetTrigger>
                 <SheetContent>
-                    <SheetTrigger>
-                        <Button variant={"link"} className={"text-lg h-[50px] px-[25px]"}>
-                            <Menu/>
-                        </Button>
-                    </SheetTrigger>
                     <SheetHeader>
                         <SheetTitle>Navigation</SheetTitle>
                     </SheetHeader>

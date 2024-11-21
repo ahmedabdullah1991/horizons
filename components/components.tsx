@@ -15,33 +15,17 @@ import {Button} from "@/components/ui/button"
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuGroup,
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {useTheme} from "next-themes"
-import {Menu, MoonIcon, SunIcon} from "lucide-react"
+import {MoonIcon, SunIcon} from "lucide-react"
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
 interface NavigationTabProps {
     children?: React.ReactNode
-}
-
-const DropMenu = ({children}: Readonly<{ children: React.ReactNode }>) => {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="outline"><Menu/></Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-                <DropdownMenuGroup className={"flex flex-col"}>
-                    {children}
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
 }
 
 export const NavigationTab = (props: NavigationTabProps) => {
@@ -71,14 +55,7 @@ export const NavigationTab = (props: NavigationTabProps) => {
                     </div>
                     <div className={"flex items-center gap-2.5"}>
                         <ModeToggle/>
-                        <div className="hidden md:flex items-center gap-2.5">
-                            {props.children}
-                        </div>
-                        <div className="md:hidden">
-                            <DropMenu>
-                                {props.children}
-                            </DropMenu>
-                        </div>
+                        {props.children}
                     </div>
                 </NavigationMenuItem>
             </NavigationMenuList>

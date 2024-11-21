@@ -8,12 +8,28 @@ import {Label} from "@/components/ui/label";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import {Orbitron} from "next/font/google";
 import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel";
-import {BriefcaseIcon, BuildingIcon, MapPinIcon, Star} from "lucide-react";
+import {BriefcaseIcon, BuildingIcon, MapPinIcon, Menu, Star} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
 import {clsx} from "clsx";
+import {DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuTrigger} from "@/components/ui/dropdown-menu";
 
 const orbitron = Orbitron({subsets: ["latin"]})
+
+const DropMenu = ({children}: Readonly<{ children: React.ReactNode }>) => {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline"><Menu/></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuGroup className={"flex flex-col"}>
+                    {children}
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
 
 export default async function Page() {
     const isUser = await user()
@@ -22,31 +38,62 @@ export default async function Page() {
         <>
             <NavigationTab>
                 <>
-                    {!isUser && !authenticated ? (
-                        <LoginLink>
+                    <div className="hidden md:flex items-center gap-2.5">
+                        {!isUser && !authenticated ? (
+                            <LoginLink>
+                                <Button
+                                    variant={"link"}
+                                    className={"text-lg h-[50px] px-[25px]"}
+                                >
+                                    Employers
+                                </Button>
+                            </LoginLink>
+                        ) : (
+                            <Link href={"/dashboard"}>
+                                <Button
+                                    variant={"link"}
+                                    className={"text-lg h-[50px] px-[25px]"}
+                                >
+                                    Dashboard
+                                </Button>
+                            </Link>
+                        )}
+                        <Link href={"/jobs"}>
                             <Button
-                                variant={"link"}
-                                className={"text-lg h-[50px] px-[25px]"}
-                            >
-                                Employers
-                            </Button>
-                        </LoginLink>
-                    ) : (
-                        <Link href={"/dashboard"}>
-                            <Button
-                                variant={"link"}
-                                className={"text-lg h-[50px] px-[25px]"}
-                            >
-                                Dashboard
+                                className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
+                                Job Postings
                             </Button>
                         </Link>
-                    )}
-                    <Link href={"/jobs"}>
-                        <Button
-                            className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
-                            Job Postings
-                        </Button>
-                    </Link>
+                    </div>
+                    <div className="md:hidden">
+                        <DropMenu>
+                            {!isUser && !authenticated ? (
+                                <LoginLink>
+                                    <Button
+                                        variant={"link"}
+                                        className={"text-lg h-[50px] px-[25px]"}
+                                    >
+                                        Employers
+                                    </Button>
+                                </LoginLink>
+                            ) : (
+                                <Link href={"/dashboard"}>
+                                    <Button
+                                        variant={"link"}
+                                        className={"text-lg h-[50px] px-[25px]"}
+                                    >
+                                        Dashboard
+                                    </Button>
+                                </Link>
+                            )}
+                            <Link href={"/jobs"}>
+                                <Button
+                                    className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
+                                    Job Postings
+                                </Button>
+                            </Link>
+                        </DropMenu>
+                    </div>
                 </>
             </NavigationTab>
             <section className="w-full flex justify-center items-center">
