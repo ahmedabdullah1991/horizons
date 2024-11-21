@@ -27,8 +27,6 @@ const orbitron = Orbitron({subsets: ["latin"]})
 
 interface NavigationTabProps {
     children?: React.ReactNode
-    children_01?: React.ReactNode
-    children_02?: React.ReactNode
 }
 
 const DropMenu = ({children}: Readonly<{ children: React.ReactNode }>) => {
@@ -74,15 +72,12 @@ export const NavigationTab = (props: NavigationTabProps) => {
                     <div className={"flex items-center gap-2.5"}>
                         <ModeToggle/>
                         <div className="hidden md:flex items-center gap-2.5">
-                            {props.children_01}
+                            {props.children}
                         </div>
                         <div className="md:hidden">
                             <DropMenu>
-                                {props.children_02}
+                                {props.children}
                             </DropMenu>
-                        </div>
-                        <div>
-                            {props.children}
                         </div>
                     </div>
                 </NavigationMenuItem>

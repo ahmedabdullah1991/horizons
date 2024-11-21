@@ -20,8 +20,8 @@ export default async function Page() {
     const authenticated = await authentication()
     return (
         <>
-            <NavigationTab
-                children_01={<>
+            <NavigationTab>
+                <>
                     {!isUser && !authenticated ? (
                         <LoginLink>
                             <Button
@@ -47,37 +47,8 @@ export default async function Page() {
                             Job Postings
                         </Button>
                     </Link>
-                </>}
-                children_02={<>
-                    {!isUser && !authenticated ? (
-                        <LoginLink>
-                            <Button
-                                variant={"link"}
-                                className={"text-base px-[25px]"}
-                            >
-                                Employers
-                            </Button>
-                        </LoginLink>
-                    ) : (
-                        <Link href={"/dashboard"}>
-                            <Button
-                                variant={"link"}
-                                className={"text-base px-[25px]"}
-                            >
-                                Dashboard
-                            </Button>
-                        </Link>
-                    )}
-                    <Link href={"/jobs"}>
-                        <Button
-                            variant={"link"}
-                            className={"text-base px-[25px]"}
-                        >
-                            Job Postings
-                        </Button>
-                    </Link>
-                </>}
-            />
+                </>
+            </NavigationTab>
             <section className="w-full flex justify-center items-center">
                 <div className="container px-4 md:px-6 lg:px-8">
                     <div className="w-full max-w-3xl mx-auto pt-36">
