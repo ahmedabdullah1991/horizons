@@ -9,13 +9,12 @@ export default async function Layout({children}: { children: React.ReactNode }) 
     //const isAuthenticated = await authentication()
     //if (isUser && isAuthenticated) {
     //    redirect("/api/auth/login")
-    //} else {
-        return <>
+    //} else {}
+        return (<>
             <NavigationTab
                 children_01={<div className={"flex gap-2.5"}>
                     <NavigationSheet/>
                 </div>}
             />
-            {children}</>
-    }
+            {children}</>)
 }
