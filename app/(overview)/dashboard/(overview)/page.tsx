@@ -1,5 +1,5 @@
-export default function Page() {
-    return (
-        <div>Dashboard</div>
-    )
+const Page = async ()=> {
+
 }
+
+export default Page
