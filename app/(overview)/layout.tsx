@@ -1,12 +1,13 @@
 import React from "react";
 import {redirect} from "next/navigation";
-import {authentication} from "@/lib/kinde-imports";
+import {user, authentication} from "@/lib/kinde-imports";
 import {NavigationTab} from "@/components/components";
 import {NavigationSheet} from "@/components/client";
 
 export default async function Layout({children}: {children: React.ReactNode}) {
+    const isUser = await user()
     const isAuthenticated = await authentication()
-    if (!isAuthenticated) {
+    if (isUser && isAuthenticated) {
         redirect("/api/auth/login")
     } else {
         return <>

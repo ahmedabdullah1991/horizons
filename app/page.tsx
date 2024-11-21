@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {authentication} from "@/lib/kinde-imports";
+import {user, authentication} from "@/lib/kinde-imports";
 import {Avatars, NavigationTab, ReusableCard} from "@/components/components";
 import {LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
@@ -16,11 +16,12 @@ import {clsx} from "clsx";
 const orbitron = Orbitron({subsets: ["latin"]})
 
 export default async function Page() {
+    const isUser = await user()
     const authenticated = await authentication()
     return (
         <>
             <NavigationTab>
-                {!authenticated ? (
+                {!isUser && !authenticated ? (
                     <LoginLink>
                         <Button
                             variant={"link"}
