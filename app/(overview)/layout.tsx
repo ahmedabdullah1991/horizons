@@ -1,21 +1,21 @@
 import React from "react";
 import {redirect} from "next/navigation";
-import {user, authentication} from "@/lib/kinde-imports";
+import {authentication, user} from "@/lib/kinde-imports";
 import {NavigationTab} from "@/components/components";
 import {NavigationSheet} from "@/components/client";
 
-export default async function Layout({children}: {children: React.ReactNode}) {
+export default async function Layout({children}: { children: React.ReactNode }) {
     const isUser = await user()
     const isAuthenticated = await authentication()
     if (isUser && isAuthenticated) {
         redirect("/api/auth/login")
     } else {
         return <>
-            <NavigationTab>
-                <div className={"flex gap-2.5"}>
+            <NavigationTab
+                children_01={<div className={"flex gap-2.5"}>
                     <NavigationSheet/>
-                </div>
-            </NavigationTab>
+                </div>}
+            />
             {children}</>
     }
 }
