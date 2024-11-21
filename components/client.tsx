@@ -6,20 +6,6 @@ import {usePathname} from "next/navigation";
 import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {clsx} from "clsx";
 import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,} from "@/components/ui/sheet"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuGroup,
-    DropdownMenuItem,
-    DropdownMenuLabel,
-    DropdownMenuPortal,
-    DropdownMenuSeparator,
-    DropdownMenuShortcut,
-    DropdownMenuSub,
-    DropdownMenuSubContent,
-    DropdownMenuSubTrigger,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import {Button} from "@/components/ui/button"
 import {Menu} from "lucide-react"
 
