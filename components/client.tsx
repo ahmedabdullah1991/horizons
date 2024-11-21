@@ -3,13 +3,12 @@
 import * as React from "react"
 import Link from "next/link"
 import {usePathname} from "next/navigation";
-import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {clsx} from "clsx";
 import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet"
 import {Button} from "@/components/ui/button"
 import {Menu} from "lucide-react";
 
-export function NavigationSheet() {
+export function NavigationSheet({children}: {children: React.ReactNode}) {
     const pathname = usePathname()
     const links = [
         {name: "Horizons", href: "/"},
@@ -48,7 +47,7 @@ export function NavigationSheet() {
                                 </Link>
                             </div>
                         ))}
-                        <LogoutLink><Button variant={"destructive"}>Logout</Button></LogoutLink>
+                        {children}
                     </div>
                     <SheetFooter></SheetFooter>
                 </SheetContent>
