@@ -26,6 +26,7 @@ import {Menu, MoonIcon, SunIcon} from "lucide-react"
 const orbitron = Orbitron({subsets: ["latin"]})
 
 interface NavigationTabProps {
+    children?: React.ReactNode
     children_01?: React.ReactNode
     children_02?: React.ReactNode
 }
@@ -79,6 +80,9 @@ export const NavigationTab = (props: NavigationTabProps) => {
                             <DropMenu>
                                 {props.children_02}
                             </DropMenu>
+                        </div>
+                        <div>
+                            {props.children}
                         </div>
                     </div>
                 </NavigationMenuItem>

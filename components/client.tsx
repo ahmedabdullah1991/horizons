@@ -5,8 +5,9 @@ import Link from "next/link"
 import {usePathname} from "next/navigation";
 import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {clsx} from "clsx";
-import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle} from "@/components/ui/sheet"
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet"
 import {Button} from "@/components/ui/button"
+import {Menu} from "lucide-react";
 
 export function NavigationSheet() {
     const pathname = usePathname()
@@ -21,6 +22,11 @@ export function NavigationSheet() {
         return (
             <Sheet>
                 <SheetContent>
+                    <SheetTrigger>
+                        <Button variant={"link"} className={"text-lg h-[50px] px-[25px]"}>
+                            <Menu/>
+                        </Button>
+                    </SheetTrigger>
                     <SheetHeader>
                         <SheetTitle>Navigation</SheetTitle>
                     </SheetHeader>

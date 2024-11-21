@@ -5,11 +5,8 @@ import {NavigationSheet} from "@/components/client"
 const Layout = ({children}: { children: React.ReactNode }) => {
     return (
         <>
-            <NavigationTab
-                children_02={<>
-                    <NavigationSheet/>
-                </>}
-            >
+            <NavigationTab>
+                <NavigationSheet/>
             </NavigationTab>
             {children}
         </>
