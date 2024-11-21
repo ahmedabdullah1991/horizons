@@ -1,6 +1,6 @@
 import React from "react";
 import Link from "next/link";
-import {user, authentication} from "@/lib/kinde-imports";
+import {authentication, user} from "@/lib/kinde-imports";
 import {Avatars, NavigationTab, ReusableCard} from "@/components/components";
 import {LoginLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
@@ -20,33 +20,64 @@ export default async function Page() {
     const authenticated = await authentication()
     return (
         <>
-            <NavigationTab>
-                {!isUser && !authenticated ? (
-                    <LoginLink>
+            <NavigationTab
+                children_01={<>
+                    {!isUser && !authenticated ? (
+                        <LoginLink>
+                            <Button
+                                variant={"link"}
+                                className={"text-lg h-[50px] px-[25px]"}
+                            >
+                                Employers
+                            </Button>
+                        </LoginLink>
+                    ) : (
+                        <Link href={"/dashboard"}>
+                            <Button
+                                variant={"link"}
+                                className={"text-lg h-[50px] px-[25px]"}
+                            >
+                                Dashboard
+                            </Button>
+                        </Link>
+                    )}
+                    <Link href={"/jobs"}>
                         <Button
-                            variant={"link"}
-                            className={"text-lg h-[50px] px-[25px]"}
-                        >
-                            Employers
-                        </Button>
-                    </LoginLink>
-                ) : (
-                    <Link href={"/dashboard"}>
-                        <Button
-                            variant={"link"}
-                            className={"text-lg h-[50px] px-[25px]"}
-                        >
-                            Dashboard
+                            className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
+                            Job Postings
                         </Button>
                     </Link>
-                )}
-                <Link href={"/jobs"}>
-                    <Button
-                        className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
-                        Job Postings
-                    </Button>
-                </Link>
-            </NavigationTab>
+                </>}
+                children_02={<>
+                    {!isUser && !authenticated ? (
+                        <LoginLink>
+                            <Button
+                                variant={"link"}
+                                className={"text-base px-[25px]"}
+                            >
+                                Employers
+                            </Button>
+                        </LoginLink>
+                    ) : (
+                        <Link href={"/dashboard"}>
+                            <Button
+                                variant={"link"}
+                                className={"text-base px-[25px]"}
+                            >
+                                Dashboard
+                            </Button>
+                        </Link>
+                    )}
+                    <Link href={"/jobs"}>
+                        <Button
+                            variant={"link"}
+                            className={"text-base px-[25px]"}
+                        >
+                            Job Postings
+                        </Button>
+                    </Link>
+                </>}
+            />
             <section className="w-full flex justify-center items-center">
                 <div className="container px-4 md:px-6 lg:px-8">
                     <div className="w-full max-w-3xl mx-auto pt-36">

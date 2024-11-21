@@ -12,14 +12,40 @@ import {
 } from "@/components/ui/navigation-menu"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {useTheme} from "next-themes"
-import {MoonIcon, SunIcon} from "lucide-react"
+import {Menu, MoonIcon, SunIcon} from "lucide-react"
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
-export const NavigationTab = ({children}: { children?: React.ReactNode }) => {
+interface NavigationTabProps {
+    children_01?: React.ReactNode
+    children_02?: React.ReactNode
+}
+
+const DropMenu = ({children}: Readonly<{ children: React.ReactNode }>) => {
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="outline"><Menu/></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+                <DropdownMenuGroup className={"flex flex-col"}>
+                    {children}
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
+    )
+}
+
+export const NavigationTab = (props: NavigationTabProps) => {
     return (
         <NavigationMenu className={"w-full"}>
             <NavigationMenuList className={"w-full"}>
@@ -44,9 +70,16 @@ export const NavigationTab = ({children}: { children?: React.ReactNode }) => {
                             </NavigationMenuLink>
                         </Link>
                     </div>
-                    <div className={"flex gap-2.5"}>
+                    <div className={"flex items-center gap-2.5"}>
                         <ModeToggle/>
-                        {children}
+                        <div className="hidden md:flex items-center gap-2.5">
+                            {props.children_01}
+                        </div>
+                        <div className="md:hidden">
+                            <DropMenu>
+                                {props.children_02}
+                            </DropMenu>
+                        </div>
                     </div>
                 </NavigationMenuItem>
             </NavigationMenuList>
