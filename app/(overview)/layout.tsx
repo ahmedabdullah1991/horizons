@@ -9,7 +9,7 @@ const Layout = ({children}: { children: React.ReactNode }) => {
         <>
             <NavigationTab>
                 <NavigationSheet>
-                    <LogoutLink><Button variant={"destructive"}>Logout</Button></LogoutLink>
+                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}><Button variant={"destructive"}>Logout</Button></LogoutLink>
                 </NavigationSheet>
             </NavigationTab>
             {children}
