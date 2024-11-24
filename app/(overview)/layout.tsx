@@ -1,19 +1,20 @@
+"use server"
+
 import React from "react"
 import {NavigationTab} from "@/components/components"
-import {NavigationSheet} from "@/components/client"
 import {LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
 
-const Layout = ({children}: { children: React.ReactNode }) => {
+const Layout = async ({children}: { children: React.ReactNode }) => {
     return (
         <>
             <NavigationTab>
-                <NavigationSheet>
-                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}><Button variant={"destructive"}>Logout</Button></LogoutLink>
-                </NavigationSheet>
+                <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}><Button
+                    variant={"destructive"}>LOGOUT</Button></LogoutLink>
             </NavigationTab>
             {children}
         </>
     )
 }
+
 export default Layout
