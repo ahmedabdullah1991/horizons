@@ -1,12 +1,17 @@
 "use client"
 
 import * as React from "react"
+import {useFormState} from "react-dom";
 import Link from "next/link"
 import {usePathname} from "next/navigation";
 import {clsx} from "clsx";
 import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger} from "@/components/ui/sheet"
 import {Button} from "@/components/ui/button"
 import {Menu} from "lucide-react";
+import {ReusableCard} from "@/components/components";
+import {Label} from "@/components/ui/label";
+import {Input} from "@/components/ui/input";
+import {createCompany, prevState} from "@/lib/actions";
 
 export function NavigationSheet({children}: {children: React.ReactNode}) {
     const pathname = usePathname()
@@ -56,3 +61,36 @@ export function NavigationSheet({children}: {children: React.ReactNode}) {
     }
 }
 
+export function CreateCompany() {
+    const initialState: prevState = {message: null, errors: {}}
+    const [state, formAction] = useFormState(createCompany, initialState)
+    return (
+        <ReusableCard
+            title={"REGISTER AS A COMPANY/EMPLOYER"}
+            children2={<Button type={"submit"}>SUBMIT</Button>}
+        >
+            <form action={formAction}>
+                <Label
+                    htmlFor={"companyName"}
+                    className={"flex flex-col gap-1.5"}
+                >
+                    COMPANY NAME:
+                    <Input
+                        id={"companyName"}
+                        name={"companyName"}
+                        required={true}
+                    />
+                    <div
+                        aria-live={"polite"}
+                        aria-atomic={"true"}
+                    >
+                        {state.errors?.companyName &&
+                            state.errors.companyName.map((error: string) => (
+                                <Label key={error}>{error}</Label>
+                            ))}
+                    </div>
+                </Label>
+            </form>
+        </ReusableCard>
+    )
+}
