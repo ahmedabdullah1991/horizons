@@ -19,8 +19,10 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Input} from "@/components/ui/input"
 import {useTheme} from "next-themes"
 import {MoonIcon, SunIcon} from "lucide-react"
+import {Label} from "@/components/ui/label";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -138,5 +140,91 @@ export function Avatars() {
             />
             <AvatarFallback>AB</AvatarFallback>
         </Avatar>
+    )
+}
+
+const quickLinks = [
+    { href: '/about', label: 'About Us' },
+    { href: '/services', label: 'Services' },
+    { href: '/products', label: 'Products' },
+    { href: '/contact', label: 'Contact Us' },
+]
+
+const legalLinks = [
+    { href: '/privacy', label: 'Privacy Policy' },
+    { href: '/terms', label: 'Terms of Service' },
+    { href: '/cookies', label: 'Cookie Policy' },
+]
+
+export function Footer() {
+    return (
+        <footer className="text-gray-400">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {/* Company Info */}
+                    <div>
+                        <Link href="/" className="flex items-center mb-4">
+                            <span className="sr-only">HORIZONS</span>
+                            <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                            <span className="ml-2 text-sm font-medium">HORIZONS</span>
+                        </Link>
+                        <p className="text-sm">
+                            We are dedicated to providing the best service to our customers.
+                        </p>
+                    </div>
+
+                    <div className={"flex flex-col gap-4"}>
+                        <Label className="text-sm font-semibold">QUICK LINKS</Label>
+                        <ul className="space-y-2 text-sm">
+                            {quickLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link href={link.href} className="hover:text-white transition-colors">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+
+                    <div className={"flex flex-col gap-4"}>
+                        <Label className="text-sm font-semibold mb-4">LEGAL</Label>
+                        <ul className="space-y-2 text-sm">
+                            {legalLinks.map((link) => (
+                                <li key={link.href}>
+                                    <Link href={link.href} className="hover:text-white transition-colors">
+                                        {link.label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div>
+                        <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
+                        <form className="space-y-2">
+                            <Input
+                                type="email"
+                                placeholder="Enter your email"
+                                className="text-white placeholder-gray-400"
+                                aria-label="Email for newsletter"
+                            />
+                            <Button type="submit" className="w-full">
+                                Subscribe
+                            </Button>
+                        </form>
+                    </div>
+                </div>
+
+                <div className="mt-8 pt-8 border-t border-gray-800">
+                </div>
+
+                <div className="mt-8 text-center text-sm">
+                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
     )
 }

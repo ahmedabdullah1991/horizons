@@ -7,8 +7,8 @@ import {Button} from "@/components/ui/button";
 import {Label} from "@/components/ui/label";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import {Orbitron} from "next/font/google";
-import {Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious,} from "@/components/ui/carousel";
-import {BriefcaseIcon, BuildingIcon, MapPinIcon, Menu, Star} from "lucide-react";
+import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
+import {BriefcaseIcon, BuildingIcon, ChevronRight, MapPinIcon, Menu, Star} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
 import {clsx} from "clsx";
@@ -43,9 +43,9 @@ export default async function Page() {
                             <LoginLink>
                                 <Button
                                     variant={"link"}
-                                    className={"text-lg h-[50px] px-[25px]"}
+                                    className={"text-sm px-[25px]"}
                                 >
-                                    Employers
+                                    EMPLOYERS
                                 </Button>
                             </LoginLink>
                         ) : (
@@ -59,9 +59,15 @@ export default async function Page() {
                             </Link>
                         )}
                         <Link href={"/jobs"}>
-                            <Button
-                                className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
-                                Job Postings
+                            <Button className="relative pe-12 bg-[#C40234] text-white">
+                                JOB POSTINGS
+                                <span
+                                    className="pointer-events-none absolute inset-y-0 end-0 flex w-9 items-center justify-center bg-primary-foreground/15">
+                                <ChevronRight
+                                    className="h-4 w-4 text-primary-foreground text-white"
+                                    aria-hidden="true"
+                                />
+                            </span>
                             </Button>
                         </Link>
                     </div>
@@ -71,9 +77,9 @@ export default async function Page() {
                                 <LoginLink>
                                     <Button
                                         variant={"link"}
-                                        className={"text-lg h-[50px] px-[25px]"}
+                                        className={"text-sm px-[25px]"}
                                     >
-                                        Employers
+                                        EMPLOYERS
                                     </Button>
                                 </LoginLink>
                             ) : (
@@ -87,9 +93,15 @@ export default async function Page() {
                                 </Link>
                             )}
                             <Link href={"/jobs"}>
-                                <Button
-                                    className="bg-[#C40234] text-white text-lg h-[50px] px-[25px] hover:bg-transparent shadow hover:bg-[#C40234]">
-                                    Job Postings
+                                <Button className="relative pe-12 bg-[#C40234] text-white">
+                                    JOB POSTINGS
+                                    <span
+                                        className="pointer-events-none absolute inset-y-0 end-0 flex w-9 items-center justify-center bg-primary-foreground/15">
+                                        <ChevronRight
+                                        className="h-4 w-4 text-primary-foreground text-white"
+                                        aria-hidden="true"
+                                        />
+                                    </span>
                                 </Button>
                             </Link>
                         </DropMenu>
@@ -113,7 +125,7 @@ export default async function Page() {
                                     Get hired in days, not months!
                                 </Label>
                             </div>
-                            <Label className="text-base md:text-lg text-muted-foreground tracking-tight leading-none">
+                            <Label className="text-base md:text-lg text-muted-foreground leading-none">
                                 HORIZONS is a dynamic platform that connects
                                 people with companies. Our user-friendly
                                 interface allows you to search and apply
@@ -152,7 +164,7 @@ export default async function Page() {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <Label className="text-muted-foreground tracking-tight">
+                                                    <Label className="text-muted-foreground">
                                                         {reviews[0]}
                                                     </Label>
                                                 </div>
@@ -257,8 +269,6 @@ export default async function Page() {
                                             </div>
                                         </CarouselItem>
                                     </CarouselContent>
-                                    <CarouselPrevious/>
-                                    <CarouselNext/>
                                 </Carousel>
                             </ReusableCard>
                         </div>
