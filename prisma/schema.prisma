@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  kindeId   String    @unique
+  email     String    @unique
+  firstName String
+  lastName  String
+  companies Company[]
+}
+
+model Profile {
+  id          String  @id @default(auto()) @map("_id") @db.ObjectId
+  profile     Listing @relation(fields: [profileId], references: [id])
+  profileId   String  @unique @db.ObjectId
+  listingId   String
+  phoneNumber String  @unique
+  address     String
+  resume      Bytes
+}
+
+model Company {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  companies   User      @relation(fields: [companiesId], references: [id])
+  companiesId String    @unique @db.ObjectId
+  companyName String    @unique
+  listing     Listing[]
+}
+
+model Listing {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  listings    Company   @relation(fields: [listingsId], references: [id])
+  listingsId  String    @db.ObjectId
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  published   Boolean   @default(false)
+  title       String
+  department  String
+  location    String
+  type        String
+  companyName String
+  profile     Profile[]
+  application Int       @default(0)
+
+  @@unique([listingsId, title])
+}
