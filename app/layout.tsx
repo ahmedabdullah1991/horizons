@@ -45,7 +45,7 @@ export default async function RootLayout({
         <AuthProvider>
             <html lang="en">
             <body
-                className={`antialiased font-medium text-muted-foreground ${inter.className} ${geistSans.variable} ${geistMono.variable}`}
+                className={`antialiased font-medium ${inter.className} ${geistSans.variable} ${geistMono.variable}`}
             >
             <ThemeProvider
                 attribute={"class"}

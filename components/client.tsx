@@ -28,7 +28,7 @@ interface Navigation {
 export function Navigation(props: Navigation) {
     const pathname = usePathname()
     return (
-        <div className={"flex flex-row justify-between p-4 bg-gray-900"}>
+        <div className={"flex flex-row justify-between p-4"}>
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
