@@ -1,13 +1,153 @@
 "use client"
 
 import * as React from "react"
-import {useState} from "react";
+import Link from "next/link"
+import {Orbitron} from "next/font/google";
+import {usePathname} from "next/navigation";
+import {MapPin, Users} from "lucide-react";
+import {
+    NavigationMenu,
+    NavigationMenuContent,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger,
+    navigationMenuTriggerStyle,
+} from "@/components/ui/navigation-menu"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 
-export function CompanyCard() {
-    const [state, setState] = useState(0)
+const orbitron = Orbitron({subsets: ["latin"]})
+
+interface Navigation {
+    children: React.ReactNode
+    logout: React.ReactNode
+    trigger: string
+}
+
+export function Navigation(props: Navigation) {
+    const pathname = usePathname()
     return (
-        <div onClick={()=> setState(state+1)}>
-            {state}
+        <div className={"flex flex-row justify-between p-4 bg-gray-900"}>
+            <NavigationMenu>
+                <NavigationMenuList>
+                    <NavigationMenuItem>
+                        <Link href="/" legacyBehavior passHref>
+                            <NavigationMenuLink className={`${orbitron.className} ${navigationMenuTriggerStyle()}`}>
+                                HORIZONS
+                            </NavigationMenuLink>
+                        </Link>
+                    </NavigationMenuItem>
+                </NavigationMenuList>
+            </NavigationMenu>
+            {pathname === "/" && (
+                <NavigationMenu>
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            <NavigationMenuTrigger>{props.trigger}</NavigationMenuTrigger>
+                            {props.trigger === "EMPLOYERS" ? (
+
+                                    <NavigationMenuContent>
+                                        <ul className="grid gap-3 p-4 md:w-[400px] lg:w-full grid-rows">
+                                            {props.children}
+                                            <CompanyCard/>
+                                        </ul>
+                                    </NavigationMenuContent>
+                                ) :
+                                null
+                            }
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <Link href="/" legacyBehavior passHref>
+                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
+                                    JOB POSTINGS
+                                </NavigationMenuLink>
+                            </Link>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+            )}
+            {pathname !== "/" && (
+                <>{props.logout}</>
+            )}
+        </div>
+    )
+}
+
+interface CompanyCardProps {
+    name: string
+    logo: string
+    industry: string
+    location: string
+    employeeCount: number
+    description: string
+}
+
+function CardInfo({
+                      name,
+                      logo,
+                      industry,
+                      location,
+                      employeeCount,
+                      description,
+                  }: CompanyCardProps) {
+    return (
+        <Card className="w-[350px] overflow-hidden relative border-none">
+            <div
+                className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-50 animate-gradient-xy"></div>
+            <CardHeader className="pb-4 relative">
+                <div className="flex items-center space-x-4">
+                    <Avatar className="h-16 w-16">
+                        <AvatarImage src={logo} alt={`${name} logo`}/>
+                        <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <CardTitle className="text-foreground">{name}</CardTitle>
+                        <CardDescription className="text-muted-foreground">{industry}</CardDescription>
+                    </div>
+                </div>
+            </CardHeader>
+            <CardContent className="pb-4 relative">
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-2">
+                    <MapPin className="h-4 w-4"/>
+                    <span>{location}</span>
+                </div>
+                <div className="flex items-center space-x-2 text-sm text-muted-foreground mb-4">
+                    <Users className="h-4 w-4"/>
+                    <span>{employeeCount} employees</span>
+                </div>
+                <p className="text-sm text-foreground">{description}</p>
+            </CardContent>
+        </Card>
+    )
+}
+
+function CompanyCard() {
+    return (
+        <div className="flex flex-col items-center justify-center row-span-3">
+            <style jsx global>{`
+                @keyframes gradient-xy {
+                    0%, 100% {
+                        background-position: 0% 0%;
+                    }
+                    50% {
+                        background-position: 100% 100%;
+                    }
+                }
+
+                .animate-gradient-xy {
+                    animation: gradient-xy 10s ease alternate infinite;
+                    background-size: 400% 400%;
+                }
+            `}</style>
+            <CardInfo
+                name="HORIZONS"
+                logo=""
+                industry="Horizons Inc."
+                location="Islamabad, Pakistan"
+                employeeCount={10}
+                description="Horizons project by Ahmed Abdullah"
+            />
         </div>
     )
 }
