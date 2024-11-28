@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {MapPin, Users} from "lucide-react";
+import {MapPin, Moon, Sun, Users} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuContent,
@@ -16,6 +16,10 @@ import {
 } from "@/components/ui/navigation-menu"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Label} from "@/components/ui/label";
+import {useState} from "react";
+import {useTheme} from "next-themes";
+import {Switch} from "@/components/ui/switch";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -69,6 +73,9 @@ export function Navigation(props: Navigation) {
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <ModeToggle/>
+                        </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
             )}
@@ -99,7 +106,7 @@ function CardInfo({
     return (
         <Card className="w-[350px] overflow-hidden relative border-none">
             <div
-                className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-50 animate-gradient-xy"></div>
+                className="absolute inset-0 bg-gradient-to-br from-blue-500 to-cyan-500 opacity-80 animate-gradient-xy"></div>
             <CardHeader className="pb-4 relative">
                 <div className="flex items-center space-x-4">
                     <Avatar className="h-16 w-16">
@@ -153,6 +160,29 @@ function CompanyCard() {
                 employeeCount={10}
                 description="Horizons project by Ahmed Abdullah"
             />
+        </div>
+    )
+}
+
+export function ModeToggle() {
+    const [checked, setChecked] = useState(true)
+    const {setTheme} = useTheme()
+    return (
+        <div className="inline-flex items-center gap-2">
+            <Switch
+                checked={checked}
+                onCheckedChange={setChecked}
+                onClick={() => setTheme(checked ? "dark" : "light")}
+                aria-label="Toggle switch"
+            />
+            <Label htmlFor="switch-11">
+                <span className="sr-only">Toggle switch</span>
+                {checked ? (
+                    <Sun size={16} strokeWidth={2} aria-hidden="true" />
+                ) : (
+                    <Moon size={16} strokeWidth={2} aria-hidden="true" />
+                )}
+            </Label>
         </div>
     )
 }
