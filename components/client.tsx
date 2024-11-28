@@ -44,17 +44,22 @@ export function Navigation(props: Navigation) {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            <NavigationMenuTrigger>{props.trigger}</NavigationMenuTrigger>
                             {props.trigger === "EMPLOYERS" ? (
-
-                                    <NavigationMenuContent>
-                                        <ul className="grid gap-3 p-4 md:w-[400px] lg:w-full grid-rows">
-                                            {props.children}
-                                            <CompanyCard/>
-                                        </ul>
-                                    </NavigationMenuContent>
+                                    <>
+                                        <NavigationMenuTrigger>{props.trigger}</NavigationMenuTrigger>
+                                        <NavigationMenuContent>
+                                            <ul className="grid gap-3 p-4 md:w-[400px] lg:w-full grid-rows">
+                                                {props.children}
+                                                <CompanyCard/>
+                                            </ul>
+                                        </NavigationMenuContent>
+                                    </>
                                 ) :
-                                null
+                                <Link href="/dashboard" legacyBehavior passHref>
+                                    <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
+                                        DASHBOARD
+                                    </NavigationMenuLink>
+                                </Link>
                             }
                         </NavigationMenuItem>
                         <NavigationMenuItem>
