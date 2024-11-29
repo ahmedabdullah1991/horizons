@@ -32,7 +32,7 @@ interface Navigation {
 export function Navigation(props: Navigation) {
     const pathname = usePathname()
     return (
-        <div className={"flex flex-row justify-between p-4"}>
+        <div className={"flex flex-row justify-between p-4 border-b"}>
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
@@ -68,13 +68,15 @@ export function Navigation(props: Navigation) {
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <Link href="/" legacyBehavior passHref>
-                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
+                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()} text-[#007FFF]`}>
                                     JOB POSTINGS
                                 </NavigationMenuLink>
                             </Link>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <ModeToggle/>
+                            <div className={"flex flex-col items-center"}>
+                                <ModeToggle/>
+                            </div>
                         </NavigationMenuItem>
                     </NavigationMenuList>
                 </NavigationMenu>
@@ -114,7 +116,7 @@ function CardInfo({
                         <AvatarFallback>{name.slice(0, 2).toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
-                        <CardTitle className="text-foreground">{name}</CardTitle>
+                        <CardTitle className={"text-white"}>{name}</CardTitle>
                         <CardDescription className="text-muted-foreground">{industry}</CardDescription>
                     </div>
                 </div>
@@ -148,7 +150,7 @@ function CompanyCard() {
                 }
 
                 .animate-gradient-xy {
-                    animation: gradient-xy 10s ease alternate infinite;
+                    animation: gradient-xy 5s ease alternate infinite;
                     background-size: 400% 400%;
                 }
             `}</style>

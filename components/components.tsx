@@ -12,6 +12,7 @@ import {
     NavigationMenuLink,
     NavigationMenuList
 } from "@/components/ui/navigation-menu";
+
 const orbitron = Orbitron({subsets: ["latin"]})
 
 interface Card {
@@ -88,18 +89,6 @@ export const ReusableCard = (props: Card) => {
     )
 }
 
-export function Avatars() {
-    return (
-        <Avatar>
-            <AvatarImage
-                src="https://github.com/shadcn.png"
-                alt="avatar-image"
-            />
-            <AvatarFallback>AB</AvatarFallback>
-        </Avatar>
-    )
-}
-
 const quickLinks = [
     {href: '/about', label: 'About Us'},
     {href: '/services', label: 'Services'},
@@ -115,7 +104,7 @@ const legalLinks = [
 
 export function Footer() {
     return (
-        <footer className="text-gray-400 bg-[#17171C]">
+        <footer>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Company Info */}
@@ -184,5 +173,24 @@ export function Footer() {
                 </div>
             </div>
         </footer>
+    )
+}
+
+export const avatarUrls = [
+    {src: "https://utfs.io/f/XNbrjM3iH8Zx4a6w5j1szjWachy7KxTJpHMut4eRqLDObm0w"},
+    {src: "https://utfs.io/f/XNbrjM3iH8Zxhr1bVTzuHw9M2joZfQV8X7WOYxPSicLm3se4"},
+    {src: "https://utfs.io/f/XNbrjM3iH8ZxiuYQi3aUQW0duRlOHfnLbqV7ZG8cBseK5rFk"},
+]
+
+export const Avatars = () => {
+    return (
+        <>
+            {avatarUrls.map((value, index)=> (
+                <Avatar key={index}>
+                    <AvatarImage>{value.src}</AvatarImage>
+                    <AvatarFallback>UI</AvatarFallback>
+                </Avatar>
+            ))}
+        </>
     )
 }

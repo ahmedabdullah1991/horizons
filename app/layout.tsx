@@ -11,6 +11,7 @@ import {cn} from "@/lib/utils";
 import {LoginLink, RegisterLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {authentication} from "@/lib/kinde-imports";
 import {Button} from "@/components/ui/button";
+import {Footer} from "@/components/components";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -43,9 +44,9 @@ export default async function RootLayout({
     }
     return (
         <AuthProvider>
-            <html lang="en">
+            <html lang="en" className={"h-full"}>
             <body
-                className={`antialiased font-medium ${inter.className} ${geistSans.variable} ${geistMono.variable}`}
+                className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className} ${geistSans.variable} ${geistMono.variable}`}
             >
             <ThemeProvider
                 attribute={"class"}
@@ -63,20 +64,25 @@ export default async function RootLayout({
                 >
                     {!authenticated ? (
                         <>
+                            <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
+                                <ListItem title="REGSITER" className={"border-[#007FFF]"}>
+                                    Register as a company/employer
+                                </ListItem>
+                            </RegisterLink>
                             <LoginLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
                                 <ListItem title="LOGIN">
                                     Login to your account
                                 </ListItem>
                             </LoginLink>
-                            <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
-                                <ListItem title="REGSITER">
-                                    Register as a company/employer
-                                </ListItem>
-                            </RegisterLink>
                         </>
                         ):null}
                 </Navigation>
-                {children}
+                <main className={"flex-grow flex items-center"}>
+                    <div className={"container max-w-full"}>
+                        {children}
+                    </div>
+                </main>
+                <Footer />
             </ThemeProvider>
             </body>
             </html>
@@ -94,7 +100,7 @@ const ListItem = React.forwardRef<
                 <a
                     ref={ref}
                     className={cn(
-                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        "border block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
                         className
                     )}
                     {...props}
