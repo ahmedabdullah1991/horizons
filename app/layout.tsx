@@ -1,15 +1,15 @@
 import React from "react";
 import type {Metadata} from "next";
 import "./globals.css";
-import {AuthProvider} from "@/app/auth-provider";
 import {ThemeProvider} from "@/components/theme-provider";
-import {Navigation} from "@/components/client";
 import {Inter} from "next/font/google"
-import {NavigationMenuLink, navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
-import {RegisterLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
-import {authentication} from "@/lib/kinde-imports";
-import {Button} from "@/components/ui/button";
 import {Footer} from "@/components/components";
+import {authentication} from "@/lib/kinde-imports";
+import {LogoutLink, RegisterLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import {Button} from "@/components/ui/button";
+import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
+import {Navigation} from "@/components/client";
+import Link from "next/link";
 
 const inter = Inter({subsets: ["latin"]})
 
@@ -19,8 +19,8 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-                                       children,
-                                   }: Readonly<{
+                                             children,
+                                         }: Readonly<{
     children: React.ReactNode;
 }>) {
     const authenticated = await authentication()
@@ -31,46 +31,50 @@ export default async function RootLayout({
         NavTrigger = "DASHBOARD"
     }
     return (
-        <AuthProvider>
-            <html lang="en">
-            <body
-                className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className}`}
-            >
-            <ThemeProvider
-                attribute={"class"}
-                defaultTheme={"system"}
-                enableSystem
-                disableTransitionOnChange
-            >
-                <Navigation
-                    logout={
-                        <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}>
-                            <Button variant={"destructive"}>
+
+        <html lang="en">
+        <body
+            className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className}`}
+        >
+        <ThemeProvider
+            attribute={"class"}
+            defaultTheme={"system"}
+            enableSystem
+            disableTransitionOnChange
+        >
+
+            <Navigation
+                logout={
+                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}>
+                        <Button variant={"destructive"}>
                             LOGOUT
-                            </Button>
-                        </LogoutLink>
-                    }
-                    trigger={NavTrigger}
-                >
+                        </Button>
+                    </LogoutLink>
+                }
+                trigger={NavTrigger}
+            >
+
+                <>
                     {!authenticated ? (
                         <>
-                            <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
-                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
-                                    REGISTER
-                                </NavigationMenuLink>
+                            <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}
+                                          className={`${navigationMenuTriggerStyle()}`}>
+                                REGISTER
                             </RegisterLink>
                         </>
-                        ):null}
-                </Navigation>
-                <main className={"flex-grow flex items-center"}>
-                    <div className={"container max-w-full"}>
-                        {children}
-                    </div>
-                </main>
-                <Footer />
-            </ThemeProvider>
-            </body>
-            </html>
-        </AuthProvider>
+                    ) : <Link href={"/dashboard"} legacyBehavior passHref
+                              className={`${navigationMenuTriggerStyle()}`}>DASHBOARD</Link>}
+                </>
+            </Navigation>
+            <main className={"flex-grow flex items-center"}>
+                <div className={"container max-w-full"}>
+                    {children}
+                </div>
+            </main>
+            <Footer/>
+        </ThemeProvider>
+        </body>
+        </html>
+
     );
 }

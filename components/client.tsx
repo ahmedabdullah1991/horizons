@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {useState} from "react"
-import Link from "next/link"
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {Moon, Sun} from "lucide-react";
@@ -16,6 +15,7 @@ import {
 import {Label} from "@/components/ui/label";
 import {useTheme} from "next-themes";
 import {Switch} from "@/components/ui/switch";
+
 const orbitron = Orbitron({subsets: ["latin"]})
 
 interface Navigation {
@@ -31,11 +31,10 @@ export function Navigation(props: Navigation) {
             <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
-                        <Link href="/" legacyBehavior passHref>
-                            <NavigationMenuLink className={`${orbitron.className} ${navigationMenuTriggerStyle()}`}>
-                                HORIZONS
-                            </NavigationMenuLink>
-                        </Link>
+                        <NavigationMenuLink className={`${orbitron.className} ${navigationMenuTriggerStyle()}`}
+                                            href={"/"}>
+                            HORIZONS
+                        </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
@@ -43,24 +42,12 @@ export function Navigation(props: Navigation) {
                 <NavigationMenu>
                     <NavigationMenuList>
                         <NavigationMenuItem>
-                            {props.trigger === "EMPLOYERS" ? (
-                                    <>
-                                        {props.children}
-                                    </>
-                                ) :
-                                <Link href="/dashboard" legacyBehavior passHref>
-                                    <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
-                                        DASHBOARD
-                                    </NavigationMenuLink>
-                                </Link>
-                            }
+                            {props.children}
                         </NavigationMenuItem>
                         <NavigationMenuItem>
-                            <Link href="/" legacyBehavior passHref>
-                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()} text-[#007FFF]`}>
-                                    JOB POSTINGS
-                                </NavigationMenuLink>
-                            </Link>
+                            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} text-[#007FFF]`} href={"/"}>
+                                JOB POSTINGS
+                            </NavigationMenuLink>
                         </NavigationMenuItem>
                         <NavigationMenuItem>
                             <div className={"flex flex-col items-center"}>

@@ -1,19 +1,10 @@
 import * as React from "react"
 import Link from "next/link"
-import {Orbitron} from "next/font/google";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
 import {Input} from "@/components/ui/input"
 import {Label} from "@/components/ui/label";
-import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList
-} from "@/components/ui/navigation-menu";
-
-const orbitron = Orbitron({subsets: ["latin"]})
 
 interface Card {
     header?: React.ReactElement | string | number | undefined
@@ -24,46 +15,6 @@ interface Card {
     footer?: React.ReactElement | string | number | undefined
     children2?: React.ReactElement | string | number | undefined
     className?: string
-}
-
-interface NavigationTabProps {
-    children?: React.ReactNode
-}
-
-export const NavigationTab = (props: NavigationTabProps) => {
-    return (
-        <main>
-            <NavigationMenu className={"w-full bg-[#17171C]"}>
-                <NavigationMenuList className={"w-full"}>
-                    <NavigationMenuItem
-                        className={
-                            "w-dvw flex items-center justify-between h-20 px-4"
-                        }
-                    >
-                        <div>
-                            <Link
-                                href="/"
-                                legacyBehavior
-                                passHref
-                            >
-                                <NavigationMenuLink className={`${orbitron.className}`}>
-                                    <Button
-                                        variant={"link"}
-                                        className={"text-[24px]"}
-                                    >
-                                        HORIZONS
-                                    </Button>
-                                </NavigationMenuLink>
-                            </Link>
-                        </div>
-                        <div className={"flex items-center gap-2.5"}>
-                            {props.children}
-                        </div>
-                    </NavigationMenuItem>
-                </NavigationMenuList>
-            </NavigationMenu>
-        </main>
-    )
 }
 
 export const ReusableCard = (props: Card) => {
@@ -185,7 +136,7 @@ export const avatarUrls = [
 export const Avatars = () => {
     return (
         <>
-            {avatarUrls.map((value, index)=> (
+            {avatarUrls.map((value, index) => (
                 <Avatar key={index}>
                     <AvatarImage>{value.src}</AvatarImage>
                     <AvatarFallback>UI</AvatarFallback>
