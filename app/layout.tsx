@@ -1,28 +1,16 @@
 import React from "react";
 import type {Metadata} from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import {AuthProvider} from "@/app/auth-provider";
 import {ThemeProvider} from "@/components/theme-provider";
 import {Navigation} from "@/components/client";
 import {Inter} from "next/font/google"
-import {NavigationMenuLink} from "@/components/ui/navigation-menu";
-import {cn} from "@/lib/utils";
-import {LoginLink, RegisterLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
+import {NavigationMenuLink, navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
+import {RegisterLink, LogoutLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {authentication} from "@/lib/kinde-imports";
 import {Button} from "@/components/ui/button";
 import {Footer} from "@/components/components";
 
-const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
-});
-const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
-});
 const inter = Inter({subsets: ["latin"]})
 
 export const metadata: Metadata = {
@@ -44,36 +32,33 @@ export default async function RootLayout({
     }
     return (
         <AuthProvider>
-            <html lang="en" className={"h-full"}>
+            <html lang="en">
             <body
-                className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className} ${geistSans.variable} ${geistMono.variable}`}
+                className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className}`}
             >
             <ThemeProvider
                 attribute={"class"}
                 defaultTheme={"system"}
-                enableSystem={true}
-                disableTransitionOnChange={true}
+                enableSystem
+                disableTransitionOnChange
             >
                 <Navigation
                     logout={
-                        <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}><Button variant={"destructive"}>
+                        <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}>
+                            <Button variant={"destructive"}>
                             LOGOUT
-                        </Button></LogoutLink>
+                            </Button>
+                        </LogoutLink>
                     }
                     trigger={NavTrigger}
                 >
                     {!authenticated ? (
                         <>
                             <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
-                                <ListItem title="REGSITER" className={"border-[#007FFF]"}>
-                                    Register as a company/employer
-                                </ListItem>
+                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}>
+                                    REGISTER
+                                </NavigationMenuLink>
                             </RegisterLink>
-                            <LoginLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}>
-                                <ListItem title="LOGIN">
-                                    Login to your account
-                                </ListItem>
-                            </LoginLink>
                         </>
                         ):null}
                 </Navigation>
@@ -89,29 +74,3 @@ export default async function RootLayout({
         </AuthProvider>
     );
 }
-
-const ListItem = React.forwardRef<
-    React.ElementRef<"a">,
-    React.ComponentPropsWithoutRef<"a">
->(({className, title, children, ...props}, ref) => {
-    return (
-        <li>
-            <NavigationMenuLink asChild>
-                <a
-                    ref={ref}
-                    className={cn(
-                        "border block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-                        className
-                    )}
-                    {...props}
-                >
-                    <div className="text-sm font-medium leading-none">{title}</div>
-                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
-                        {children}
-                    </p>
-                </a>
-            </NavigationMenuLink>
-        </li>
-    )
-})
-ListItem.displayName = "ListItem"
