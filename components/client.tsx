@@ -65,22 +65,22 @@ export function Navigation(props: Navigation) {
 }
 
 export function ModeToggle() {
-    const [checked, setChecked] = useState(true)
+    const [checked, setChecked] = useState(false)
     const {setTheme} = useTheme()
     return (
         <div className="inline-flex items-center gap-2">
             <Switch
                 checked={checked}
                 onCheckedChange={setChecked}
-                onClick={() => setTheme(checked ? "dark" : "light")}
+                onClick={() => setTheme(checked ? "light" : "dark")}
                 aria-label="Toggle switch"
             />
             <Label htmlFor="switch-11">
                 <span className="sr-only">Toggle switch</span>
                 {checked ? (
-                    <Sun size={16} strokeWidth={2} aria-hidden="true"/>
-                ) : (
                     <Moon size={16} strokeWidth={2} aria-hidden="true"/>
+                ) : (
+                    <Sun size={16} strokeWidth={2} aria-hidden="true"/>
                 )}
             </Label>
         </div>
