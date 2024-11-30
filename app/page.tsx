@@ -25,7 +25,7 @@ export default async function Page() {
                         gridGap={6}
                         color="#0D98BA"
                         maxOpacity={0.6}
-                        flickerChance={0.3}
+                        flickerChance={0.01}
                     />
                 </div>
 

@@ -32,7 +32,7 @@ export default async function RootLayout({
     }
     return (
 
-        <html lang="en">
+        <html lang="en" className={"h-full"}>
         <body
             className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className}`}
         >
@@ -62,8 +62,8 @@ export default async function RootLayout({
                                 REGISTER
                             </RegisterLink>
                         </>
-                    ) : <Link href={"/dashboard"} legacyBehavior passHref
-                              className={`${navigationMenuTriggerStyle()}`}>DASHBOARD</Link>}
+                    ) : <Link href={"/dashboard"} legacyBehavior passHref><Button
+                        variant={"ghost"}>DASHBOARD</Button></Link>}
                 </>
             </Navigation>
             <main className={"flex-grow flex items-center"}>
