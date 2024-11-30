@@ -41,9 +41,7 @@ export default async function Page() {
                                         <Label
                                             className={`${orbitron.className} text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl flex flex-row items-center`}
                                         >
-                                            <Label
-                                                className={"text-[#0D98BA] text-6xl font-bold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl"}>[</Label>HORIZONS<Label
-                                            className={"text-[#0D98BA] text-6xl font-bold tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl"}>]</Label>
+                                            HORIZONS
                                         </Label>
                                         <Label
                                             className={`${orbitron.className} text-xl md:text-2xl underline`}
