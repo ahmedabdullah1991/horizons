@@ -38,17 +38,15 @@ export default async function RootLayout({
         >
         <ThemeProvider
             attribute={"class"}
-            defaultTheme={"system"}
+            defaultTheme={"dark"}
             enableSystem
             disableTransitionOnChange
         >
 
             <Navigation
                 logout={
-                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}>
-                        <Button variant={"destructive"}>
-                            LOGOUT
-                        </Button>
+                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"} className={"text-red-600"}>
+                        LOGOUT
                     </LogoutLink>
                 }
                 trigger={NavTrigger}

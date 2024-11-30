@@ -2,10 +2,9 @@
 
 import * as React from "react"
 import {useFormState} from "react-dom";
-import {useState} from "react"
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {Moon, Sun} from "lucide-react";
+import {Menu} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -14,12 +13,22 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
-import {useTheme} from "next-themes";
-import {Switch} from "@/components/ui/switch";
 import {ReusableCard} from "@/components/components";
 import {createCompany, prevState} from "@/lib/actions";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuGroup,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuShortcut,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {clsx} from "clsx";
+import Link from "next/link";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -44,50 +53,52 @@ export function Navigation(props: Navigation) {
                 </NavigationMenuList>
             </NavigationMenu>
             {pathname === "/" && (
-                <NavigationMenu>
-                    <NavigationMenuList>
-                        <NavigationMenuItem>
-                            {props.children}
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <NavigationMenuLink className={`${navigationMenuTriggerStyle()} text-[#007FFF]`} href={"/"}>
-                                JOB POSTINGS
-                            </NavigationMenuLink>
-                        </NavigationMenuItem>
-                        <NavigationMenuItem>
-                            <div className={"flex flex-col items-center"}>
-                                <ModeToggle/>
-                            </div>
-                        </NavigationMenuItem>
-                    </NavigationMenuList>
-                </NavigationMenu>
+                <>
+                    <NavigationMenu className={"hidden lg:flex"}>
+                        <NavigationMenuList>
+                            <NavigationMenuItem>
+                                {props.children}
+                            </NavigationMenuItem>
+                            <NavigationMenuItem>
+                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}
+                                                    href={"/"}>
+                                    JOB POSTINGS
+                                </NavigationMenuLink>
+                            </NavigationMenuItem>
+                        </NavigationMenuList>
+                    </NavigationMenu>
+                    <div className={"lg:hidden"}>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost"><Menu/></Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                                <DropdownMenuSeparator/>
+                                <DropdownMenuGroup>
+                                    <Link href={props.trigger === "EMPLOYERS" ? "/api/auth/login" : "/dashboard"}>
+                                        <DropdownMenuItem>{props.trigger}
+                                            <DropdownMenuShortcut></DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                    <Link href={"/jobs"}>
+                                        <DropdownMenuItem>JOBS
+                                            <DropdownMenuShortcut></DropdownMenuShortcut>
+                                        </DropdownMenuItem>
+                                    </Link>
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </>
             )}
             {pathname !== "/" && (
-                <>{props.logout}</>
+                <>
+                    <Dropdown>
+                        {props.logout}
+                    </Dropdown>
+                </>
             )}
-        </div>
-    )
-}
-
-export function ModeToggle() {
-    const [checked, setChecked] = useState(false)
-    const {setTheme} = useTheme()
-    return (
-        <div className="inline-flex items-center gap-2">
-            <Switch
-                checked={checked}
-                onCheckedChange={setChecked}
-                onClick={() => setTheme(checked ? "light" : "dark")}
-                aria-label="Toggle switch"
-            />
-            <Label htmlFor="switch-11">
-                <span className="sr-only">Toggle switch</span>
-                {checked ? (
-                    <Moon size={16} strokeWidth={2} aria-hidden="true"/>
-                ) : (
-                    <Sun size={16} strokeWidth={2} aria-hidden="true"/>
-                )}
-            </Label>
         </div>
     )
 }
@@ -123,5 +134,42 @@ export function CreateCompany() {
                 </Label>
             </form>
         </ReusableCard>
+    )
+}
+
+const pathnames = [
+    {href: "/jobs", label: "JOBS", shortcut: "⌘J"},
+    {href: "/dashboard", label: "DASHBOARD", shortcut: "⌘D"},
+    {href: "/profile", label: "PROFILE", shortcut: "⌘P"},
+    {href: "/generate", label: "GENERATE", shortcut: "⌘G"},
+]
+
+export function Dropdown({children}: Readonly<{ children: React.ReactNode }>) {
+    const pathname = usePathname()
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                <Button variant="ghost"><Menu/></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                <DropdownMenuSeparator/>
+                <DropdownMenuGroup>
+                    {pathnames.map((value, index) => (
+                        <DropdownMenuItem key={index} className={clsx(
+                            "",
+                            pathname === value.href && "text-[#007FFF]"
+                        )}>
+                            {value.label}
+                            <DropdownMenuShortcut
+                                className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    ))}
+                    <DropdownMenuItem>
+                        {children}
+                    </DropdownMenuItem>
+                </DropdownMenuGroup>
+            </DropdownMenuContent>
+        </DropdownMenu>
     )
 }

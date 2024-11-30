@@ -1,9 +1,10 @@
-import {CreateCompany} from "@/components/client";
+import {user} from "@/lib/kinde-imports";
 
-export default function Page(){
+export default async function Page(){
+    const User = await user()
     return (
         <>
-            <CreateCompany/>
+            {User.id}
         </>
     )
 }
