@@ -1,10 +1,17 @@
-import {Data} from "@/lib/data";
+import {CompanyNameInputCard} from "@/components/client";
+import {Company} from "@/lib/data";
 
 export default async function Page() {
-    const data = await Data()
-    return (
-        <>
-            {data? data.email : "null"}
-        </>
-    )
+    const company = await Company()
+    if (!company) {
+        return (
+            <CompanyNameInputCard/>
+        )
+    } else if (company && company.length > 0) {
+        return (
+            <>
+
+            </>
+        )
+    }
 }

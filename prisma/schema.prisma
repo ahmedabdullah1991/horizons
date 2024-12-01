@@ -8,12 +8,12 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  kindeId   String    @unique
-  email     String    @unique
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  kindeId   String   @unique
+  email     String   @unique
   firstName String
   lastName  String
-  companies Company[]
+  companies Company?
 }
 
 model Profile {

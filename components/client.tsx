@@ -1,7 +1,8 @@
 "use client"
 
 import * as React from "react"
-import {useFormState} from "react-dom";
+import {useState} from "react"
+import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {FileText, Home, Menu, Settings} from "lucide-react";
@@ -30,6 +31,7 @@ import {
 import {clsx} from "clsx";
 import Link from "next/link";
 import {Menubar, MenubarMenu, MenubarTrigger,} from "@/components/ui/menubar"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -224,4 +226,51 @@ export const Titles = () => {
             </>
         )}
     </>)
+}
+
+export function CompanyNameInputCard() {
+    const [companyName, setCompanyName] = useState('')
+    const initialState: prevState = {message: null, errors: {}}
+    const [state, formAction] = useFormState(createCompany, initialState)
+    const {pending} = useFormStatus()
+    return (
+        <Card className="w-full max-w-md mx-auto">
+            <CardHeader>
+                <CardTitle>Company Information</CardTitle>
+                <CardDescription>Enter your company name to get started</CardDescription>
+            </CardHeader>
+            <form action={formAction}>
+                <CardContent>
+                    <div className="grid w-full items-center gap-4">
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="companyName">Company Name</Label>
+                            <Input
+                                id="companyName"
+                                name="companyName"
+                                placeholder="Enter your company name"
+                                value={companyName}
+                                onChange={(e) => setCompanyName(e.target.value)}
+                                className={"focus"}
+                            />
+                        </div>
+                    </div>
+                    <div
+                        aria-live={"polite"}
+                        aria-atomic={"true"}
+                        className={"text-right"}
+                    >
+                        {state.errors?.companyName &&
+                            state.errors.companyName.map((error: string) => (
+                                <Label key={error} className={"text-red-600"}>{error}</Label>
+                            ))}
+                    </div>
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                    <Button type="submit" disabled={pending}>
+                        Submit
+                    </Button>
+                </CardFooter>
+            </form>
+        </Card>
+    )
 }
