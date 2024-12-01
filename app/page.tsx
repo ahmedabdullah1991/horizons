@@ -60,8 +60,8 @@ export default async function Page() {
                                             className={"flex flex-col justify-between gap-2 lg:gap-4 h-full pt-6"}>
                                             <div className={"flex flex-row gap-6"}>
                                                 <Avatar>
-                                                    <AvatarImage>{value.src}</AvatarImage>
-                                                    <AvatarFallback>NA</AvatarFallback>
+                                                    <AvatarImage src={value.src}/>
+                                                    <AvatarFallback className={"bg-gradient-to-br from-blue-700 to-cyan-500"}></AvatarFallback>
                                                 </Avatar>
                                                 <div>
                                                     <Label className={"text-sm"}>AHMED ABDULLAH</Label>
@@ -146,38 +146,42 @@ export default async function Page() {
     </>)
 }
 
-const avatars = [{
-    imageUrl: "https://avatars.githubusercontent.com/u/16860528", profileUrl: "https://github.com/dillionverma",
-}, {
-    imageUrl: "https://avatars.githubusercontent.com/u/20110627", profileUrl: "https://github.com/tomonarifeehan",
-}, {
-    imageUrl: "https://avatars.githubusercontent.com/u/106103625", profileUrl: "https://github.com/BankkRoll",
-}, {
-    imageUrl: "https://avatars.githubusercontent.com/u/59228569", profileUrl: "https://github.com/safethecode",
-}, {
-    imageUrl: "https://avatars.githubusercontent.com/u/59442788", profileUrl: "https://github.com/sanjay-mali",
-}, {
-    imageUrl: "https://avatars.githubusercontent.com/u/89768406", profileUrl: "https://github.com/itsarghyadas",
-},];
+const avatars = [
+    {
+        imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxDozDNneXZdBlgEi4kTVbW5hO2vqD9nQy6pH3", profileUrl: "https://github.com/ahmedabdullah1991"
+    },
+    {
+        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zxihh5RuuaUQW0duRlOHfnLbqV7ZG8cBseK5rF", profileUrl: "https://github.com/ahmedabdullah1991"
+    },
+    {
+        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx8MQ1HpOLiodeyn5R0kDE7mP3xjNsIAOzBJrC", profileUrl: "https://github.com/ahmedabdullah1991"
+    },
+    {
+        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx7mMpy1zg3RIGAUFbkm4eONPBl5EqwJzaiQcx", profileUrl: "https://github.com/ahmedabdullah1991"
+    },
+    {
+        imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxrEH4N8lPodbs5Hwj2nTlIhS764Bpqe9rAayE", profileUrl: "https://github.com/ahmedabdullah1991"
+    },
+]
 
 function AvatarCirclesComponent() {
     return <AvatarCircles numPeople={18} avatarUrls={avatars}/>;
 }
 
 const review = [{
-    src: "https://utfs.io/f/XNbrjM3iH8Zx4a6w5j1szjWachy7KxTJpHMut4eRqLDObm0w",
+    src: "https://utfs.io/f/XNbrjM3iH8Zx8H07Rl0OLiodeyn5R0kDE7mP3xjNsIAOzBJr",
     posted: "22nd October 2024",
     badges: [{badge: "Pro User"}, {badge: "Pro User"}],
     text: '"After struggling for 5 weeks to secure interviews with companies, I applied through HORIZONS and landed an interview in just 2 days!"',
     results: "From 5 weeks to 2 days"
 }, {
-    src: "https://utfs.io/f/XNbrjM3iH8Zxhr1bVTzuHw9M2joZfQV8X7WOYxPSicLm3se4",
+    src: "https://utfs.io/f/XNbrjM3iH8ZxDusrcXeXZdBlgEi4kTVbW5hO2vqD9nQy6pH3",
     posted: "22nd October 2024",
     badges: [{badge: "Pro User"}, {badge: "Pro User"}],
     text: '"I had a fantastic experience using this job site! The interface is user-friendly, making it easy to navigate and find relevant job postings. I landed an interview within a week! Highly recommend it to anyone on the job hunt."',
     results: "From 5 weeks to 2 days"
 }, {
-    src: "https://utfs.io/f/XNbrjM3iH8ZxiuYQi3aUQW0duRlOHfnLbqV7ZG8cBseK5rFk",
+    src: "https://utfs.io/f/XNbrjM3iH8ZxBPmcfhHJCg97j5Xehfyc01rDGb6Odz23MEuR",
     posted: "22nd October 2024",
     badges: [{badge: "Pro User"}, {badge: "Pro User"}],
     text: '"Absolutely impressed with this job posting site! Its not just for job seekers; as an employer, I found it easy to post positions and connect with qualified candidates. Great support team too. Will definitely use it again!"',
