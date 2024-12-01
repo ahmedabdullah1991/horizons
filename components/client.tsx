@@ -198,24 +198,28 @@ export const Titles = () => {
                         {titleNames.map((value, index) => (
                             <Label key={index}>{pathname === value.href && value.label}</Label>))}
                     </div>
-                    <div className={"lg:hidden"}>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost"><Menu/></Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
-                                <DropdownMenuSeparator/>
-                                <DropdownMenuGroup>
-                                    {pathnames1.map((value, index) => (
-                                        <DropdownMenuItem key={index}
-                                                          className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                                            {value.label}
-                                        </DropdownMenuItem>))}
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
+                    {pathname === "/profile" && (
+                        <>
+                            <div className={"lg:hidden"}>
+                                <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                        <Button variant="ghost"><Menu/></Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-56">
+                                        <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                                        <DropdownMenuSeparator/>
+                                        <DropdownMenuGroup>
+                                            {pathnames1.map((value, index) => (
+                                                <DropdownMenuItem key={index}
+                                                                  className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                                    {value.label}
+                                                </DropdownMenuItem>))}
+                                        </DropdownMenuGroup>
+                                    </DropdownMenuContent>
+                                </DropdownMenu>
+                            </div>
+                        </>
+                    )}
                 </div>
             </>
         )}
