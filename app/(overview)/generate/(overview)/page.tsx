@@ -1,10 +1,10 @@
-import {user} from "@/lib/kinde-imports";
+import {Data} from "@/lib/data";
 
-export default async function Page(){
-    const User = await user()
+export default async function Page() {
+    const data = await Data()
     return (
         <>
-            {User.id}
+            {data? data.email : "null"}
         </>
     )
 }

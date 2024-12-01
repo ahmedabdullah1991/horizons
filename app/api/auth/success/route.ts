@@ -1,10 +1,8 @@
 export const dynamic = "force-dynamic"
 
-import {PrismaClient} from "@prisma/client";
+import prisma from "@/lib/db";
 import {getKindeServerSession} from "@kinde-oss/kinde-auth-nextjs/server";
 import {NextResponse} from "next/server";
-
-const prisma = new PrismaClient();
 
 export async function GET(){
     const {getUser} = getKindeServerSession()

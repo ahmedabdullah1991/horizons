@@ -8,14 +8,13 @@ import {authentication} from "@/lib/kinde-imports";
 import {LogoutLink, RegisterLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
 import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
-import {Navigation} from "@/components/client";
+import {Navigation, Titles} from "@/components/client";
 import Link from "next/link";
 
 const inter = Inter({subsets: ["latin"]})
 
 export const metadata: Metadata = {
-    title: "HORIZONS",
-    description: "Horizons project by Ahmed Abdullah",
+    title: "HORIZONS", description: "Horizons project by Ahmed Abdullah",
 };
 
 export default async function RootLayout({
@@ -34,7 +33,7 @@ export default async function RootLayout({
 
         <html lang="en" className={"h-full"}>
         <body
-            className={`antialiased font-medium flex flex-col min-h-full h-full ${inter.className}`}
+            className={`antialiased font-medium flex flex-col min-h-full h-full selection:bg-[#0000B8] ${inter.className}`}
         >
         <ThemeProvider
             attribute={"class"}
@@ -42,28 +41,24 @@ export default async function RootLayout({
             enableSystem
             disableTransitionOnChange
         >
-
             <Navigation
-                logout={
-                    <LogoutLink postLogoutRedirectURL={"https://horizons-flax.vercel.app/"} className={"text-red-600"}>
-                        LOGOUT
-                    </LogoutLink>
-                }
+                logout={<LogoutLink className={"text-red-600"}
+                                    postLogoutRedirectURL={"https://horizons-flax.vercel.app/"}>
+                    LOGOUT
+                </LogoutLink>}
                 trigger={NavTrigger}
             >
-
                 <>
-                    {!authenticated ? (
-                        <>
-                            <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}
-                                          className={`${navigationMenuTriggerStyle()}`}>
-                                REGISTER
-                            </RegisterLink>
-                        </>
-                    ) : <Link href={"/dashboard"} legacyBehavior passHref><Button
+                    {!authenticated ? (<>
+                        <RegisterLink postLoginRedirectURL={"https://horizons-flax.vercel.app/dashboard"}
+                                      className={`${navigationMenuTriggerStyle()}`}>
+                            REGISTER
+                        </RegisterLink>
+                    </>) : <Link href={"/dashboard"} legacyBehavior passHref><Button
                         variant={"ghost"}>DASHBOARD</Button></Link>}
                 </>
             </Navigation>
+            <Titles/>
             <main className={"flex-grow flex items-center"}>
                 <div className={"container max-w-full"}>
                     {children}
@@ -72,7 +67,5 @@ export default async function RootLayout({
             <Footer/>
         </ThemeProvider>
         </body>
-        </html>
-
-    );
+        </html>);
 }

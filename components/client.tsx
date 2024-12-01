@@ -4,7 +4,7 @@ import * as React from "react"
 import {useFormState} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {Menu} from "lucide-react";
+import {FileText, Home, Menu, Settings} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 import {clsx} from "clsx";
 import Link from "next/link";
+import {Menubar, MenubarMenu, MenubarTrigger,} from "@/components/ui/menubar"
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -40,33 +41,163 @@ interface Navigation {
 
 export function Navigation(props: Navigation) {
     const pathname = usePathname()
-    return (
-        <div className={"flex flex-row justify-between p-4 border-b"}>
-            <NavigationMenu>
+    return (<div className={"flex flex-row justify-between p-4 border-b"}>
+        <NavigationMenu>
+            <NavigationMenuList>
+                <NavigationMenuItem>
+                    <NavigationMenuLink
+                        className={`${orbitron.className} ${navigationMenuTriggerStyle()} hover:bg-transparent hover:underline`}
+                        href={"/"}>
+                        HORIZONS
+                    </NavigationMenuLink>
+                </NavigationMenuItem>
+            </NavigationMenuList>
+        </NavigationMenu>
+        {pathname === "/" && (<>
+            <NavigationMenu className={"hidden lg:flex"}>
                 <NavigationMenuList>
                     <NavigationMenuItem>
-                        <NavigationMenuLink className={`${orbitron.className} ${navigationMenuTriggerStyle()}`}
+                        {props.children}
+                    </NavigationMenuItem>
+                    <NavigationMenuItem>
+                        <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}
                                             href={"/"}>
-                            HORIZONS
+                            JOB POSTINGS
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
-            {pathname === "/" && (
-                <>
-                    <NavigationMenu className={"hidden lg:flex"}>
-                        <NavigationMenuList>
-                            <NavigationMenuItem>
-                                {props.children}
-                            </NavigationMenuItem>
-                            <NavigationMenuItem>
-                                <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}
-                                                    href={"/"}>
-                                    JOB POSTINGS
-                                </NavigationMenuLink>
-                            </NavigationMenuItem>
-                        </NavigationMenuList>
-                    </NavigationMenu>
+            <div className={"lg:hidden"}>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="ghost"><Menu/></Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="w-56">
+                        <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                        <DropdownMenuSeparator/>
+                        <DropdownMenuGroup>
+                            <Link href={props.trigger === "EMPLOYERS" ? "/api/auth/login" : "/dashboard"}>
+                                <DropdownMenuItem>{props.trigger}
+                                    <DropdownMenuShortcut></DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            </Link>
+                            <Link href={"/jobs"}>
+                                <DropdownMenuItem>JOBS
+                                    <DropdownMenuShortcut></DropdownMenuShortcut>
+                                </DropdownMenuItem>
+                            </Link>
+                        </DropdownMenuGroup>
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+        </>)}
+        {pathname !== "/" && (<>
+            <Dropdown>
+                {props.logout}
+            </Dropdown>
+        </>)}
+    </div>)
+}
+
+export function CreateCompany() {
+    const initialState: prevState = {message: null, errors: {}}
+    const [state, formAction] = useFormState(createCompany, initialState)
+    return (<ReusableCard
+        title={"REGISTER AS A COMPANY/EMPLOYER"}
+        children2={<Button type={"submit"}>SUBMIT</Button>}
+    >
+        <form action={formAction}>
+            <Label
+                htmlFor={"companyName"}
+                className={"flex flex-col gap-1.5"}
+            >
+                COMPANY NAME:
+                <Input
+                    id={"companyName"}
+                    name={"companyName"}
+                    required={true}
+                />
+                <div
+                    aria-live={"polite"}
+                    aria-atomic={"true"}
+                >
+                    {state.errors?.companyName && state.errors.companyName.map((error: string) => (
+                        <Label key={error}>{error}</Label>))}
+                </div>
+            </Label>
+        </form>
+    </ReusableCard>)
+}
+
+const pathnames = [{href: "/jobs", label: "JOBS", shortcut: "⌘J"}, {
+    href: "/dashboard", label: "DASHBOARD", shortcut: "⌘D"
+}, {href: "/profile", label: "PROFILE", shortcut: "⌘P"}, {href: "/generate", label: "GENERATE", shortcut: "⌘G"},]
+
+export function Dropdown({children}: Readonly<{ children: React.ReactNode }>) {
+    const pathname = usePathname()
+    return (<DropdownMenu>
+        <DropdownMenuTrigger asChild>
+            <Button variant="ghost"><Menu/></Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+            <DropdownMenuSeparator/>
+            <DropdownMenuGroup>
+                {pathnames.map((value, index) => (
+                    <DropdownMenuItem key={index} className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                        {value.label}
+                        <DropdownMenuShortcut
+                            className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
+                    </DropdownMenuItem>))}
+                <DropdownMenuItem>
+                    {children}
+                </DropdownMenuItem>
+            </DropdownMenuGroup>
+        </DropdownMenuContent>
+    </DropdownMenu>)
+}
+
+const pathnames1 = [{icon: Home, label: 'SETTINGS', href: '/profile'}, {
+    icon: FileText, label: 'ACCOUNT', href: '/profile/account'
+}, {icon: Settings, label: 'PREFERENCES', href: '/profile/preferences'},]
+
+export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
+    const pathname = usePathname()
+    return (<>
+        <div className={"flex flex-row gap-6 max-w-4xl mx-auto p-6"}>
+            <div className={"hidden lg:flex h-max"}>
+                <Menubar>
+                    <div className={"flex flex-col"}>
+                        {pathnames1.map((value, index) => (
+                            <MenubarMenu key={index}>
+                                <MenubarTrigger
+                                    className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                    {value.label}
+                                </MenubarTrigger>
+                            </MenubarMenu>
+                        ))}
+                    </div>
+                </Menubar>
+            </div>
+            <div>{children}</div>
+        </div>
+    </>)
+}
+
+const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: "DASHBOARD"}, {
+    href: "/profile", label: "PROFILE"
+}, {href: "/generate", label: "GENERATE"},]
+
+export const Titles = () => {
+    const pathname = usePathname()
+    return (<>
+        {pathname !== "/" && (
+            <>
+                <div className={"p-4 border-b flex flex-row justify-between items-center"}>
+                    <div className={"px-4"}>
+                        {titleNames.map((value, index) => (
+                            <Label key={index}>{pathname === value.href && value.label}</Label>))}
+                    </div>
                     <div className={"lg:hidden"}>
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
@@ -76,100 +207,17 @@ export function Navigation(props: Navigation) {
                                 <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
                                 <DropdownMenuSeparator/>
                                 <DropdownMenuGroup>
-                                    <Link href={props.trigger === "EMPLOYERS" ? "/api/auth/login" : "/dashboard"}>
-                                        <DropdownMenuItem>{props.trigger}
-                                            <DropdownMenuShortcut></DropdownMenuShortcut>
-                                        </DropdownMenuItem>
-                                    </Link>
-                                    <Link href={"/jobs"}>
-                                        <DropdownMenuItem>JOBS
-                                            <DropdownMenuShortcut></DropdownMenuShortcut>
-                                        </DropdownMenuItem>
-                                    </Link>
+                                    {pathnames1.map((value, index) => (
+                                        <DropdownMenuItem key={index}
+                                                          className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                            {value.label}
+                                        </DropdownMenuItem>))}
                                 </DropdownMenuGroup>
                             </DropdownMenuContent>
                         </DropdownMenu>
                     </div>
-                </>
-            )}
-            {pathname !== "/" && (
-                <>
-                    <Dropdown>
-                        {props.logout}
-                    </Dropdown>
-                </>
-            )}
-        </div>
-    )
-}
-
-export function CreateCompany() {
-    const initialState: prevState = {message: null, errors: {}}
-    const [state, formAction] = useFormState(createCompany, initialState)
-    return (
-        <ReusableCard
-            title={"REGISTER AS A COMPANY/EMPLOYER"}
-            children2={<Button type={"submit"}>SUBMIT</Button>}
-        >
-            <form action={formAction}>
-                <Label
-                    htmlFor={"companyName"}
-                    className={"flex flex-col gap-1.5"}
-                >
-                    COMPANY NAME:
-                    <Input
-                        id={"companyName"}
-                        name={"companyName"}
-                        required={true}
-                    />
-                    <div
-                        aria-live={"polite"}
-                        aria-atomic={"true"}
-                    >
-                        {state.errors?.companyName &&
-                            state.errors.companyName.map((error: string) => (
-                                <Label key={error}>{error}</Label>
-                            ))}
-                    </div>
-                </Label>
-            </form>
-        </ReusableCard>
-    )
-}
-
-const pathnames = [
-    {href: "/jobs", label: "JOBS", shortcut: "⌘J"},
-    {href: "/dashboard", label: "DASHBOARD", shortcut: "⌘D"},
-    {href: "/profile", label: "PROFILE", shortcut: "⌘P"},
-    {href: "/generate", label: "GENERATE", shortcut: "⌘G"},
-]
-
-export function Dropdown({children}: Readonly<{ children: React.ReactNode }>) {
-    const pathname = usePathname()
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button variant="ghost"><Menu/></Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-56">
-                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
-                <DropdownMenuSeparator/>
-                <DropdownMenuGroup>
-                    {pathnames.map((value, index) => (
-                        <DropdownMenuItem key={index} className={clsx(
-                            "",
-                            pathname === value.href && "text-[#007FFF]"
-                        )}>
-                            {value.label}
-                            <DropdownMenuShortcut
-                                className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    ))}
-                    <DropdownMenuItem>
-                        {children}
-                    </DropdownMenuItem>
-                </DropdownMenuGroup>
-            </DropdownMenuContent>
-        </DropdownMenu>
-    )
+                </div>
+            </>
+        )}
+    </>)
 }

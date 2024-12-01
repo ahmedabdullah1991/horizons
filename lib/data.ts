@@ -1,35 +1,18 @@
 "use server"
 
-import {PrismaClient} from "@prisma/client";
+import prisma from "@/lib/db";
 import {user} from "@/lib/kinde-imports";
 
-const prisma = new PrismaClient()
-
-const data = async () => {
-    let userData
+async function data(){
     try {
-        const User = await user()
-        if (User) {
-            const data = await prisma.user.findUnique({
-                where: {
-                    kindeId: User.id
-                },
-                select: {
-                    id: true,
-                    kindeId: true,
-                    email: true,
-                    firstName: true,
-                    lastName: true,
-                }
-            })
-            userData = data
-            return {
-                userData
-            }
-        }
-    }
-    catch (e) {
-        console.error(e)
+        const users = await user()
+        const data = await prisma.user.findUnique({
+            where: {kindeId: users.id}, select: {id: true, email: true}
+        })
+        return data
+    } catch (error) {
+        console.error(error)
+        return null
     }
 }
 
