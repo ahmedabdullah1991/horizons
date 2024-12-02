@@ -3,7 +3,7 @@ import {Company} from "@/lib/data";
 
 export default async function Page() {
     const company = await Company()
-    if (!company) {
+    if (!company?.companyData) {
         return (
             <CompanyNameInputCard/>
         )
