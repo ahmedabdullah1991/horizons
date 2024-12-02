@@ -140,6 +140,7 @@ export async function createListing(
                             companyName: name,
                         },
                     },
+                    listings: +1
                 },
             })
         }

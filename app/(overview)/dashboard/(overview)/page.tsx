@@ -6,24 +6,27 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {ApplicationsChart} from "@/components/charts";
 import {Listings} from "@/lib/data";
+import {Label} from "@/components/ui/label";
 
 export default async function Dashboard() {
     const listings = await Listings()
     return (
         <main className="flex-1 overflow-auto p-4 lg:p-8">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {statistics.map((stat) => (<Card key={stat.label}>
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-                        <BarChart className="h-4 w-4 text-muted-foreground"/>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-2xl font-bold">{stat.value}</div>
-                        <p className={`text-xs ${stat.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                            {stat.change >= 0 ? '+' : ''}{stat.change}% from last month
-                        </p>
-                    </CardContent>
-                </Card>))}
+                {statistics.map((stat, index) => (
+                    <Card key={index}>
+                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                            <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
+                            <BarChart className="h-4 w-4 text-muted-foreground"/>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold">{stat.value}</div>
+                            <p className={`text-xs ${stat.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
+                                {stat.change >= 0 ? '+' : ''}{stat.change}% from last month
+                            </p>
+                        </CardContent>
+                    </Card>
+                ))}
             </div>
             <Card className="mb-6">
                 <CardHeader>

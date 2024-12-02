@@ -35,14 +35,15 @@ async function company() {
                     companiesId: data.userData.id
                 }, select: {
                     id: true,
-                    companyName: true
+                    companyName: true,
+                    listing: true
                 }
             })
             companyData = company?.companyName
             companyId = company?.id
             return {
                 companyData,
-                companyId
+                companyId,
             }
         }
     } catch (error) {

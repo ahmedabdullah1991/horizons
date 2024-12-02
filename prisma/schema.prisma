@@ -32,6 +32,7 @@ model Company {
   companiesId String    @unique @db.ObjectId
   companyName String    @unique
   listing     Listing[]
+  listings    Int       @default(0)
 }
 
 model Listing {
