@@ -1,4 +1,4 @@
-import {CompanyNameInputCard} from "@/components/client";
+import {CompanyNameInputCard, JobPositionInputCard} from "@/components/client";
 import {Company} from "@/lib/data";
 
 export default async function Page() {
@@ -9,9 +9,7 @@ export default async function Page() {
         )
     } else if (company && company.length > 0) {
         return (
-            <>
-
-            </>
+            <JobPositionInputCard/>
         )
     }
 }

@@ -7,15 +7,11 @@ import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {FileText, Home, Menu, Settings} from "lucide-react";
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    navigationMenuTriggerStyle,
+    NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
-import {createCompany, prevState} from "@/lib/actions";
+import {createCompany, createListing, ListingState, prevState} from "@/lib/actions";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {
@@ -32,6 +28,7 @@ import {clsx} from "clsx";
 import Link from "next/link";
 import {Menubar, MenubarMenu, MenubarTrigger,} from "@/components/ui/menubar"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -170,14 +167,12 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
             <div className={"hidden lg:flex h-max"}>
                 <Menubar>
                     <div className={"flex flex-col"}>
-                        {pathnames1.map((value, index) => (
-                            <MenubarMenu key={index}>
+                        {pathnames1.map((value, index) => (<MenubarMenu key={index}>
                                 <MenubarTrigger
                                     className={clsx("", pathname === value.href && "text-[#007FFF]")}>
                                     {value.label}
                                 </MenubarTrigger>
-                            </MenubarMenu>
-                        ))}
+                            </MenubarMenu>))}
                     </div>
                 </Menubar>
             </div>
@@ -193,15 +188,13 @@ const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: 
 export const Titles = () => {
     const pathname = usePathname()
     return (<>
-        {pathname !== "/" && (
-            <>
+        {pathname !== "/" && (<>
                 <div className={"p-4 border-b flex flex-row justify-between items-center"}>
                     <div className={"px-4"}>
                         {titleNames.map((value, index) => (
                             <Label key={index}>{pathname === value.href && value.label}</Label>))}
                     </div>
-                    {pathname === "/profile" && (
-                        <>
+                    {pathname === "/profile" && (<>
                             <div className={"lg:hidden"}>
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -211,20 +204,17 @@ export const Titles = () => {
                                         <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
                                         <DropdownMenuSeparator/>
                                         <DropdownMenuGroup>
-                                            {pathnames1.map((value, index) => (
-                                                <DropdownMenuItem key={index}
-                                                                  className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                                                    {value.label}
-                                                </DropdownMenuItem>))}
+                                            {pathnames1.map((value, index) => (<DropdownMenuItem key={index}
+                                                                                                 className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                                {value.label}
+                                            </DropdownMenuItem>))}
                                         </DropdownMenuGroup>
                                     </DropdownMenuContent>
                                 </DropdownMenu>
                             </div>
-                        </>
-                    )}
+                        </>)}
                 </div>
-            </>
-        )}
+            </>)}
     </>)
 }
 
@@ -233,8 +223,7 @@ export function CompanyNameInputCard() {
     const initialState: prevState = {message: null, errors: {}}
     const [state, formAction] = useFormState(createCompany, initialState)
     const {pending} = useFormStatus()
-    return (
-        <Card className="w-full max-w-md mx-auto">
+    return (<Card className="w-full max-w-md mx-auto">
             <CardHeader>
                 <CardTitle>Company Information</CardTitle>
                 <CardDescription>Enter your company name to get started</CardDescription>
@@ -259,10 +248,8 @@ export function CompanyNameInputCard() {
                         aria-atomic={"true"}
                         className={"text-right"}
                     >
-                        {state.errors?.companyName &&
-                            state.errors.companyName.map((error: string) => (
-                                <Label key={error} className={"text-red-600"}>{error}</Label>
-                            ))}
+                        {state.errors?.companyName && state.errors.companyName.map((error: string) => (
+                            <Label key={error} className={"text-red-600"}>{error}</Label>))}
                     </div>
                 </CardContent>
                 <CardFooter className="flex justify-end">
@@ -271,6 +258,90 @@ export function CompanyNameInputCard() {
                     </Button>
                 </CardFooter>
             </form>
-        </Card>
-    )
+        </Card>)
+}
+
+export function JobPositionInputCard() {
+    const initialState: ListingState = {
+        errors: {}, message: null,
+    }
+    const [state, forAction] = useFormState(createListing, initialState)
+    const [formData, setFormData] = useState({
+        title: '', type: '', department: '', location: ''
+    })
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const {name, value} = e.target
+        setFormData(prev => ({...prev, [name]: value}))
+    }
+    const handleSelectChange = (name: string) => (value: string) => {
+        setFormData(prev => ({...prev, [name]: value}))
+    }
+    return (<Card className="w-full max-w-md mx-auto my-16">
+            <CardHeader>
+                <CardTitle>Job Position Information</CardTitle>
+                <CardDescription>Enter the details for the new job position</CardDescription>
+            </CardHeader>
+            <form action={forAction}>
+                <CardContent>
+                    <div className="grid w-full items-center gap-4">
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="title">Position Title</Label>
+                            <Input
+                                id="title"
+                                name="title"
+                                placeholder="Enter position title"
+                                value={formData.title}
+                                onChange={handleInputChange}
+                            />
+                            {state.errors?.title && state.errors.title.map((error: string) => (
+                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="type">Type</Label>
+                            <Select name="type" value={formData.type} onValueChange={handleSelectChange('type')}>
+                                <SelectTrigger id="type">
+                                    <SelectValue placeholder="Select job type"/>
+                                </SelectTrigger>
+                                <SelectContent position="popper">
+                                    <SelectItem value="full-time">Full-time</SelectItem>
+                                    <SelectItem value="part-time">Part-time</SelectItem>
+                                    <SelectItem value="contract">Contract</SelectItem>
+                                    <SelectItem value="internship">Internship</SelectItem>
+                                </SelectContent>
+                            </Select>
+                            {state.errors?.type && state.errors.type.map((error: string) => (
+                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="department">Department</Label>
+                            <Input
+                                id="department"
+                                name="department"
+                                placeholder="Enter department"
+                                value={formData.department}
+                                onChange={handleInputChange}
+                            />
+                            {state.errors?.department && state.errors.department.map((error: string) => (
+                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                        </div>
+                        <div className="flex flex-col space-y-1.5">
+                            <Label htmlFor="location">Location</Label>
+                            <Input
+                                id="location"
+                                name="location"
+                                placeholder="Enter location"
+                                value={formData.location}
+                                onChange={handleInputChange}
+                            />
+                            {state.errors?.location && state.errors.location.map((error: string) => (
+                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                        </div>
+                        <Label className={"text-red-600 text-right"}>{state.message}</Label>
+                    </div>
+                </CardContent>
+                <CardFooter className="flex justify-end">
+                    <Button type={"submit"}>Submit</Button>
+                </CardFooter>
+            </form>
+        </Card>)
 }
