@@ -5,7 +5,7 @@ import {useState} from "react"
 import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {FileText, Home, Menu, Settings} from "lucide-react";
+import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
     NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
@@ -29,6 +29,9 @@ import Link from "next/link";
 import {Menubar, MenubarMenu, MenubarTrigger,} from "@/components/ui/menubar"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
+import {useTheme} from "next-themes";
+import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
+import Image from "next/image";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -168,10 +171,10 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
                 <Menubar>
                     <div className={"flex flex-col"}>
                         {pathnames1.map((value, index) => (<MenubarMenu key={index}>
-                                <MenubarTrigger
+                                <Link href={value.href}><MenubarTrigger
                                     className={clsx("", pathname === value.href && "text-[#007FFF]")}>
                                     {value.label}
-                                </MenubarTrigger>
+                                </MenubarTrigger></Link>
                             </MenubarMenu>))}
                     </div>
                 </Menubar>
@@ -183,7 +186,7 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
 
 const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: "DASHBOARD"}, {
     href: "/profile", label: "PROFILE"
-}, {href: "/generate", label: "GENERATE"},]
+}, {href: "/generate", label: "GENERATE"}, {href: "/profile/preferences", label: "PREFERENCES"}, {href: "/profile/account", label: "ACCOUNT"}]
 
 export const Titles = () => {
     const pathname = usePathname()
@@ -344,4 +347,54 @@ export function JobPositionInputCard() {
                 </CardFooter>
             </form>
         </Card>)
+}
+
+const items = [
+    {id: "radio-18-r1", value: "r1", label: "Light", image: "/ui-light.webp", theme: "light"},
+    {id: "radio-18-r2", value: "r2", label: "Dark", image: "/ui-dark.webp", theme: "dark"},
+    {id: "radio-18-r3", value: "r3", label: "System", image: "/ui-system.webp", theme: "system"},
+];
+
+export function Themes() {
+    const {setTheme} = useTheme();
+    return (
+        <fieldset className="space-y-4">
+            <legend className="text-sm font-medium leading-none text-foreground">Choose a theme</legend>
+            <RadioGroup className="flex gap-3" defaultValue="r1">
+                {items.map((item) => (
+                    <label key={item.id}>
+                        <RadioGroupItem
+                            id={item.id}
+                            value={item.value}
+                            className="peer sr-only after:absolute after:inset-0"
+                        />
+                        <Image
+                            src={item.image}
+                            alt={item.label}
+                            width={88}
+                            height={70}
+                            onClick={()=> setTheme(item.theme)}
+                            className="relative cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm shadow-black/5 outline-offset-2 transition-colors peer-[:focus-visible]:outline peer-[:focus-visible]:outline-2 peer-[:focus-visible]:outline-ring/70 peer-data-[disabled]:cursor-not-allowed peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent peer-data-[disabled]:opacity-50"
+                        />
+                        <span
+                            className="group mt-2 flex items-center gap-1 peer-data-[state=unchecked]:text-muted-foreground/70">
+              <Check
+                  size={16}
+                  strokeWidth={2}
+                  className="peer-data-[state=unchecked]:group-[]:hidden"
+                  aria-hidden="true"
+              />
+              <Minus
+                  size={16}
+                  strokeWidth={2}
+                  className="peer-data-[state=checked]:group-[]:hidden"
+                  aria-hidden="true"
+              />
+              <span className="text-xs font-medium">{item.label}</span>
+            </span>
+                    </label>
+                ))}
+            </RadioGroup>
+        </fieldset>
+    );
 }
