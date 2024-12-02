@@ -125,8 +125,9 @@ export async function createListing(
         })
 
         const company = await Company()
+        const name = company?.companyData
 
-        if (company) {
+        if (name) {
             await prisma.company.update({
                 where: {companiesId: userId.id},
                 data: {
@@ -136,7 +137,7 @@ export async function createListing(
                             department,
                             location,
                             type,
-                            companyName: company,
+                            companyName: name,
                         },
                     },
                 },

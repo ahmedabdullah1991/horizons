@@ -7,7 +7,7 @@ export default async function Page() {
         return (
             <CompanyNameInputCard/>
         )
-    } else if (company && company.length > 0) {
+    } else if (company && company.companyData && company.companyData.length > 0) {
         return (
             <JobPositionInputCard/>
         )

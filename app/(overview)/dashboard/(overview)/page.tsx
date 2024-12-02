@@ -1,10 +1,14 @@
+"use server"
+
 import {BarChart} from 'lucide-react'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {ApplicationsChart} from "@/components/charts";
+import {Listings} from "@/lib/data";
 
-export default function Dashboard() {
+export default async function Dashboard() {
+    const listings = await Listings()
     return (
         <main className="flex-1 overflow-auto p-4 lg:p-8">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -73,12 +77,19 @@ export default function Dashboard() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {jobPostings.map((job) => (<TableRow key={job.id}>
-                                    <TableCell>{job.title}</TableCell>
-                                    <TableCell>{job.department}</TableCell>
-                                    <TableCell>{job.applicants}</TableCell>
-                                    <TableCell>{job.datePosted}</TableCell>
-                                </TableRow>))}
+                                {listings? listings.map((value, index)=> (
+                                    <TableRow key={index}>
+                                        <TableCell>{value.title}</TableCell>
+                                        <TableCell>{value.department}</TableCell>
+                                        <TableCell>{value.location}</TableCell>
+                                        <TableCell>{value.type}</TableCell>
+                                    </TableRow>
+                                )):<TableRow>
+                                    <TableCell>No Job Postings</TableCell>
+                                    <TableCell>Start posting your jobs</TableCell>
+                                    <TableCell>to get started</TableCell>
+                                    <TableCell>with HORIZONS</TableCell>
+                                </TableRow>}
                             </TableBody>
                         </Table>
                     </ScrollArea>
@@ -96,14 +107,6 @@ export type JobApplication = {
     status: 'Pending' | 'Reviewed' | 'Interviewed' | 'Offered' | 'Rejected';
 };
 
-export type JobPosting = {
-    id: string;
-    title: string;
-    department: string;
-    applicants: number;
-    datePosted: string;
-};
-
 export type Statistic = {
     label: string;
     value: number;
@@ -116,14 +119,6 @@ const recentApplications: JobApplication[] = [
     {id: '3', name: 'Mike Johnson', position: 'UX Designer', date: '2023-11-26', status: 'Interviewed'},
     {id: '4', name: 'Emily Brown', position: 'Data Analyst', date: '2023-11-25', status: 'Offered'},
     {id: '5', name: 'Chris Wilson', position: 'Marketing Specialist', date: '2023-11-24', status: 'Rejected'},
-];
-
-const jobPostings: JobPosting[] = [
-    {id: '1', title: 'Senior Software Engineer', department: 'Engineering', applicants: 45, datePosted: '2023-11-20'},
-    {id: '2', title: 'Product Manager', department: 'Product', applicants: 32, datePosted: '2023-11-22'},
-    {id: '3', title: 'UX/UI Designer', department: 'Design', applicants: 28, datePosted: '2023-11-23'},
-    {id: '4', title: 'Data Scientist', department: 'Data', applicants: 37, datePosted: '2023-11-21'},
-    {id: '5', title: 'Marketing Manager', department: 'Marketing', applicants: 23, datePosted: '2023-11-24'},
 ];
 
 const statistics: Statistic[] = [

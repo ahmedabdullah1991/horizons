@@ -3,7 +3,7 @@
 import prisma from "@/lib/db";
 import {user} from "@/lib/kinde-imports";
 
-async function data(){
+async function data() {
     let userData
     try {
         const users = await user()
@@ -25,23 +25,27 @@ async function data(){
 
 export const Data = data
 
-async function company(){
-    let companyData
+async function company() {
+    let companyData, companyId
     const data = await Data()
     try {
-        if (data?.userData?.id){
+        if (data?.userData?.id) {
             const company = await prisma.company.findUnique({
                 where: {
                     companiesId: data.userData.id
                 }, select: {
+                    id: true,
                     companyName: true
                 }
             })
             companyData = company?.companyName
-            return companyData
+            companyId = company?.id
+            return {
+                companyData,
+                companyId
+            }
         }
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error)
         return null
     }
@@ -49,3 +53,29 @@ async function company(){
 
 export const Company = company
 
+async function listings() {
+    let listingData
+    try {
+        const company = await Company()
+        const companyID = company?.companyId
+        if (companyID) {
+            const listings = await prisma.listing.findMany({
+                where: {
+                    listingsId: companyID
+                }, select: {
+                    title: true,
+                    department: true,
+                    location: true,
+                    type: true,
+                    application: true,
+                }
+            })
+            listingData = listings
+            return listingData
+        }
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+export const Listings = listings
