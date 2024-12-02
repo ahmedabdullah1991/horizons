@@ -6,7 +6,6 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/c
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {ApplicationsChart} from "@/components/charts";
 import {Listings} from "@/lib/data";
-import {Label} from "@/components/ui/label";
 
 export default async function Dashboard() {
     const listings = await Listings()
