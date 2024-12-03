@@ -20,7 +20,7 @@ interface Card {
 export const ReusableCard = (props: Card) => {
     return (
         <Card
-            className={props.className}
+            className={props.className + "border-none"}
         >
             {props.header !== "remove" && (
                 <CardHeader>
@@ -56,7 +56,7 @@ const legalLinks = [
 export function Footer() {
     return (
         <footer className={"border-t"}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Company Info */}
                     <div>
@@ -106,7 +106,6 @@ export function Footer() {
                             <Input
                                 type="email"
                                 placeholder="Enter your email"
-                                className="text-white placeholder-gray-400"
                                 aria-label="Email for newsletter"
                             />
                             <Button type="submit" className="w-full">
@@ -119,7 +118,7 @@ export function Footer() {
                 <div className="mt-8 pt-8 border-t border-gray-800">
                 </div>
 
-                <div className="mt-8 text-center text-sm">
+                <div className="text-center text-sm">
                     <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
                 </div>
             </div>

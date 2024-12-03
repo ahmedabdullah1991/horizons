@@ -26,7 +26,7 @@ async function data() {
 export const Data = data
 
 async function company() {
-    let companyData, companyId
+    let companyData, companyId, listings
     const data = await Data()
     try {
         if (data?.userData?.id) {
@@ -36,14 +36,16 @@ async function company() {
                 }, select: {
                     id: true,
                     companyName: true,
-                    listing: true
+                    listings: true
                 }
             })
             companyData = company?.companyName
             companyId = company?.id
+            listings = company?.listings
             return {
                 companyData,
                 companyId,
+                listings
             }
         }
     } catch (error) {

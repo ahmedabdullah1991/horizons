@@ -42,7 +42,7 @@ export default async function Page() {
                                 interface allows you to search and apply
                                 effortlessly.
                             </Label>
-                            <Button className={"bg-[#0000B8] w-max"} variant={"link"}>REGISTER</Button>
+                            <Button className={"bg-[#0000B8] text-white w-max"} variant={"link"}>REGISTER</Button>
                         </div>
                     </div>
                 </section>
@@ -86,7 +86,7 @@ export default async function Page() {
                                             <div>
                                                 <div>
                                                     <Label className="leading-none text-sm lg:text-base">
-                                                        RESULTS
+                                                        Results
                                                     </Label>
                                                 </div>
                                                 <Separator className="my-1"/>
@@ -111,14 +111,14 @@ export default async function Page() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             {cards.map((card, index) => (<ReusableCard
                                 key={index}
-                                className="flex flex-col items-center justify-center p-6 h-full shadow-none border-[1px]"
+                                className="flex flex-col items-center justify-center p-6 h-full"
                                 footer={"remove"}
                                 header="remove"
                             >
                                 <div
                                     className="flex flex-col items-center justify-between h-full text-center space-y-4">
                                     <div
-                                        className="w-16 h-16 border-2 rounded-full flex items-center justify-center">
+                                        className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-teal-400 to-cyan-500">
 
                                     </div>
                                     <Label className="text-muted-foreground">
@@ -129,8 +129,8 @@ export default async function Page() {
                                         {card.badges.map((badge, badgeIndex) => (<Badge
                                             key={badgeIndex}
                                             variant="outline"
-                                            className={clsx("border-2", {
-                                                "border-[#0000B8]": badge.includes("On the Spotlight"),
+                                            className={clsx("border", {
+                                                "border-[#0000B8] border-2": badge.includes("On the Spotlight"),
                                             })}
                                         >
                                             {badge}

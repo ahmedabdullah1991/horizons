@@ -1,31 +1,36 @@
 "use server"
 
-import {BarChart} from 'lucide-react'
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {ApplicationsChart} from "@/components/charts";
-import {Listings} from "@/lib/data";
+import {Listings, Company} from "@/lib/data";
+import {ReusableCard} from "@/components/components";
+import {Button} from "@/components/ui/button";
+import Link from 'next/link'
 
 export default async function Dashboard() {
     const listings = await Listings()
+    const company = await Company()
+    const business = !!(company && company.companyData)
+
     return (
         <main className="flex-1 overflow-auto p-4 lg:p-8">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {statistics.map((stat, index) => (
-                    <Card key={index}>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">{stat.label}</CardTitle>
-                            <BarChart className="h-4 w-4 text-muted-foreground"/>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold">{stat.value}</div>
-                            <p className={`text-xs ${stat.change >= 0 ? 'text-green-500' : 'text-red-500'}`}>
-                                {stat.change >= 0 ? '+' : ''}{stat.change}% from last month
-                            </p>
-                        </CardContent>
-                    </Card>
-                ))}
+                <ReusableCard
+                    title={"Profile Type"}
+                    description={business ? "Business/Company":"User"}
+                    content={"remove"}
+                    children2={<Link href={"/generate"}>
+                        <Button>{business ? "POST A JOB":"REGISTER AS BUSINESS"}</Button>
+                    </Link>}
+                />
+                <ReusableCard
+                    title={"Total Applications"}
+                    content={"remove"}
+                    description={"Total Applications"}
+                    children2={<Button variant={"link"}>{company?.listings}</Button>}
+                />
             </div>
             <Card className="mb-6">
                 <CardHeader>
@@ -109,23 +114,10 @@ export type JobApplication = {
     status: 'Pending' | 'Reviewed' | 'Interviewed' | 'Offered' | 'Rejected';
 };
 
-export type Statistic = {
-    label: string;
-    value: number;
-    change: number;
-};
-
 const recentApplications: JobApplication[] = [
     {id: '1', name: 'John Doe', position: 'Software Engineer', date: '2023-11-28', status: 'Pending'},
     {id: '2', name: 'Jane Smith', position: 'Product Manager', date: '2023-11-27', status: 'Reviewed'},
     {id: '3', name: 'Mike Johnson', position: 'UX Designer', date: '2023-11-26', status: 'Interviewed'},
     {id: '4', name: 'Emily Brown', position: 'Data Analyst', date: '2023-11-25', status: 'Offered'},
     {id: '5', name: 'Chris Wilson', position: 'Marketing Specialist', date: '2023-11-24', status: 'Rejected'},
-];
-
-const statistics: Statistic[] = [
-    {label: 'Total Applications', value: 1234, change: 12},
-    {label: 'Interviews Scheduled', value: 56, change: -5},
-    {label: 'Offers Extended', value: 23, change: 8},
-    {label: 'New Job Postings', value: 7, change: 2},
 ];
