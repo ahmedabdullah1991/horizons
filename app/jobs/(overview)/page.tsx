@@ -29,7 +29,7 @@ const cardData: CardData[] = [
 
 export default function Page() {
 
-    interface Listing {
+    {/*interface Listing {
         id: string
         listingsId: string
         createdAt: Date
@@ -40,7 +40,7 @@ export default function Page() {
         location: string
         type: string
         companyName: string
-    }
+    }*/}
 
     useEffect(() => {
         const data = () => {
