@@ -82,3 +82,22 @@ async function listings() {
 }
 
 export const Listings = listings
+
+async function jobs() {
+    try {
+        return await prisma.listing.findMany({
+            select: {
+                title: true,
+                location: true,
+                department: true,
+                type: true,
+                createdAt: true
+            }
+        })
+
+    }catch (e) {
+        console.error(e)
+    }
+}
+
+export const Jobs = jobs
