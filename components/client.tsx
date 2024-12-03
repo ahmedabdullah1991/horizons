@@ -146,11 +146,13 @@ export function Dropdown({children}: Readonly<{ children: React.ReactNode }>) {
             <DropdownMenuSeparator/>
             <DropdownMenuGroup>
                 {pathnames.map((value, index) => (
-                    <DropdownMenuItem key={index} className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                        {value.label}
-                        <DropdownMenuShortcut
-                            className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
-                    </DropdownMenuItem>))}
+                    <Link href={value.href} key={index}>
+                        <DropdownMenuItem className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                            {value.label}
+                            <DropdownMenuShortcut
+                                className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
+                        </DropdownMenuItem>
+                    </Link>))}
                 <DropdownMenuItem>
                     {children}
                 </DropdownMenuItem>

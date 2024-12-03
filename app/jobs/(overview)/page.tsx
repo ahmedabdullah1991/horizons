@@ -9,7 +9,6 @@ import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Briefcase, MapPin} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 
-
 export default function Page() {
 
     interface Listing {
