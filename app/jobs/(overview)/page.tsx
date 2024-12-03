@@ -2,51 +2,30 @@
 
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Company, Jobs} from "@/lib/data";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {Jobs} from "@/lib/data";
+import {ReusableCard} from "@/components/components";
+import {Label} from "@/components/ui/label";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Briefcase, MapPin} from "lucide-react";
+import {Badge} from "@/components/ui/badge";
 
-type CardData = {
-    id: number
-    title: string
-    description: string
-    content: string
-}
-
-const cardData: CardData[] = [
-    {
-        id: 1,
-        title: "Card 1",
-        description: "This is the description for Card 1",
-        content: "This is the main content for Card 1. It contains more detailed information about the topic of Card 1."
-    },
-    {
-        id: 2,
-        title: "Card 2",
-        description: "This is the description for Card 2",
-        content: "This is the main content for Card 2. It provides in-depth details about the subject matter of Card 2."
-    }
-]
 
 export default function Page() {
 
-    {/*interface Listing {
-        id: string
-        listingsId: string
+    interface Listing {
         createdAt: Date
-        updatedAt: Date
-        published: boolean
         title: string
         department: string
         location: string
         type: string
-        companyName: string
-    }*/}
+        companyName: string,
+    }
 
     useEffect(() => {
         const data = () => {
-            Jobs().then((data_) => {
-                if (data_) {
-                    //setData(data_)
+            Jobs().then((data) => {
+                if (data) {
+                    setData(data)
                 }
             }).catch((error) => {
                 console.error(error)
@@ -54,65 +33,64 @@ export default function Page() {
 
         }
         data()
-        const company = () => {
-            Company().then((data_) => {
-                if (data_) {
-                    //setCompanyName(data_)
-                }
-            }).catch((error) => {
-                console.error(error)
-            })
-        }
-        company()
     }, []);
 
-    //const handleJobClick = (job: Listing) => {
-    //    setSelectedJob(job)
-    //}
+    const handleJobClick = (job: Listing) => {
+        setSelectedJob(job)
+    }
 
-    //const [data, setData] = useState<Listing[]>([])
-    //const [selectedJob, setSelectedJob] = useState<Listing | null>(null)
-    //const [companyName, setCompanyName] = useState<string>("")
-
-    const [selectedCard, setSelectedCard] = useState<CardData | null>(null)
-
+    const [data, setData] = useState<Listing[]>([])
+    const [selectedJob, setSelectedJob] = useState<Listing | null>(null)
+    const skills = ["React", "TypeScript", "Next.js", "Tailwind"]
     return (
-        <div className="min-h-screen h-screen bg-gray-100 p-4 flex items-center justify-center">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-6xl mx-auto h-full">
-                <div className="md:col-span-1 h-full flex flex-col justify-center space-y-4">
-                    {cardData.map((card) => (
-                        <Card
-                            key={card.id}
-                            className="cursor-pointer hover:shadow-md transition-shadow"
-                            onClick={() => setSelectedCard(card)}
-                        >
-                            <CardHeader>
-                                <CardTitle>{card.title}</CardTitle>
-                                <CardDescription>{card.description}</CardDescription>
-                            </CardHeader>
-                        </Card>
+        <>
+            <div className={"flex flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4"}>
+                <div className={"w-1/2 h-96 overflow-y-scroll flex flex-col gap-2"}>
+                    {data.map((value, index) => (
+                        <div key={index} onClick={() => handleJobClick(value)}>
+                            <ReusableCard key={index} title={<>
+                                <div className="flex flex-row items-center gap-4">
+                                    <Avatar className="w-12 h-12">
+                                        <AvatarImage src={""} alt={""}/>
+                                        <AvatarFallback className={"bg-gradient-to-br from-teal-400 to-cyan-500"}/>
+                                    </Avatar>
+                                    <div className="flex flex-col">
+                                        <Label className="text-base">{value.title}</Label>
+                                        <Label className="text-muted-foreground">{value.department}</Label>
+                                    </div>
+                                </div>
+                            </>} footer={"remove"}
+                            >
+                                <section className="grid gap-4">
+                                    <div className="flex flex-wrap gap-2 sm:gap-4 text-muted-foreground text-sm">
+                                        <div className="flex items-center">
+                                            <MapPin className="mr-1 h-4 w-4"/>
+                                            {value.location}
+                                        </div>
+                                        <div className="flex items-center text-gray-500">
+                                            <Briefcase className="mr-1 h-4 w-4"/>
+                                            {value.type}
+                                        </div>
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        {skills.map((skill) => (
+                                            <Badge key={skill} variant="outline" className={"text-foreground"}>
+                                                {skill}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </section>
+                            </ReusableCard>
+                        </div>
                     ))}
                 </div>
-                <div className="md:col-span-2 h-full flex items-center">
-                    <Card className="h-full w-full overflow-auto">
-                        {selectedCard ? (
-                            <>
-                                <CardHeader>
-                                    <CardTitle>{selectedCard.title}</CardTitle>
-                                    <CardDescription>{selectedCard.description}</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <p>{selectedCard.content}</p>
-                                </CardContent>
-                            </>
-                        ) : (
-                            <CardContent className="h-full flex items-center justify-center">
-                                <p className="text-muted-foreground">Select a card to view details</p>
-                            </CardContent>
-                        )}
-                    </Card>
+                <div className={"w-full"}>
+                    {selectedJob && (
+                        <ReusableCard title={selectedJob.title} description={selectedJob.department}/>
+                    )}
                 </div>
             </div>
-        </div>
+        </>
+
     )
 }

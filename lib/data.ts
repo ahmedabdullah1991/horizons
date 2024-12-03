@@ -84,16 +84,21 @@ async function listings() {
 export const Listings = listings
 
 async function jobs() {
+    let listingData
     try {
-        return await prisma.listing.findMany({
+        const data = await prisma.listing.findMany({
             select: {
+                id: true,
                 title: true,
                 location: true,
                 department: true,
                 type: true,
-                createdAt: true
+                createdAt: true,
+                companyName: true
             }
         })
+        listingData = data
+        return listingData
 
     }catch (e) {
         console.error(e)
