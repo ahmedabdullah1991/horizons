@@ -6,12 +6,15 @@ import {Jobs} from "@/lib/data";
 import {ReusableCard} from "@/components/components";
 import {Label} from "@/components/ui/label";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Briefcase, MapPin} from "lucide-react";
+import {BookmarkPlus, Briefcase, MapPin} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
+import Link from "next/link";
+import {Button} from "@/components/ui/button";
 
 export default function Page() {
 
     interface Listing {
+        id: string
         createdAt: Date
         title: string
         department: string
@@ -43,7 +46,7 @@ export default function Page() {
     const skills = ["React", "TypeScript", "Next.js", "Tailwind"]
     return (
         <>
-            <div className={"flex flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4"}>
+            <div className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
                 <div className={"w-1/2 h-96 overflow-y-scroll flex flex-col gap-2"}>
                     {data.map((value, index) => (
                         <div key={index} onClick={() => handleJobClick(value)}>
@@ -85,9 +88,43 @@ export default function Page() {
                 </div>
                 <div className={"w-full"}>
                     {selectedJob && (
-                        <ReusableCard title={selectedJob.title} description={selectedJob.department}/>
+                        <ReusableCard title={selectedJob.title} description={selectedJob.department}
+                            children2={<Link
+                                href={{
+                                    pathname: `/jobs/${selectedJob.id}`,
+                                }}
+                                scroll={false}
+                                prefetch={true}
+                            >
+                                <Button>APPLY</Button>
+                            </Link>}
+                        />
                     )}
                 </div>
+            </div>
+            <div className={"overflow-y-scroll max-w-6xl mx-auto space-y-4 p-4 lg:hidden"}>
+                {data.map((value, index)=> (
+                    <div key={index}>
+                        <ReusableCard
+                            title={
+                                <div className="flex flex-row items-center gap-4">
+                                    <Avatar className="w-16 h-16">
+                                        <AvatarImage src={""} alt={""} />
+                                        <AvatarFallback className={"bg-gradient-to-br from-teal-400 to-cyan-500"} />
+                                    </Avatar>
+                                    <div className="flex-1">
+                                        <h2 className="text-2xl font-bold">{value.title}</h2>
+                                        <p className="text-gray-500">{value.department}</p>
+                                    </div>
+                                    <Button variant="outline" size="icon" className="hidden sm:flex">
+                                        <BookmarkPlus className="h-5 w-5" />
+                                        <span className="sr-only">Bookmark</span>
+                                    </Button>
+                                </div>
+                            }
+                        ></ReusableCard>
+                    </div>
+                ))}
             </div>
         </>
 
