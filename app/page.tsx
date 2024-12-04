@@ -10,10 +10,13 @@ import {Separator} from "@/components/ui/separator";
 import {clsx} from "clsx";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Button} from "@/components/ui/button";
+import Link from "next/link";
+import {authentication} from "@/lib/kinde-imports";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
 export default async function Page() {
+    const authenticated = await authentication()
     return (<>
         <main className="relative min-h-screen overflow-hidden">
             {/*<div className="absolute inset-0 z-0 overflow-hidden h-[800px]">
@@ -42,7 +45,9 @@ export default async function Page() {
                                 interface allows you to search and apply
                                 effortlessly.
                             </Label>
-                            <Button className={"bg-[#0000B8] text-white w-max"} variant={"link"}>REGISTER</Button>
+                            {!authenticated &&
+                                <Link href={"/api/auth/login?"}><Button className={"bg-[#0000B8] text-white w-max"}
+                                                                        variant={"link"}>REGISTER</Button></Link>}
                         </div>
                     </div>
                 </section>
@@ -61,7 +66,8 @@ export default async function Page() {
                                             <div className={"flex flex-row gap-6"}>
                                                 <Avatar>
                                                     <AvatarImage src={value.src}/>
-                                                    <AvatarFallback className={"bg-gradient-to-br from-blue-700 to-cyan-500"}></AvatarFallback>
+                                                    <AvatarFallback
+                                                        className={"bg-gradient-to-br from-blue-700 to-cyan-500"}></AvatarFallback>
                                                 </Avatar>
                                                 <div>
                                                     <Label className={"text-sm"}>AHMED ABDULLAH</Label>
@@ -146,23 +152,22 @@ export default async function Page() {
     </>)
 }
 
-const avatars = [
-    {
-        imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxDozDNneXZdBlgEi4kTVbW5hO2vqD9nQy6pH3", profileUrl: "https://github.com/ahmedabdullah1991"
-    },
-    {
-        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zxihh5RuuaUQW0duRlOHfnLbqV7ZG8cBseK5rF", profileUrl: "https://github.com/ahmedabdullah1991"
-    },
-    {
-        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx8MQ1HpOLiodeyn5R0kDE7mP3xjNsIAOzBJrC", profileUrl: "https://github.com/ahmedabdullah1991"
-    },
-    {
-        imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx7mMpy1zg3RIGAUFbkm4eONPBl5EqwJzaiQcx", profileUrl: "https://github.com/ahmedabdullah1991"
-    },
-    {
-        imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxrEH4N8lPodbs5Hwj2nTlIhS764Bpqe9rAayE", profileUrl: "https://github.com/ahmedabdullah1991"
-    },
-]
+const avatars = [{
+    imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxDozDNneXZdBlgEi4kTVbW5hO2vqD9nQy6pH3",
+    profileUrl: "https://github.com/ahmedabdullah1991"
+}, {
+    imageUrl: "https://utfs.io/f/XNbrjM3iH8Zxihh5RuuaUQW0duRlOHfnLbqV7ZG8cBseK5rF",
+    profileUrl: "https://github.com/ahmedabdullah1991"
+}, {
+    imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx8MQ1HpOLiodeyn5R0kDE7mP3xjNsIAOzBJrC",
+    profileUrl: "https://github.com/ahmedabdullah1991"
+}, {
+    imageUrl: "https://utfs.io/f/XNbrjM3iH8Zx7mMpy1zg3RIGAUFbkm4eONPBl5EqwJzaiQcx",
+    profileUrl: "https://github.com/ahmedabdullah1991"
+}, {
+    imageUrl: "https://utfs.io/f/XNbrjM3iH8ZxrEH4N8lPodbs5Hwj2nTlIhS764Bpqe9rAayE",
+    profileUrl: "https://github.com/ahmedabdullah1991"
+},]
 
 function AvatarCirclesComponent() {
     return <AvatarCircles numPeople={18} avatarUrls={avatars}/>;

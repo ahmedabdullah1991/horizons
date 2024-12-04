@@ -1,6 +1,7 @@
 import React from "react";
 import {authentication} from "@/lib/kinde-imports";
 import {redirect} from "next/navigation";
+import {Titles} from "@/components/client";
 
 export default async function Layout(
     {children}: Readonly<{ children: React.ReactNode }>
@@ -11,6 +12,7 @@ export default async function Layout(
     } else {
         return (
             <>
+                <Titles/>
                 {children}
             </>
         )

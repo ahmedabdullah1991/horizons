@@ -3,12 +3,11 @@ import type {Metadata} from "next";
 import "./globals.css";
 import {ThemeProvider} from "@/components/theme-provider";
 import {Inter} from "next/font/google"
-import {Footer} from "@/components/components";
 import {authentication} from "@/lib/kinde-imports";
 import {LogoutLink, RegisterLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
 import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
-import {Navigation, Titles} from "@/components/client";
+import {Footer, Navigation} from "@/components/client";
 import Link from "next/link";
 
 const inter = Inter({subsets: ["latin"]})
@@ -58,7 +57,6 @@ export default async function RootLayout({
                         variant={"ghost"}>DASHBOARD</Button></Link>}
                 </>
             </Navigation>
-            <Titles/>
             <main className={"flex-grow flex items-center"}>
                 <div className={"container max-w-full"}>
                     {children}
