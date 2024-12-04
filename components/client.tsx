@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import {useState} from "react"
+import {forwardRef, useState} from "react"
 import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
+import {Check, ChevronDown, FileText, Home, Menu, Minus, Phone, Settings} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -37,6 +37,9 @@ import {useTheme} from "next-themes";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import Image from "next/image";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
+import PhoneInput, * as RPNInput from "react-phone-number-input";
+import {cn} from "@/lib/utils";
+import flags from "react-phone-number-input/flags";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -514,3 +517,215 @@ export function Footer() {
         </>
     )
 }
+
+export function CompanyInfoAndForm() {
+    const [email, setEmail] = useState('')
+    const [phone, setPhone] = useState('')
+    const [file, setFile] = useState<File | null>(null)
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault()
+        // Handle form submission here
+        console.log('Form submitted:', {email, phone, file})
+    }
+
+    return (
+        <div className="min-h-screen bg-gray-100 p-4 flex flex-col items-center justify-center space-y-4">
+            <Card className="w-full max-w-md">
+                <CardContent className="flex items-center space-x-4 p-6">
+                    <div className="relative w-16 h-16">
+                        <Image
+                            src="/placeholder.svg"
+                            alt="Company Logo"
+                            fill
+                            style={{objectFit: 'contain'}}
+                        />
+                    </div>
+                    <CardTitle>Company Name</CardTitle>
+                </CardContent>
+            </Card>
+
+            <Card className="w-full max-w-md">
+                <CardHeader>
+                    <CardTitle>Contact Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <Label htmlFor="email">Email</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                placeholder="Enter your email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="file">File Upload</Label>
+                            <Input
+                                id="file"
+                                type="file"
+                                onChange={(e) => setFile(e.target.files?.[0] || null)}
+                                required
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="phone">Phone Number</Label>
+                            <Input
+                                id="phone"
+                                type="tel"
+                                placeholder="Enter your phone number"
+                                value={phone}
+                                onChange={(e) => setPhone(e.target.value)}
+                                required
+                            />
+                        </div>
+                        <Button type="submit" className="w-full">Submit</Button>
+                    </form>
+                </CardContent>
+            </Card>
+        </div>
+    )
+}
+
+export function ApplicationCard() {
+    const [file, setFile] = useState<File | null>(null)
+    const [error, setError] = useState<string | null>(null)
+    const MAX_FILE_SIZE = 16 * 1024 * 1024
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0]
+        if (selectedFile) {
+            if (selectedFile.type !== "application/pdf") {
+                setError("Invalid file type. Please select a PDF file.")
+                setFile(null)
+            } else if (selectedFile.size > MAX_FILE_SIZE) {
+                setError("File too large. File size exceeds 16MB limit.")
+                setFile(null)
+            } else {
+                setFile(selectedFile)
+                setError(`${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)`)
+            }
+        } else {
+            setFile(null)
+            setError("")
+        }
+    }
+
+    return (
+        <>
+            <div className="w-full max-w-md space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
+                    <Input
+                        id="resume"
+                        name="resume"
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileChange}
+                        className="cursor-pointer p-0 pe-3 file:me-3 file:border-0 file:border-e"
+                    />
+                    {file?.name}
+                    {error && <Label className={"text-red-600"}>{error}</Label>}
+                </div>
+            </div>
+            <div className="space-y-2">
+                <Label
+                    htmlFor="phone-input"
+                    className="text-sm font-medium text-foreground"
+                >
+                    Phone Number
+                </Label>
+                <CountryPhone/>
+            </div>
+        </>
+    )
+}
+
+export function CountryPhone() {
+    const [value, setValue] = useState("");
+
+    return (
+        <div className="space-y-2" dir="ltr">
+            <Label htmlFor="input-46">Phone number input</Label>
+            <RPNInput.default
+                className="flex rounded-lg shadow-sm shadow-black/5"
+                international
+                countrySelectComponent={CountrySelect}
+                inputComponent={PhoneInput}
+                id="input-46"
+                placeholder="Enter phone number"
+                value={value}
+                onChange={(newValue) => setValue(newValue ?? "")}
+            />
+        </div>
+    );
+}
+
+const CountryPhoneInput = forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
+    ({className, ...props}, ref) => {
+        return (
+            <Input
+                className={cn("-ms-px rounded-s-none shadow-none focus-visible:z-10", className)}
+                ref={ref}
+                {...props}
+            />
+        );
+    },
+);
+
+CountryPhoneInput.displayName = "PhoneInput";
+
+type CountrySelectProps = {
+    disabled?: boolean;
+    value: RPNInput.Country;
+    onChange: (value: RPNInput.Country) => void;
+    options: { label: string; value: RPNInput.Country | undefined }[];
+};
+
+const CountrySelect = ({disabled, value, onChange, options}: CountrySelectProps) => {
+    const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        onChange(event.target.value as RPNInput.Country);
+    };
+
+    return (
+        <div
+            className="relative inline-flex items-center self-stretch rounded-s-lg border border-input bg-background py-2 pe-2 ps-3 text-muted-foreground transition-shadow focus-within:z-10 focus-within:border-ring focus-within:outline-none focus-within:ring-[3px] focus-within:ring-ring/20 hover:bg-accent hover:text-foreground has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
+            <div className="inline-flex items-center gap-1" aria-hidden="true">
+                <FlagComponent country={value} countryName={value} aria-hidden="true"/>
+                <span className="text-muted-foreground/80">
+          <ChevronDown size={16} strokeWidth={2} aria-hidden="true"/>
+        </span>
+            </div>
+            <select
+                disabled={disabled}
+                value={value}
+                onChange={handleSelect}
+                className="absolute inset-0 text-sm opacity-0"
+                aria-label="Select country"
+            >
+                <option key="default" value="">
+                    Select a country
+                </option>
+                {options
+                    .filter((x) => x.value)
+                    .map((option, i) => (
+                        <option key={option.value ?? `empty-${i}`} value={option.value}>
+                            {option.label} {option.value && `+${RPNInput.getCountryCallingCode(option.value)}`}
+                        </option>
+                    ))}
+            </select>
+        </div>
+    );
+};
+
+const FlagComponent = ({country, countryName}: RPNInput.FlagProps) => {
+    const Flag = flags[country];
+
+    return (
+        <span className="w-5 overflow-hidden rounded-sm">
+      {Flag ? <Flag title={countryName}/> : <Phone height={16} width={16} aria-hidden="true"/>}
+    </span>
+    );
+};
