@@ -7,7 +7,11 @@ import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
-    NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
@@ -174,11 +178,11 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
                 <Menubar>
                     <div className={"flex flex-col"}>
                         {pathnames1.map((value, index) => (<MenubarMenu key={index}>
-                                <Link href={value.href}><MenubarTrigger
-                                    className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                                    {value.label}
-                                </MenubarTrigger></Link>
-                            </MenubarMenu>))}
+                            <Link href={value.href}><MenubarTrigger
+                                className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                {value.label}
+                            </MenubarTrigger></Link>
+                        </MenubarMenu>))}
                     </div>
                 </Menubar>
             </div>
@@ -189,38 +193,41 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
 
 const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: "DASHBOARD"}, {
     href: "/profile", label: "PROFILE"
-}, {href: "/generate", label: "GENERATE"}, {href: "/profile/preferences", label: "PREFERENCES"}, {href: "/profile/account", label: "ACCOUNT"}]
+}, {href: "/generate", label: "GENERATE"}, {
+    href: "/profile/preferences",
+    label: "PREFERENCES"
+}, {href: "/profile/account", label: "ACCOUNT"}]
 
 export const Titles = () => {
     const pathname = usePathname()
     return (<>
         {pathname !== "/" && (<>
-                <div className={"p-4 border-b flex flex-row justify-between items-center"}>
-                    <div className={"px-4"}>
-                        {titleNames.map((value, index) => (
-                            <Label key={index}>{pathname === value.href && value.label}</Label>))}
-                    </div>
-                    {pathname === "/profile" && (<>
-                            <div className={"lg:hidden"}>
-                                <DropdownMenu>
-                                    <DropdownMenuTrigger asChild>
-                                        <Button variant="ghost"><Menu/></Button>
-                                    </DropdownMenuTrigger>
-                                    <DropdownMenuContent className="w-56">
-                                        <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
-                                        <DropdownMenuSeparator/>
-                                        <DropdownMenuGroup>
-                                            {pathnames1.map((value, index) => (<DropdownMenuItem key={index}
-                                                                                                 className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                                                {value.label}
-                                            </DropdownMenuItem>))}
-                                        </DropdownMenuGroup>
-                                    </DropdownMenuContent>
-                                </DropdownMenu>
-                            </div>
-                        </>)}
+            <div className={"p-4 border-b flex flex-row justify-between items-center"}>
+                <div className={"px-4"}>
+                    {titleNames.map((value, index) => (
+                        <Label key={index}>{pathname === value.href && value.label}</Label>))}
                 </div>
-            </>)}
+                {pathname === "/profile" && (<>
+                    <div className={"lg:hidden"}>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="ghost"><Menu/></Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent className="w-56">
+                                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                                <DropdownMenuSeparator/>
+                                <DropdownMenuGroup>
+                                    {pathnames1.map((value, index) => (<DropdownMenuItem key={index}
+                                                                                         className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                                        {value.label}
+                                    </DropdownMenuItem>))}
+                                </DropdownMenuGroup>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </div>
+                </>)}
+            </div>
+        </>)}
     </>)
 }
 
@@ -230,41 +237,41 @@ export function CompanyNameInputCard() {
     const [state, formAction] = useFormState(createCompany, initialState)
     const {pending} = useFormStatus()
     return (<Card className="w-full max-w-md mx-auto">
-            <CardHeader>
-                <CardTitle>Company Information</CardTitle>
-                <CardDescription>Enter your company name to get started</CardDescription>
-            </CardHeader>
-            <form action={formAction}>
-                <CardContent>
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="companyName">Company Name</Label>
-                            <Input
-                                id="companyName"
-                                name="companyName"
-                                placeholder="Enter your company name"
-                                value={companyName}
-                                onChange={(e) => setCompanyName(e.target.value)}
-                                className={"focus"}
-                            />
-                        </div>
+        <CardHeader>
+            <CardTitle>Company Information</CardTitle>
+            <CardDescription>Enter your company name to get started</CardDescription>
+        </CardHeader>
+        <form action={formAction}>
+            <CardContent>
+                <div className="grid w-full items-center gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="companyName">Company Name</Label>
+                        <Input
+                            id="companyName"
+                            name="companyName"
+                            placeholder="Enter your company name"
+                            value={companyName}
+                            onChange={(e) => setCompanyName(e.target.value)}
+                            className={"focus"}
+                        />
                     </div>
-                    <div
-                        aria-live={"polite"}
-                        aria-atomic={"true"}
-                        className={"text-right"}
-                    >
-                        {state.errors?.companyName && state.errors.companyName.map((error: string) => (
-                            <Label key={error} className={"text-red-600"}>{error}</Label>))}
-                    </div>
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                    <Button type="submit" disabled={pending}>
-                        Submit
-                    </Button>
-                </CardFooter>
-            </form>
-        </Card>)
+                </div>
+                <div
+                    aria-live={"polite"}
+                    aria-atomic={"true"}
+                    className={"text-right"}
+                >
+                    {state.errors?.companyName && state.errors.companyName.map((error: string) => (
+                        <Label key={error} className={"text-red-600"}>{error}</Label>))}
+                </div>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+                <Button type="submit" disabled={pending}>
+                    Submit
+                </Button>
+            </CardFooter>
+        </form>
+    </Card>)
 }
 
 export function JobPositionInputCard() {
@@ -283,73 +290,73 @@ export function JobPositionInputCard() {
         setFormData(prev => ({...prev, [name]: value}))
     }
     return (<Card className="w-full max-w-md mx-auto my-16">
-            <CardHeader>
-                <CardTitle>Job Position Information</CardTitle>
-                <CardDescription>Enter the details for the new job position</CardDescription>
-            </CardHeader>
-            <form action={forAction}>
-                <CardContent>
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="title">Position Title</Label>
-                            <Input
-                                id="title"
-                                name="title"
-                                placeholder="Enter position title"
-                                value={formData.title}
-                                onChange={handleInputChange}
-                            />
-                            {state.errors?.title && state.errors.title.map((error: string) => (
-                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="type">Type</Label>
-                            <Select name="type" value={formData.type} onValueChange={handleSelectChange('type')}>
-                                <SelectTrigger id="type">
-                                    <SelectValue placeholder="Select job type"/>
-                                </SelectTrigger>
-                                <SelectContent position="popper">
-                                    <SelectItem value="full-time">Full-time</SelectItem>
-                                    <SelectItem value="part-time">Part-time</SelectItem>
-                                    <SelectItem value="contract">Contract</SelectItem>
-                                    <SelectItem value="internship">Internship</SelectItem>
-                                </SelectContent>
-                            </Select>
-                            {state.errors?.type && state.errors.type.map((error: string) => (
-                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="department">Department</Label>
-                            <Input
-                                id="department"
-                                name="department"
-                                placeholder="Enter department"
-                                value={formData.department}
-                                onChange={handleInputChange}
-                            />
-                            {state.errors?.department && state.errors.department.map((error: string) => (
-                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
-                        </div>
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="location">Location</Label>
-                            <Input
-                                id="location"
-                                name="location"
-                                placeholder="Enter location"
-                                value={formData.location}
-                                onChange={handleInputChange}
-                            />
-                            {state.errors?.location && state.errors.location.map((error: string) => (
-                                <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
-                        </div>
-                        <Label className={"text-red-600 text-right"}>{state.message}</Label>
+        <CardHeader>
+            <CardTitle>Job Position Information</CardTitle>
+            <CardDescription>Enter the details for the new job position</CardDescription>
+        </CardHeader>
+        <form action={forAction}>
+            <CardContent>
+                <div className="grid w-full items-center gap-4">
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="title">Position Title</Label>
+                        <Input
+                            id="title"
+                            name="title"
+                            placeholder="Enter position title"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                        />
+                        {state.errors?.title && state.errors.title.map((error: string) => (
+                            <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
                     </div>
-                </CardContent>
-                <CardFooter className="flex justify-end">
-                    <Button type={"submit"}>Submit</Button>
-                </CardFooter>
-            </form>
-        </Card>)
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="type">Type</Label>
+                        <Select name="type" value={formData.type} onValueChange={handleSelectChange('type')}>
+                            <SelectTrigger id="type">
+                                <SelectValue placeholder="Select job type"/>
+                            </SelectTrigger>
+                            <SelectContent position="popper">
+                                <SelectItem value="full-time">Full-time</SelectItem>
+                                <SelectItem value="part-time">Part-time</SelectItem>
+                                <SelectItem value="contract">Contract</SelectItem>
+                                <SelectItem value="internship">Internship</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        {state.errors?.type && state.errors.type.map((error: string) => (
+                            <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="department">Department</Label>
+                        <Input
+                            id="department"
+                            name="department"
+                            placeholder="Enter department"
+                            value={formData.department}
+                            onChange={handleInputChange}
+                        />
+                        {state.errors?.department && state.errors.department.map((error: string) => (
+                            <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                    </div>
+                    <div className="flex flex-col space-y-1.5">
+                        <Label htmlFor="location">Location</Label>
+                        <Input
+                            id="location"
+                            name="location"
+                            placeholder="Enter location"
+                            value={formData.location}
+                            onChange={handleInputChange}
+                        />
+                        {state.errors?.location && state.errors.location.map((error: string) => (
+                            <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                    </div>
+                    <Label className={"text-red-600 text-right"}>{state.message}</Label>
+                </div>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+                <Button type={"submit"}>Submit</Button>
+            </CardFooter>
+        </form>
+    </Card>)
 }
 
 const items = [
@@ -376,7 +383,7 @@ export function Themes() {
                             alt={item.label}
                             width={88}
                             height={70}
-                            onClick={()=> setTheme(item.theme)}
+                            onClick={() => setTheme(item.theme)}
                             className="relative cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm shadow-black/5 outline-offset-2 transition-colors peer-[:focus-visible]:outline peer-[:focus-visible]:outline-2 peer-[:focus-visible]:outline-ring/70 peer-data-[disabled]:cursor-not-allowed peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent peer-data-[disabled]:opacity-50"
                         />
                         <span
@@ -420,90 +427,90 @@ export function Footer() {
 
     return (
         <>
-                <Collapsible open={state}>
-                    {!state && (
-                        <CollapsibleTrigger className={"mx-auto w-full py-8 border-t"} onClick={() => setState(true)}>
-                            <div className="text-center text-sm">
-                                <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
-                            </div>
-                        </CollapsibleTrigger>
-                    )}
-                    {state && (
-                        <CollapsibleContent onClick={() => setState(false)}>
-                            <footer className={"border-t"}>
-                                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                        {/* Company Info */}
-                                        <div>
-                                            <Link href="/" className="flex items-center mb-4">
-                                                <span className="sr-only">HORIZONS</span>
-                                                <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24"
-                                                     stroke="currentColor">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                          d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                                </svg>
-                                                <span className="ml-2 text-sm font-medium">HORIZONS</span>
-                                            </Link>
-                                            <p className="text-sm">
-                                                We are dedicated to providing the best service to our customers.
-                                            </p>
-                                        </div>
-
-                                        <div className={"flex flex-col gap-4"}>
-                                            <Label className="text-sm font-semibold">QUICK LINKS</Label>
-                                            <ul className="space-y-2 text-sm">
-                                                {quickLinks.map((link) => (
-                                                    <li key={link.href}>
-                                                        <Link href={link.href}
-                                                              className="hover:text-white transition-colors">
-                                                            {link.label}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-
-                                        <div className={"flex flex-col gap-4"}>
-                                            <Label className="text-sm font-semibold mb-4">LEGAL</Label>
-                                            <ul className="space-y-2 text-sm">
-                                                {legalLinks.map((link) => (
-                                                    <li key={link.href}>
-                                                        <Link href={link.href}
-                                                              className="hover:text-white transition-colors">
-                                                            {link.label}
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-
-                                        <div>
-                                            <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
-                                            <form className="space-y-2">
-                                                <Input
-                                                    type="email"
-                                                    placeholder="Enter your email"
-                                                    aria-label="Email for newsletter"
-                                                />
-                                                <Button type="submit" className="w-full">
-                                                    Subscribe
-                                                </Button>
-                                            </form>
-                                        </div>
+            <Collapsible open={state}>
+                {!state && (
+                    <CollapsibleTrigger className={"mx-auto w-full py-8 border-t"} onClick={() => setState(true)}>
+                        <div className="text-center text-sm">
+                            <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+                        </div>
+                    </CollapsibleTrigger>
+                )}
+                {state && (
+                    <CollapsibleContent onClick={() => setState(false)}>
+                        <footer className={"border-t"}>
+                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                                    {/* Company Info */}
+                                    <div>
+                                        <Link href="/" className="flex items-center mb-4">
+                                            <span className="sr-only">HORIZONS</span>
+                                            <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24"
+                                                 stroke="currentColor">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                                      d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                            </svg>
+                                            <span className="ml-2 text-sm font-medium">HORIZONS</span>
+                                        </Link>
+                                        <p className="text-sm">
+                                            We are dedicated to providing the best service to our customers.
+                                        </p>
                                     </div>
 
-                                    <div className="mt-8 pt-8 border-t border-gray-800">
+                                    <div className={"flex flex-col gap-4"}>
+                                        <Label className="text-sm font-semibold">QUICK LINKS</Label>
+                                        <ul className="space-y-2 text-sm">
+                                            {quickLinks.map((link) => (
+                                                <li key={link.href}>
+                                                    <Link href={link.href}
+                                                          className="hover:text-white transition-colors">
+                                                        {link.label}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </div>
 
-                                    <div className="text-center text-sm">
-                                        <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+
+                                    <div className={"flex flex-col gap-4"}>
+                                        <Label className="text-sm font-semibold mb-4">LEGAL</Label>
+                                        <ul className="space-y-2 text-sm">
+                                            {legalLinks.map((link) => (
+                                                <li key={link.href}>
+                                                    <Link href={link.href}
+                                                          className="hover:text-white transition-colors">
+                                                        {link.label}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div>
+                                        <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
+                                        <form className="space-y-2">
+                                            <Input
+                                                type="email"
+                                                placeholder="Enter your email"
+                                                aria-label="Email for newsletter"
+                                            />
+                                            <Button type="submit" className="w-full">
+                                                Subscribe
+                                            </Button>
+                                        </form>
                                     </div>
                                 </div>
-                            </footer>
-                        </CollapsibleContent>
-                    )}
-                </Collapsible>
+
+                                <div className="mt-8 pt-8 border-t border-gray-800">
+                                </div>
+
+                                <div className="text-center text-sm">
+                                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+                                </div>
+                            </div>
+                        </footer>
+                    </CollapsibleContent>
+                )}
+            </Collapsible>
         </>
     )
 }
