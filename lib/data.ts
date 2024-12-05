@@ -32,16 +32,16 @@ async function company() {
         if (data?.userData?.id) {
             const company = await prisma.company.findUnique({
                 where: {
-                    companiesId: data.userData.id
+                    userId: data.userData.id
                 }, select: {
                     id: true,
                     companyName: true,
-                    listings: true
+                    listing: true
                 }
             })
             companyData = company?.companyName
             companyId = company?.id
-            listings = company?.listings
+            listings = company?.listing
             return {
                 companyData,
                 companyId,
@@ -106,3 +106,27 @@ async function jobs() {
 }
 
 export const Jobs = jobs
+
+async function profile() {
+    let profileId
+    try {
+        const User = await user()
+        if (User) {
+            const profile  = await prisma.profile.findUnique({
+                where: {
+                    userId: User.id,
+                },
+                select: {
+                    id: true,
+                }
+            })
+            profileId = profile?.id
+            return profileId
+        }
+    }
+    catch (e) {
+        console.error(e)
+    }
+}
+
+export const Profile = profile

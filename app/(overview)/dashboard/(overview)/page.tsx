@@ -29,7 +29,7 @@ export default async function Dashboard() {
                     title={"Total Applications"}
                     content={"remove"}
                     description={"Total Applications"}
-                    children2={<Button variant={"link"}>{company?.listings}</Button>}
+                    children2={<Button variant={"link"}>{}</Button>}
                 />
             </div>
             <Card className="mb-6">
