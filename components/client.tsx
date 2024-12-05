@@ -1,11 +1,11 @@
 "use client"
 
 import * as React from "react"
-import {forwardRef, useState} from "react"
+import {useState} from "react"
 import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
-import {Check, ChevronDown, FileText, Home, Menu, Minus, Phone, Settings} from "lucide-react";
+import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
     NavigationMenu,
     NavigationMenuItem,
@@ -14,7 +14,7 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
-import {ReusableCard} from "@/components/components";
+import {CustomCard, ReusableCard} from "@/components/components";
 import {createCompany, createListing, ListingState, prevState} from "@/lib/actions";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
@@ -28,8 +28,8 @@ import {
     DropdownMenuShortcut,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {clsx} from "clsx";
 import Link from "next/link";
+import {clsx} from "clsx";
 import {Menubar, MenubarMenu, MenubarTrigger,} from "@/components/ui/menubar"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select"
@@ -37,9 +37,8 @@ import {useTheme} from "next-themes";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import Image from "next/image";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
-import PhoneInput, * as RPNInput from "react-phone-number-input";
-import {cn} from "@/lib/utils";
-import flags from "react-phone-number-input/flags";
+import 'react-phone-number-input/style.css'
+
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -412,6 +411,91 @@ export function Themes() {
     );
 }
 
+interface ApplicationCardProps {
+    companyName?: string
+}
+
+export const ApplicationCard: React.FC<ApplicationCardProps> = ({
+    companyName
+                                                                }) => {
+    const [file, setFile] = useState<File | null>(null)
+    const [error, setError] = useState<string | null>(null)
+    const MAX_FILE_SIZE = 16 * 1024 * 1024
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = event.target.files?.[0]
+        if (selectedFile) {
+            if (selectedFile.type !== "application/pdf") {
+                setError("Invalid file type. Please select a PDF file.")
+                setFile(null)
+            } else if (selectedFile.size > MAX_FILE_SIZE) {
+                setError("File too large. File size exceeds 16MB limit.")
+                setFile(null)
+            } else {
+                setFile(selectedFile)
+                setError(`${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)`)
+            }
+        } else {
+            setFile(null)
+            setError("")
+        }
+    }
+
+    return (
+        <div className="p-4 flex flex-col items-center justify-center space-y-4">
+            <CustomCard
+                className={"w-full max-w-md"}
+                header={
+                    <main className={"flex items-center space-x-4 p-6"}>
+                        <Image src={""} alt={""} width={64} height={64}
+                               className={"border-2 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full"}
+                               style={{objectFit: "contain"}}/>
+                        <Label>
+                            {companyName}
+                        </Label>
+                    </main>
+                }
+            />
+            <CustomCard
+                title={"Application Form"}
+                description={"Fill out the form below to apply for the job position. All fields are required."}
+                className={"w-full max-w-md"}
+                footer={
+                    <form action={""}>
+                        <section className={"flex justify-end"}>
+                            <Button type={"submit"}>Submit</Button>
+                        </section>
+                    </form>
+                }
+            >
+                <form className="space-y-4">
+                    <div className="space-y-2">
+                        <Label htmlFor="email">Email</Label>
+                        <Input
+                            id="email"
+                            type="email"
+                            placeholder="ahmed.devv@proton.me"
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
+                        <Input
+                            id="resume"
+                            name="resume"
+                            type="file"
+                            accept=".pdf"
+                            onChange={handleFileChange}
+                            className="cursor-pointer"
+                        />
+                        {file?.name}
+                        {error && <Label className={"text-red-600"}>{error}</Label>}
+                    </div>
+                </form>
+            </CustomCard>
+        </div>
+    )
+}
+
+
 const quickLinks = [
     {href: '/about', label: 'About Us'},
     {href: '/services', label: 'Services'},
@@ -517,215 +601,3 @@ export function Footer() {
         </>
     )
 }
-
-export function CompanyInfoAndForm() {
-    const [email, setEmail] = useState('')
-    const [phone, setPhone] = useState('')
-    const [file, setFile] = useState<File | null>(null)
-
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        // Handle form submission here
-        console.log('Form submitted:', {email, phone, file})
-    }
-
-    return (
-        <div className="min-h-screen bg-gray-100 p-4 flex flex-col items-center justify-center space-y-4">
-            <Card className="w-full max-w-md">
-                <CardContent className="flex items-center space-x-4 p-6">
-                    <div className="relative w-16 h-16">
-                        <Image
-                            src="/placeholder.svg"
-                            alt="Company Logo"
-                            fill
-                            style={{objectFit: 'contain'}}
-                        />
-                    </div>
-                    <CardTitle>Company Name</CardTitle>
-                </CardContent>
-            </Card>
-
-            <Card className="w-full max-w-md">
-                <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                id="email"
-                                type="email"
-                                placeholder="Enter your email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="file">File Upload</Label>
-                            <Input
-                                id="file"
-                                type="file"
-                                onChange={(e) => setFile(e.target.files?.[0] || null)}
-                                required
-                            />
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="phone">Phone Number</Label>
-                            <Input
-                                id="phone"
-                                type="tel"
-                                placeholder="Enter your phone number"
-                                value={phone}
-                                onChange={(e) => setPhone(e.target.value)}
-                                required
-                            />
-                        </div>
-                        <Button type="submit" className="w-full">Submit</Button>
-                    </form>
-                </CardContent>
-            </Card>
-        </div>
-    )
-}
-
-export function ApplicationCard() {
-    const [file, setFile] = useState<File | null>(null)
-    const [error, setError] = useState<string | null>(null)
-    const MAX_FILE_SIZE = 16 * 1024 * 1024
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = event.target.files?.[0]
-        if (selectedFile) {
-            if (selectedFile.type !== "application/pdf") {
-                setError("Invalid file type. Please select a PDF file.")
-                setFile(null)
-            } else if (selectedFile.size > MAX_FILE_SIZE) {
-                setError("File too large. File size exceeds 16MB limit.")
-                setFile(null)
-            } else {
-                setFile(selectedFile)
-                setError(`${selectedFile.name} (${(selectedFile.size / (1024 * 1024)).toFixed(2)} MB)`)
-            }
-        } else {
-            setFile(null)
-            setError("")
-        }
-    }
-
-    return (
-        <>
-            <div className="w-full max-w-md space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
-                    <Input
-                        id="resume"
-                        name="resume"
-                        type="file"
-                        accept=".pdf"
-                        onChange={handleFileChange}
-                        className="cursor-pointer p-0 pe-3 file:me-3 file:border-0 file:border-e"
-                    />
-                    {file?.name}
-                    {error && <Label className={"text-red-600"}>{error}</Label>}
-                </div>
-            </div>
-            <div className="space-y-2">
-                <Label
-                    htmlFor="phone-input"
-                    className="text-sm font-medium text-foreground"
-                >
-                    Phone Number
-                </Label>
-                <CountryPhone/>
-            </div>
-        </>
-    )
-}
-
-export function CountryPhone() {
-    const [value, setValue] = useState("");
-
-    return (
-        <div className="space-y-2" dir="ltr">
-            <Label htmlFor="input-46">Phone number input</Label>
-            <RPNInput.default
-                className="flex rounded-lg shadow-sm shadow-black/5"
-                international
-                countrySelectComponent={CountrySelect}
-                inputComponent={PhoneInput}
-                id="input-46"
-                placeholder="Enter phone number"
-                value={value}
-                onChange={(newValue) => setValue(newValue ?? "")}
-            />
-        </div>
-    );
-}
-
-const CountryPhoneInput = forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-    ({className, ...props}, ref) => {
-        return (
-            <Input
-                className={cn("-ms-px rounded-s-none shadow-none focus-visible:z-10", className)}
-                ref={ref}
-                {...props}
-            />
-        );
-    },
-);
-
-CountryPhoneInput.displayName = "PhoneInput";
-
-type CountrySelectProps = {
-    disabled?: boolean;
-    value: RPNInput.Country;
-    onChange: (value: RPNInput.Country) => void;
-    options: { label: string; value: RPNInput.Country | undefined }[];
-};
-
-const CountrySelect = ({disabled, value, onChange, options}: CountrySelectProps) => {
-    const handleSelect = (event: React.ChangeEvent<HTMLSelectElement>) => {
-        onChange(event.target.value as RPNInput.Country);
-    };
-
-    return (
-        <div
-            className="relative inline-flex items-center self-stretch rounded-s-lg border border-input bg-background py-2 pe-2 ps-3 text-muted-foreground transition-shadow focus-within:z-10 focus-within:border-ring focus-within:outline-none focus-within:ring-[3px] focus-within:ring-ring/20 hover:bg-accent hover:text-foreground has-[:disabled]:pointer-events-none has-[:disabled]:opacity-50">
-            <div className="inline-flex items-center gap-1" aria-hidden="true">
-                <FlagComponent country={value} countryName={value} aria-hidden="true"/>
-                <span className="text-muted-foreground/80">
-          <ChevronDown size={16} strokeWidth={2} aria-hidden="true"/>
-        </span>
-            </div>
-            <select
-                disabled={disabled}
-                value={value}
-                onChange={handleSelect}
-                className="absolute inset-0 text-sm opacity-0"
-                aria-label="Select country"
-            >
-                <option key="default" value="">
-                    Select a country
-                </option>
-                {options
-                    .filter((x) => x.value)
-                    .map((option, i) => (
-                        <option key={option.value ?? `empty-${i}`} value={option.value}>
-                            {option.label} {option.value && `+${RPNInput.getCountryCallingCode(option.value)}`}
-                        </option>
-                    ))}
-            </select>
-        </div>
-    );
-};
-
-const FlagComponent = ({country, countryName}: RPNInput.FlagProps) => {
-    const Flag = flags[country];
-
-    return (
-        <span className="w-5 overflow-hidden rounded-sm">
-      {Flag ? <Flag title={countryName}/> : <Phone height={16} width={16} aria-hidden="true"/>}
-    </span>
-    );
-};
