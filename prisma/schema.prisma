@@ -13,42 +13,53 @@ model User {
   email     String   @unique
   firstName String
   lastName  String
-  companies Company?
+  profile   Profile?
+  company   Company?
 }
 
 model Profile {
-  id          String  @id @default(auto()) @map("_id") @db.ObjectId
-  profile     Listing @relation(fields: [profileId], references: [id])
-  profileId   String  @unique @db.ObjectId
-  listingId   String
-  phoneNumber String  @unique
-  address     String
-  resume      Bytes
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id])
+  userId      String        @unique @db.ObjectId
+  resume      Bytes?
+  application Application[]
 }
 
 model Company {
   id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  companies   User      @relation(fields: [companiesId], references: [id])
-  companiesId String    @unique @db.ObjectId
+  user        User      @relation(fields: [userId], references: [id])
+  userId      String    @unique @db.ObjectId
   companyName String    @unique
   listing     Listing[]
-  listings    Int       @default(0)
+}
+
+model Application {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  applicants   Profile @relation(fields: [applicantsId], references: [id])
+  applicantsId String  @unique @db.ObjectId
+  listingsId   String
 }
 
 model Listing {
-  id          String    @id @default(auto()) @map("_id") @db.ObjectId
-  listings    Company   @relation(fields: [listingsId], references: [id])
-  listingsId  String    @db.ObjectId
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  published   Boolean   @default(false)
+  id          String     @id @default(auto()) @map("_id") @db.ObjectId
+  listings    Company    @relation(fields: [listingsId], references: [id])
+  listingsId  String     @db.ObjectId
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  published   Boolean    @default(false)
   title       String
   department  String
   location    String
   type        String
   companyName String
-  profile     Profile[]
-  application Int       @default(0)
+  application Int        @default(0)
+  requests    Requests[]
 
   @@unique([listingsId, title])
+}
+
+model Requests {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  requests   Listing @relation(fields: [requestsId], references: [id])
+  requestsId String  @unique @db.ObjectId
 }

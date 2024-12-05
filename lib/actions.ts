@@ -46,11 +46,11 @@ export async function createCompany(prevState: prevState, formData: FormData) {
                     kindeId: User.id,
                 },
                 data: {
-                    companies: {
+                    company: {
                         create: {
-                            companyName: companyName,
-                        },
-                    },
+                            companyName: companyName
+                        }
+                    }
                 },
             })
         }
@@ -119,7 +119,7 @@ export async function createListing(
 
     try {
         const User = await user()
-        const userId = await prisma.user.findUniqueOrThrow({
+        const users = await prisma.user.findUniqueOrThrow({
             where: {kindeId: User.id},
             select: {id: true},
         })
@@ -129,7 +129,7 @@ export async function createListing(
 
         if (name) {
             await prisma.company.update({
-                where: {companiesId: userId.id},
+                where: {userId: users.id},
                 data: {
                     listing: {
                         create: {
@@ -140,7 +140,6 @@ export async function createListing(
                             companyName: name,
                         },
                     },
-                    listings: +1
                 },
             })
         }
@@ -152,4 +151,69 @@ export async function createListing(
     }
     revalidatePath("/dashboard")
     redirect("/dashboard")
+}
+
+export type ProfileState = {
+    errors?: {
+        resume?: string[]
+    }
+    message?: string | null
+}
+
+const profileSchema = z.object({
+    resume: z
+        .instanceof(File)
+        .refine((file) => file.size <= 16000000, `Max file size is 16MB`)
+        .refine(
+            (file) => ["application/pdf"].includes(file.type),
+            "Only .pdf formats are supported"
+        )
+})
+
+export async function createProfile(prevState: ProfileState, formData: FormData) {
+    const validatedFields = profileSchema.safeParse({
+        resume: formData.get("resume"),
+    });
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: "Missing or invalid fields. Failed to create profile.",
+        };
+    }
+
+    const resumeFile = formData.get("resume") as File
+    const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
+
+    try {
+        const User = await user();
+        if (User) {
+            const company = await Company();
+            const companyId = company?.companyId;
+            if (!companyId || companyId === "") {
+                await prisma.user.update({
+                    where: {
+                        kindeId: User.id,
+                    },
+                    data: {
+                        profile: {
+                            create: {
+                                resume: resumeBuffer
+                            }
+                        }
+                    }
+                })
+            } else {
+                return {
+                    message: "User already has a company associated. Cannot create a profile.",
+                };
+            }
+        }
+    } catch (e) {
+        console.error(e);
+        return {
+            message: "An error occurred while creating the profile.",
+        };
+    }
+    revalidatePath("/dashboard");
+    redirect("/dashboard");
 }

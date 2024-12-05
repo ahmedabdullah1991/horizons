@@ -14,7 +14,7 @@ import {
     navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
-import {CustomCard, ReusableCard} from "@/components/components";
+import {ReusableCard} from "@/components/components";
 import {createCompany, createListing, ListingState, prevState} from "@/lib/actions";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
@@ -442,7 +442,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
 
     return (
         <div className="p-4 flex flex-col items-center justify-center space-y-4">
-            <CustomCard
+            <ReusableCard
                 className={"w-full max-w-md"}
                 header={
                     <main className={"flex items-center space-x-4 p-6"}>
@@ -455,7 +455,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                     </main>
                 }
             />
-            <CustomCard
+            <ReusableCard
                 title={"Application Form"}
                 description={"Fill out the form below to apply for the job position. All fields are required."}
                 className={"w-full max-w-md"}
@@ -490,7 +490,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                         {error && <Label className={"text-red-600"}>{error}</Label>}
                     </div>
                 </form>
-            </CustomCard>
+            </ReusableCard>
         </div>
     )
 }
