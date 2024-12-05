@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {useState} from "react"
+import {RefObject, useEffect, useRef, useState} from "react"
 import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
@@ -598,6 +598,74 @@ export function Footer() {
                     </CollapsibleContent>
                 )}
             </Collapsible>
+        </>
+    )
+}
+
+function useIntersectionObserver(
+    ref: RefObject<Element>,
+    options: IntersectionObserverInit = {threshold: 0.5}
+): boolean {
+    const [isIntersecting, setIsIntersecting] = useState(false);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(([entry]) => {
+            setIsIntersecting(entry.isIntersecting);
+        }, options);
+
+        if (ref.current) {
+            observer.observe(ref.current);
+        }
+
+        return () => {
+            observer.disconnect();
+        };
+    }, [ref, options]);
+
+    return isIntersecting;
+}
+
+export const Intersection = () => {
+    const ref1 = useRef<HTMLDivElement>(null);
+    const ref2 = useRef<HTMLDivElement>(null);
+    const ref3 = useRef<HTMLDivElement>(null);
+    const ref4 = useRef<HTMLDivElement>(null);
+
+    const isVisible1 = useIntersectionObserver(ref1);
+    const isVisible2 = useIntersectionObserver(ref2);
+    const isVisible3 = useIntersectionObserver(ref3);
+    const isVisible4 = useIntersectionObserver(ref4);
+
+
+    const [visibleComponent, setVisibleComponent] = useState<number>(1);
+
+    useEffect(() => {
+        if (isVisible1) setVisibleComponent(1);
+        else if (isVisible2) setVisibleComponent(2);
+        else if (isVisible3) setVisibleComponent(3);
+        else if (isVisible4) setVisibleComponent(4);
+    }, [isVisible1, isVisible2, isVisible3, isVisible4]);
+
+    {/*const handleScroll1 = () => {
+        ref1.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
+    }
+    const handleScroll2 = () => {
+        ref2.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
+    }
+    const handleScroll3 = () => {
+        ref3.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
+    }
+    const handleScroll4 = () => {
+        ref4.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
+    }*/}
+
+    return (
+        <>
+            <div>{visibleComponent}</div>
+            <div ref={ref1}></div>
+            <div ref={ref2}></div>
+            <div ref={ref3}></div>
+            <div ref={ref4}></div>
         </>
     )
 }
