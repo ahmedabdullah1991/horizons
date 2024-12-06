@@ -4,7 +4,7 @@ import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/compo
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {ApplicationsChart} from "@/components/charts";
-import {Listings, Company} from "@/lib/data";
+import {Company, Listings} from "@/lib/data";
 import {ReusableCard} from "@/components/components";
 import {Button} from "@/components/ui/button";
 import Link from 'next/link'
@@ -12,22 +12,19 @@ import Link from 'next/link'
 export default async function Dashboard() {
     const listings = await Listings()
     const company = await Company()
-    const business = !!(company && company.companyData)
+    const business = company && company.companyData ? true : false
 
     return (
         <main className="flex-1 overflow-auto p-4 lg:p-8">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <ReusableCard
-                    title={"Profile Type"}
-                    description={business ? "Business/Company":"User"}
-                    content={"remove"}
-                    children2={<Link href={"/generate"}>
-                        <Button>{business ? "POST A JOB":"REGISTER AS BUSINESS"}</Button>
-                    </Link>}
+                    title={"PROFILE TYPE"}
+                    description={business ? "Business/Company" : "User"}
+                    children2={<Link
+                        href={"/generate"}><Button>{business ? "POST A JOB" : "REGISTER AS BUSINESS"}</Button></Link>}
                 />
                 <ReusableCard
                     title={"Total Applications"}
-                    content={"remove"}
                     description={"Total Applications"}
                     children2={<Button variant={"link"}>{}</Button>}
                 />
@@ -84,14 +81,14 @@ export default async function Dashboard() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {listings? listings.map((value, index)=> (
+                                {listings ? listings.map((value, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{value.title}</TableCell>
                                         <TableCell>{value.department}</TableCell>
                                         <TableCell>{value.location}</TableCell>
                                         <TableCell>{value.type}</TableCell>
                                     </TableRow>
-                                )):<TableRow>
+                                )) : <TableRow>
                                     <TableCell>No Job Postings</TableCell>
                                     <TableCell>Start posting your jobs</TableCell>
                                     <TableCell>to get started</TableCell>

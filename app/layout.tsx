@@ -7,7 +7,7 @@ import {authentication} from "@/lib/kinde-imports";
 import {LogoutLink, RegisterLink} from "@kinde-oss/kinde-auth-nextjs/components";
 import {Button} from "@/components/ui/button";
 import {navigationMenuTriggerStyle} from "@/components/ui/navigation-menu";
-import {Footer, Navigation} from "@/components/client";
+import {Footer, Navigation, Titles} from "@/components/client";
 import Link from "next/link";
 
 const inter = Inter({subsets: ["latin"]})
@@ -57,6 +57,7 @@ export default async function RootLayout({
                         variant={"ghost"}>DASHBOARD</Button></Link>}
                 </>
             </Navigation>
+            <Titles/>
             <main className={"flex-grow flex items-center"}>
                 <div className={"container max-w-full"}>
                     {children}

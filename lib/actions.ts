@@ -5,7 +5,7 @@ import {revalidatePath} from "next/cache"
 import {user} from "@/lib/kinde-imports"
 import {z} from "zod"
 import {PrismaClient} from "@prisma/client"
-import {Company, Profile} from "@/lib/data"
+import {Company} from "@/lib/data"
 
 const prisma = new PrismaClient()
 
@@ -41,8 +41,6 @@ export async function createCompany(prevState: prevState, formData: FormData) {
     const {companyName} = validatedFields.data
     try {
         if (User) {
-            const profile = await Profile()
-            if (!profile && profile === "") {}
             await prisma.user.update({
                 where: {
                     kindeId: User.id,
@@ -189,9 +187,8 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
     try {
         const User = await user();
         if (User) {
-            const company = await Company();
-            const companyId = company?.companyId;
-            if (!companyId || companyId === "") {
+            const company = await Company()
+            if (!company) {
                 await prisma.user.update({
                     where: {
                         kindeId: User.id,

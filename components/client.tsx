@@ -7,7 +7,11 @@ import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
-    NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
