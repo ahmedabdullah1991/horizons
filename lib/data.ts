@@ -4,22 +4,24 @@ import prisma from "@/lib/db";
 import {user} from "@/lib/kinde-imports";
 
 async function data() {
-    let userData
     try {
-        const users = await user()
-        if (users) {
-            const data = await prisma.user.findUnique({
-                where: {kindeId: users.id}, select: {id: true, email: true, firstName: true, lastName: true}
-            })
-            userData = data
+        const users = await user();
+        if (!users) {
+            console.error("Error fetching user data");
+            return null;
         }
-
-        return {
-            userData,
+        const data = await prisma.user.findUnique({
+            where: { kindeId: users.id },
+            select: { id: true },
+        });
+        if (!data) {
+            console.error("Error fetching user data");
+            return null;
         }
+        return { userData: data.id };
     } catch (error) {
-        console.error(error)
-        return null
+        console.error('Error fetching user data:', error);
+        // return { error: { message: error.message } };
     }
 }
 
@@ -27,56 +29,75 @@ export const Data = data
 
 async function company() {
     let companyData, companyId, listings
-    const data = await Data()
     try {
-        if (data?.userData?.id) {
+        const data = await Data()
+        if (!data) {
+            console.error("Error fetching user data");
+            return null
+        } else if (data?.userData) {
             const company = await prisma.company.findUnique({
                 where: {
-                    userId: data.userData.id
+                    userId: data.userData
                 }, select: {
                     id: true,
                     companyName: true,
                     listing: true
                 }
             })
-            companyData = company?.companyName
-            companyId = company?.id
-            listings = company?.listing
-            return {
-                companyData,
-                companyId,
-                listings
+            if (company) {
+                companyData = company.companyName
+                companyId = company.id
+                listings = company.listing
+                return {companyData, companyId, listings}
+            } else {
+                console.error("Error fetching company data");
+                return null
             }
         }
+
     } catch (error) {
-        console.error(error)
+        console.error("Error fetching company data:", error);
         return null
     }
 }
 
 export const Company = company
 
-async function listings() {
+async function listings(){
     let listingData
     try {
         const company = await Company()
-        const companyID = company?.companyId
-        if (companyID) {
-            const listings = await prisma.listing.findMany({
-                where: {
-                    listingsId: companyID
-                }, select: {
-                    title: true,
-                    department: true,
-                    location: true,
-                    type: true,
-                    application: true,
+        if (!company) {
+            console.error("No company found");
+            return null
+        } else {
+            const companyID = company.companyId
+            if (!companyID) {
+                console.error("No company ID found");
+            } else {
+                const listings = await prisma.listing.findMany({
+                    where: {
+                        listingsId: companyID
+                    },  select: {
+                        title: true,
+                        department: true,
+                        location: true,
+                        type: true,
+                        application: true,
+                    }
+                })
+                if (listings) {
+                    listingData = listings
+                } else {
+                    console.error("No listings found");
+                    return null
                 }
-            })
-            listingData = listings
-            return listingData
+                return listingData
+            }
         }
-    } catch (e) {
+    }
+
+    catch (e) {
         console.error(e)
     }
 }
@@ -86,7 +107,7 @@ export const Listings = listings
 async function jobs() {
     let listingData
     try {
-        const data = await prisma.listing.findMany({
+        const listings = await prisma.listing.findMany({
             select: {
                 id: true,
                 title: true,
@@ -97,35 +118,48 @@ async function jobs() {
                 companyName: true
             }
         })
-        listingData = data
+        if (!listings) {
+            console.error("No listings found");
+            return null
+        } else if (listings) {
+            listingData = listings
+        }
         return listingData
-
-    }catch (e) {
-        console.error(e)
+    }
+    catch (error) {
+        console.error(error)
     }
 }
 
 export const Jobs = jobs
 
 async function profile() {
-    let profileId
+    let profileData
     try {
-        const User = await user()
-        if (User) {
-            const profile  = await prisma.profile.findUnique({
+        const data = await Data()
+        if (!data) {
+            console.error("Error fetching data")
+            return null
+        } else {
+            const profile = await prisma.profile.findUniqueOrThrow({
                 where: {
-                    userId: User.id,
+                    userId: data.userData
                 },
                 select: {
                     id: true,
                 }
             })
-            profileId = profile?.id
-            return profileId
+            if (profile) {
+                profileData = profile.id
+            } else {
+                return null
+            }
         }
+        return profileData
     }
     catch (e) {
         console.error(e)
+        return null
     }
 }
 
