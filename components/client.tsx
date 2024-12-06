@@ -1,17 +1,13 @@
 "use client"
 
 import * as React from "react"
-import {RefObject, useEffect, useRef, useState} from "react"
+import {useState} from "react"
 import {useFormState, useFormStatus} from "react-dom";
 import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    navigationMenuTriggerStyle,
+    NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
@@ -152,14 +148,13 @@ export function Dropdown({children}: Readonly<{ children: React.ReactNode }>) {
             <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
             <DropdownMenuSeparator/>
             <DropdownMenuGroup>
-                {pathnames.map((value, index) => (
-                    <Link href={value.href} key={index}>
-                        <DropdownMenuItem className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                            {value.label}
-                            <DropdownMenuShortcut
-                                className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
-                        </DropdownMenuItem>
-                    </Link>))}
+                {pathnames.map((value, index) => (<Link href={value.href} key={index}>
+                    <DropdownMenuItem className={clsx("", pathname === value.href && "text-[#007FFF]")}>
+                        {value.label}
+                        <DropdownMenuShortcut
+                            className={"text-muted-foreground"}>{value.shortcut}</DropdownMenuShortcut>
+                    </DropdownMenuItem>
+                </Link>))}
                 <DropdownMenuItem>
                     {children}
                 </DropdownMenuItem>
@@ -196,8 +191,7 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
 const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: "DASHBOARD"}, {
     href: "/profile", label: "PROFILE"
 }, {href: "/generate", label: "GENERATE"}, {
-    href: "/profile/preferences",
-    label: "PREFERENCES"
+    href: "/profile/preferences", label: "PREFERENCES"
 }, {href: "/profile/account", label: "ACCOUNT"}]
 
 export const Titles = () => {
@@ -361,35 +355,33 @@ export function JobPositionInputCard() {
     </Card>)
 }
 
-const items = [
-    {id: "radio-18-r1", value: "r1", label: "Light", image: "/ui-light.webp", theme: "light"},
-    {id: "radio-18-r2", value: "r2", label: "Dark", image: "/ui-dark.webp", theme: "dark"},
-    {id: "radio-18-r3", value: "r3", label: "System", image: "/ui-system.webp", theme: "system"},
-];
+const items = [{
+    id: "radio-18-r1", value: "r1", label: "Light", image: "/ui-light.webp", theme: "light"
+}, {id: "radio-18-r2", value: "r2", label: "Dark", image: "/ui-dark.webp", theme: "dark"}, {
+    id: "radio-18-r3", value: "r3", label: "System", image: "/ui-system.webp", theme: "system"
+},];
 
 export function Themes() {
     const {setTheme} = useTheme();
-    return (
-        <fieldset className="space-y-4">
-            <legend className="text-sm font-medium leading-none text-foreground">Choose a theme</legend>
-            <RadioGroup className="flex gap-3" defaultValue="r1">
-                {items.map((item) => (
-                    <label key={item.id}>
-                        <RadioGroupItem
-                            id={item.id}
-                            value={item.value}
-                            className="peer sr-only after:absolute after:inset-0"
-                        />
-                        <Image
-                            src={item.image}
-                            alt={item.label}
-                            width={88}
-                            height={70}
-                            onClick={() => setTheme(item.theme)}
-                            className="relative cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm shadow-black/5 outline-offset-2 transition-colors peer-[:focus-visible]:outline peer-[:focus-visible]:outline-2 peer-[:focus-visible]:outline-ring/70 peer-data-[disabled]:cursor-not-allowed peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent peer-data-[disabled]:opacity-50"
-                        />
-                        <span
-                            className="group mt-2 flex items-center gap-1 peer-data-[state=unchecked]:text-muted-foreground/70">
+    return (<fieldset className="space-y-4">
+        <legend className="text-sm font-medium leading-none text-foreground">Choose a theme</legend>
+        <RadioGroup className="flex gap-3" defaultValue="r1">
+            {items.map((item) => (<label key={item.id}>
+                <RadioGroupItem
+                    id={item.id}
+                    value={item.value}
+                    className="peer sr-only after:absolute after:inset-0"
+                />
+                <Image
+                    src={item.image}
+                    alt={item.label}
+                    width={88}
+                    height={70}
+                    onClick={() => setTheme(item.theme)}
+                    className="relative cursor-pointer overflow-hidden rounded-lg border border-input shadow-sm shadow-black/5 outline-offset-2 transition-colors peer-[:focus-visible]:outline peer-[:focus-visible]:outline-2 peer-[:focus-visible]:outline-ring/70 peer-data-[disabled]:cursor-not-allowed peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent peer-data-[disabled]:opacity-50"
+                />
+                <span
+                    className="group mt-2 flex items-center gap-1 peer-data-[state=unchecked]:text-muted-foreground/70">
               <Check
                   size={16}
                   strokeWidth={2}
@@ -404,11 +396,9 @@ export function Themes() {
               />
               <span className="text-xs font-medium">{item.label}</span>
             </span>
-                    </label>
-                ))}
-            </RadioGroup>
-        </fieldset>
-    );
+            </label>))}
+        </RadioGroup>
+    </fieldset>);
 }
 
 interface ApplicationCardProps {
@@ -416,7 +406,7 @@ interface ApplicationCardProps {
 }
 
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({
-    companyName
+                                                                    companyName
                                                                 }) => {
     const [file, setFile] = useState<File | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -440,232 +430,143 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
         }
     }
 
-    return (
-        <div className="p-4 flex flex-col items-center justify-center space-y-4">
-            <ReusableCard
-                className={"w-full max-w-md"}
-                header={
-                    <main className={"flex items-center space-x-4 p-6"}>
-                        <Image src={""} alt={""} width={64} height={64}
-                               className={"border-2 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full"}
-                               style={{objectFit: "contain"}}/>
-                        <Label>
-                            {companyName}
-                        </Label>
-                    </main>
-                }
-            />
-            <ReusableCard
-                title={"Application Form"}
-                description={"Fill out the form below to apply for the job position. All fields are required."}
-                className={"w-full max-w-md"}
-                footer={
-                    <form action={""}>
-                        <section className={"flex justify-end"}>
-                            <Button type={"submit"}>Submit</Button>
-                        </section>
-                    </form>
-                }
-            >
-                <form className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            placeholder="ahmed.devv@proton.me"
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
-                        <Input
-                            id="resume"
-                            name="resume"
-                            type="file"
-                            accept=".pdf"
-                            onChange={handleFileChange}
-                            className="cursor-pointer"
-                        />
-                        {file?.name}
-                        {error && <Label className={"text-red-600"}>{error}</Label>}
-                    </div>
-                </form>
-            </ReusableCard>
-        </div>
-    )
+    return (<div className="p-4 flex flex-col items-center justify-center space-y-4">
+        <ReusableCard
+            className={"w-full max-w-md"}
+            header={<main className={"flex items-center space-x-4 p-6"}>
+                <Image src={""} alt={""} width={64} height={64}
+                       className={"border-2 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full"}
+                       style={{objectFit: "contain"}}/>
+                <Label>
+                    {companyName}
+                </Label>
+            </main>}
+        />
+        <ReusableCard
+            title={"Application Form"}
+            description={"Fill out the form below to apply for the job position. All fields are required."}
+            className={"w-full max-w-md"}
+            footer={<form action={""}>
+                <section className={"flex justify-end"}>
+                    <Button type={"submit"}>Submit</Button>
+                </section>
+            </form>}
+        >
+            <form className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                        id="email"
+                        type="email"
+                        placeholder="ahmed.devv@proton.me"
+                    />
+                </div>
+                <div className="space-y-2">
+                    <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
+                    <Input
+                        id="resume"
+                        name="resume"
+                        type="file"
+                        accept=".pdf"
+                        onChange={handleFileChange}
+                        className="cursor-pointer"
+                    />
+                    {file?.name}
+                    {error && <Label className={"text-red-600"}>{error}</Label>}
+                </div>
+            </form>
+        </ReusableCard>
+    </div>)
 }
 
 
-const quickLinks = [
-    {href: '/about', label: 'About Us'},
-    {href: '/services', label: 'Services'},
-    {href: '/products', label: 'Products'},
-    {href: '/contact', label: 'Contact Us'},
-]
+const quickLinks = [{href: '/about', label: 'About Us'}, {href: '/services', label: 'Services'}, {
+    href: '/products', label: 'Products'
+}, {href: '/contact', label: 'Contact Us'},]
 
-const legalLinks = [
-    {href: '/privacy', label: 'Privacy Policy'},
-    {href: '/terms', label: 'Terms of Service'},
-    {href: '/cookies', label: 'Cookie Policy'},
-]
+const legalLinks = [{href: '/privacy', label: 'Privacy Policy'}, {
+    href: '/terms', label: 'Terms of Service'
+}, {href: '/cookies', label: 'Cookie Policy'},]
 
 export function Footer() {
     const [state, setState] = React.useState(false)
 
-    return (
-        <>
-            <Collapsible open={state}>
-                {!state && (
-                    <CollapsibleTrigger className={"mx-auto w-full py-8 border-t"} onClick={() => setState(true)}>
+    return (<>
+        <Collapsible open={state}>
+            {!state && (<CollapsibleTrigger className={"mx-auto w-full py-8 border-t"} onClick={() => setState(true)}>
+                <div className="text-center text-sm">
+                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+                </div>
+            </CollapsibleTrigger>)}
+            {state && (<CollapsibleContent onClick={() => setState(false)}>
+                <footer className={"border-t"}>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                            {/* Company Info */}
+                            <div>
+                                <Link href="/" className="flex items-center mb-4">
+                                    <span className="sr-only">HORIZONS</span>
+                                    <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24"
+                                         stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                                    </svg>
+                                    <span className="ml-2 text-sm font-medium">HORIZONS</span>
+                                </Link>
+                                <p className="text-sm">
+                                    We are dedicated to providing the best service to our customers.
+                                </p>
+                            </div>
+
+                            <div className={"flex flex-col gap-4"}>
+                                <Label className="text-sm font-semibold">QUICK LINKS</Label>
+                                <ul className="space-y-2 text-sm">
+                                    {quickLinks.map((link) => (<li key={link.href}>
+                                        <Link href={link.href}
+                                              className="hover:text-white transition-colors">
+                                            {link.label}
+                                        </Link>
+                                    </li>))}
+                                </ul>
+                            </div>
+
+
+                            <div className={"flex flex-col gap-4"}>
+                                <Label className="text-sm font-semibold mb-4">LEGAL</Label>
+                                <ul className="space-y-2 text-sm">
+                                    {legalLinks.map((link) => (<li key={link.href}>
+                                        <Link href={link.href}
+                                              className="hover:text-white transition-colors">
+                                            {link.label}
+                                        </Link>
+                                    </li>))}
+                                </ul>
+                            </div>
+
+                            <div>
+                                <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
+                                <form className="space-y-2">
+                                    <Input
+                                        type="email"
+                                        placeholder="Enter your email"
+                                        aria-label="Email for newsletter"
+                                    />
+                                    <Button type="submit" className="w-full">
+                                        Subscribe
+                                    </Button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 pt-8 border-t border-gray-800">
+                        </div>
+
                         <div className="text-center text-sm">
                             <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
                         </div>
-                    </CollapsibleTrigger>
-                )}
-                {state && (
-                    <CollapsibleContent onClick={() => setState(false)}>
-                        <footer className={"border-t"}>
-                            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                                    {/* Company Info */}
-                                    <div>
-                                        <Link href="/" className="flex items-center mb-4">
-                                            <span className="sr-only">HORIZONS</span>
-                                            <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24"
-                                                 stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                                      d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                            </svg>
-                                            <span className="ml-2 text-sm font-medium">HORIZONS</span>
-                                        </Link>
-                                        <p className="text-sm">
-                                            We are dedicated to providing the best service to our customers.
-                                        </p>
-                                    </div>
-
-                                    <div className={"flex flex-col gap-4"}>
-                                        <Label className="text-sm font-semibold">QUICK LINKS</Label>
-                                        <ul className="space-y-2 text-sm">
-                                            {quickLinks.map((link) => (
-                                                <li key={link.href}>
-                                                    <Link href={link.href}
-                                                          className="hover:text-white transition-colors">
-                                                        {link.label}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-
-                                    <div className={"flex flex-col gap-4"}>
-                                        <Label className="text-sm font-semibold mb-4">LEGAL</Label>
-                                        <ul className="space-y-2 text-sm">
-                                            {legalLinks.map((link) => (
-                                                <li key={link.href}>
-                                                    <Link href={link.href}
-                                                          className="hover:text-white transition-colors">
-                                                        {link.label}
-                                                    </Link>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div>
-                                        <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
-                                        <form className="space-y-2">
-                                            <Input
-                                                type="email"
-                                                placeholder="Enter your email"
-                                                aria-label="Email for newsletter"
-                                            />
-                                            <Button type="submit" className="w-full">
-                                                Subscribe
-                                            </Button>
-                                        </form>
-                                    </div>
-                                </div>
-
-                                <div className="mt-8 pt-8 border-t border-gray-800">
-                                </div>
-
-                                <div className="text-center text-sm">
-                                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
-                                </div>
-                            </div>
-                        </footer>
-                    </CollapsibleContent>
-                )}
-            </Collapsible>
-        </>
-    )
-}
-
-function useIntersectionObserver(
-    ref: RefObject<Element>,
-    options: IntersectionObserverInit = {threshold: 0.5}
-): boolean {
-    const [isIntersecting, setIsIntersecting] = useState(false);
-
-    useEffect(() => {
-        const observer = new IntersectionObserver(([entry]) => {
-            setIsIntersecting(entry.isIntersecting);
-        }, options);
-
-        if (ref.current) {
-            observer.observe(ref.current);
-        }
-
-        return () => {
-            observer.disconnect();
-        };
-    }, [ref, options]);
-
-    return isIntersecting;
-}
-
-export const Intersection = () => {
-    const ref1 = useRef<HTMLDivElement>(null);
-    const ref2 = useRef<HTMLDivElement>(null);
-    const ref3 = useRef<HTMLDivElement>(null);
-    const ref4 = useRef<HTMLDivElement>(null);
-
-    const isVisible1 = useIntersectionObserver(ref1);
-    const isVisible2 = useIntersectionObserver(ref2);
-    const isVisible3 = useIntersectionObserver(ref3);
-    const isVisible4 = useIntersectionObserver(ref4);
-
-
-    const [visibleComponent, setVisibleComponent] = useState<number>(1);
-
-    useEffect(() => {
-        if (isVisible1) setVisibleComponent(1);
-        else if (isVisible2) setVisibleComponent(2);
-        else if (isVisible3) setVisibleComponent(3);
-        else if (isVisible4) setVisibleComponent(4);
-    }, [isVisible1, isVisible2, isVisible3, isVisible4]);
-
-    {/*const handleScroll1 = () => {
-        ref1.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
-    }
-    const handleScroll2 = () => {
-        ref2.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
-    }
-    const handleScroll3 = () => {
-        ref3.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
-    }
-    const handleScroll4 = () => {
-        ref4.current?.scrollIntoView({behavior: "smooth", block: "start", inline: "nearest"})
-    }*/}
-
-    return (
-        <>
-            <div>{visibleComponent}</div>
-            <div ref={ref1}></div>
-            <div ref={ref2}></div>
-            <div ref={ref3}></div>
-            <div ref={ref4}></div>
-        </>
-    )
+                    </div>
+                </footer>
+            </CollapsibleContent>)}
+        </Collapsible>
+    </>)
 }
