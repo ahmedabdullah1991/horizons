@@ -181,6 +181,26 @@ const Company_Section = () => {
                 </div>
             </div>
         </div>
+        <div className="p-4 lg:p-0">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <ReusableCard
+                    title={"content coming soon"}
+                    className="row-span-1 lg:row-span-2"
+                />
+                <ReusableCard
+                    title={"content coming soon"}
+                    className="row-span-1"
+                />
+                <ReusableCard
+                    title={"content coming soon"}
+                    className="row-span-1 lg:row-span-2"
+                />
+                <ReusableCard
+                    title={"content coming soon"}
+                    className="row-span-1"
+                />
+            </div>
+        </div>
     </section>
 }
 
