@@ -63,7 +63,7 @@ export default function HomePage() {
             <ContentSections/>
         </div>
         <div ref={ref2}>
-            <Section_4/>
+            <Company_Section/>
         </div>
     </>)
 }
