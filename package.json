@@ -44,7 +44,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-phone-number-input": "^3.4.10",
-    "recharts": "^2.13.3",
+    "recharts": "^2.14.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "turbopack": "^0.0.1",

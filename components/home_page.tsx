@@ -17,8 +17,16 @@ import {Badge} from "@/components/ui/badge";
 import {Separator} from "@/components/ui/separator";
 import {clsx} from "clsx";
 import {
-    NavigationMenu, NavigationMenuItem, NavigationMenuList, navigationMenuTriggerStyle
+    NavigationMenu,
+    NavigationMenuItem,
+    NavigationMenuList,
+    navigationMenuTriggerStyle
 } from "@/components/ui/navigation-menu";
+import {Card, CardContent} from "@/components/ui/card"
+import {CartesianGrid, Line, LineChart} from "recharts"
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
+import {useTheme} from "next-themes"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -43,11 +51,11 @@ export default function HomePage() {
     const menus = [{label: "INDIVIDUALS", label2: handleScroll1}, {label: "COMPANIES", label2: handleScroll2},]
 
     return (<>
-        <NavigationMenu className={"mx-auto sticky top-10 z-10"}>
+        <NavigationMenu className={"mx-auto w-full sticky top-10 z-10"}>
             <NavigationMenuList className={"p-2"}>
                 {menus.map((value, index) => (<NavigationMenuItem key={index} onClick={value.label2}
-                                                                  className={clsx(`${navigationMenuTriggerStyle()} bg-transparent cursor-pointer text-muted-foreground transition-colors hover:bg-transparent duration-300`, {
-                                                                      "border-blue-800 border-2 no-underline text-blue-800 hover:text-blue-800": visibleComponent === index + 1,
+                                                                  className={clsx(`${navigationMenuTriggerStyle()} cursor-pointer transition-colors duration-300`, {
+                                                                      "border-blue-800 border text-blue-800 hover:text-blue-800": visibleComponent === index + 1,
                                                                   })}>{value.label}</NavigationMenuItem>))}
             </NavigationMenuList>
         </NavigationMenu>
@@ -153,115 +161,246 @@ const cards = [{
     badges: ["Consultant", "Remote", "Cloud", "On the Spotlight"],
 }]
 
-const Section_4 = () => {
-    return <></>
+const Company_Section = () => {
+    return <section className={"container max-w-3xl mx-auto space-y-20 mb-36"}>
+        <div className="w-full lg:pl-0 lg:pr-0 pl-14 pr-4 pb-10">
+            <div className="relative">
+                {/* Large card */}
+                <Card className="w-full aspect-video overflow-hidden flex flex-col lg:p-8 p-4 gap-4 lg:gap-8">
+                    <div className={"flex flex-col"}>
+                        <Label className={"lg:text-base text-sm font-bold"}>Real-time performance metrics and
+                            data</Label>
+                        <Label className={"lg:text-sm text-xs"}>Improved efficiency and accuracy</Label>
+                    </div>
+                    <TableComponent/>
+                </Card>
+
+                {/* Small card */}
+                <div className={"absolute left-0 bottom-0 transform translate-y-10 -translate-x-10 w-3/4 h-3/4"}>
+                    <Component/>
+                </div>
+            </div>
+        </div>
+    </section>
 }
 
 const ContentSections = () => {
     const {isAuthenticated} = useKindeBrowserClient()
     return (<section className={"container max-w-3xl mx-auto px-4 flex flex-col space-y-20 my-36"}>
-            <div className="flex flex-col gap-6">
-                <AvatarCirclesComponent/>
-                <div className="flex flex-col">
-                    <Label
-                        className={`${orbitron.className} text-5xl font-bold tracking-tighter lg:text-7xl flex flex-row items-center`}
-                    >
-                        HORIZONS
-                    </Label>
-                    <Label
-                        className={`${orbitron.className} text-xl lg:text-2xl underline`}
-                    >
-                        Get hired in days, not months!
-                    </Label>
-                </div>
-                <Label className="text-sm lg:text-base">
-                    HORIZONS is a dynamic platform that connects
-                    people with companies. Our user-friendly
-                    interface allows you to search and apply
-                    effortlessly.
+        <div className="flex flex-col gap-6">
+            <AvatarCirclesComponent/>
+            <div className="flex flex-col">
+                <Label
+                    className={`${orbitron.className} text-5xl font-bold tracking-tighter lg:text-7xl flex flex-row items-center`}
+                >
+                    HORIZONS
                 </Label>
-                {!isAuthenticated && <Link href={"/api/auth/login?"}><Button className={"bg-[#0000B8] text-white w-max"}
-                                                                             variant={"link"}>REGISTER</Button></Link>}
+                <Label
+                    className={`${orbitron.className} text-xl lg:text-2xl underline`}
+                >
+                    Get hired in days, not months!
+                </Label>
             </div>
-            <ReusableCard
-                className="relative min-h-36 col-span-8 row-span-2"
-            >
-                <Carousel>
-                    <CarouselContent>
-                        {review.map((value, index) => (<CarouselItem key={index}>
-                            <div className={"flex flex-col justify-between gap-2 lg:gap-4 h-full pt-6"}>
-                                <div className={"flex flex-row gap-6"}>
-                                    <Avatar>
-                                        <AvatarImage src={value.src}/>
-                                        <AvatarFallback
-                                            className={"bg-gradient-to-br from-blue-700 to-cyan-500"}></AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <Label className={"text-sm"}>AHMED ABDULLAH</Label>
-                                        <div className={"flex flex-row"}>
-                                            {Array.from({length: 5}, (_, index) => (<div key={index}>
-                                                <Star className="w-4 h-4"/>
-                                            </div>))}
-                                        </div>
+            <Label className="text-sm lg:text-base text-muted">
+                HORIZONS is a dynamic platform that connects
+                people with companies. Our user-friendly
+                interface allows you to search and apply
+                effortlessly.
+            </Label>
+            {!isAuthenticated && <Link href={"/api/auth/login?"}><Button className={"bg-[#0000B8] text-white w-max"}
+                                                                         variant={"link"}>REGISTER</Button></Link>}
+        </div>
+        <ReusableCard
+            className="relative min-h-36 col-span-8 row-span-2"
+        >
+            <Carousel>
+                <CarouselContent>
+                    {review.map((value, index) => (<CarouselItem key={index}>
+                        <div className={"flex flex-col justify-between gap-2 lg:gap-4 h-full pt-6"}>
+                            <div className={"flex flex-row gap-6"}>
+                                <Avatar>
+                                    <AvatarImage src={value.src}/>
+                                    <AvatarFallback
+                                        className={"bg-gradient-to-br from-blue-700 to-cyan-500"}></AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <Label className={"text-sm"}>AHMED ABDULLAH</Label>
+                                    <div className={"flex flex-row"}>
+                                        {Array.from({length: 5}, (_, index) => (<div key={index}>
+                                            <Star className="w-4 h-4"/>
+                                        </div>))}
                                     </div>
                                 </div>
+                            </div>
+                            <div>
+                                <Label
+                                    className={"text-sm leading-none"}>{value.text}</Label>
+                            </div>
+                            <div className={"flex flex-row gap-2"}>
+                                {value.badges.map((value, index) => (<Badge key={index}>{value.badge}</Badge>))}
+                            </div>
+                            <div>
+                                <Label className={"text-sm"}>Posted on {value.posted}</Label>
+                            </div>
+                            <div>
                                 <div>
-                                    <Label
-                                        className={"text-sm text-muted-foreground"}>{value.text}</Label>
-                                </div>
-                                <div className={"flex flex-row gap-2"}>
-                                    {value.badges.map((value, index) => (<Badge key={index}>{value.badge}</Badge>))}
-                                </div>
-                                <div>
-                                    <Label className={"text-sm"}>Posted on {value.posted}</Label>
-                                </div>
-                                <div>
-                                    <div>
-                                        <Label className="leading-none text-sm lg:text-base">
-                                            Results
-                                        </Label>
-                                    </div>
-                                    <Separator className="my-1"/>
-                                    <Label className={"text-sm"}>
-                                        {value.results}
+                                    <Label className="leading-none text-sm lg:text-base">
+                                        Results
                                     </Label>
                                 </div>
-                            </div>
-                        </CarouselItem>))}
-                    </CarouselContent>
-                </Carousel>
-            </ReusableCard>
-            <div>
-                <Label className={"text-4xl font-bold"}>FEATURED JOBS</Label>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
-                    {cards.map((card, index) => (<ReusableCard
-                        key={index}
-                        className="flex flex-col items-center justify-center p-6 h-full"
-                    >
-                        <div
-                            className="flex flex-col items-center justify-between h-full text-center space-y-4">
-                            <div
-                                className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-teal-400 to-cyan-500">
-
-                            </div>
-                            <Label className="text-muted-foreground">
-                                {card.tagline}
-                            </Label>
-                            <Label className="text-base">{card.title.toUpperCase()}</Label>
-                            <div className="flex flex-wrap justify-center gap-2">
-                                {card.badges.map((badge, badgeIndex) => (<Badge
-                                    key={badgeIndex}
-                                    variant="outline"
-                                    className={clsx("border", {
-                                        "border-[#0000B8] border-2": badge.includes("On the Spotlight"),
-                                    })}
-                                >
-                                    {badge}
-                                </Badge>))}
+                                <Separator className="my-1"/>
+                                <Label className={"text-sm"}>
+                                    {value.results}
+                                </Label>
                             </div>
                         </div>
-                    </ReusableCard>))}
-                </div>
+                    </CarouselItem>))}
+                </CarouselContent>
+            </Carousel>
+        </ReusableCard>
+        <div>
+            <Label className={"text-4xl font-bold"}>FEATURED JOBS</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-8">
+                {cards.map((card, index) => (<ReusableCard
+                    key={index}
+                    className="flex flex-col items-center justify-center p-6 h-full"
+                >
+                    <div
+                        className="flex flex-col items-center justify-between h-full text-center space-y-4">
+                        <div
+                            className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-teal-400 to-cyan-500">
+
+                        </div>
+                        <Label className="text-muted-foreground">
+                            {card.tagline}
+                        </Label>
+                        <Label className="text-base">{card.title.toUpperCase()}</Label>
+                        <div className="flex flex-wrap justify-center gap-2">
+                            {card.badges.map((badge, badgeIndex) => (<Badge
+                                key={badgeIndex}
+                                variant="outline"
+                                className={clsx("border", {
+                                    "border-[#0000B8] border-2": badge.includes("On the Spotlight"),
+                                })}
+                            >
+                                {badge}
+                            </Badge>))}
+                        </div>
+                    </div>
+                </ReusableCard>))}
             </div>
-        </section>)
+        </div>
+    </section>)
+}
+
+const tableData = [
+    {id: 1, name: "John Doe", email: "john@example.com", role: "Developer"},
+    {id: 2, name: "Jane Smith", email: "jane@example.com", role: "Designer"},
+    {id: 3, name: "Bob Johnson", email: "bob@example.com", role: "Manager"},
+    {id: 4, name: "Alice Brown", email: "alice@example.com", role: "Tester"},
+];
+
+const TableComponent: React.FC = () => {
+    return (
+        <div className={"translate-x-10 border lg:p-4 p-0 rounded-lg"}>
+            <Table className={"text-[10px] lg:text-xs"}>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Role</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {tableData.map((row) => (
+                        <TableRow key={row.id}>
+                            <TableCell>{row.name}</TableCell>
+                            <TableCell>{row.email}</TableCell>
+                            <TableCell>{row.role}</TableCell>
+                        </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </div>
+    );
+};
+
+const chartLengthX = Array.from({length: 30}, (_, index) => ({
+    desktop: index + 1 + Math.floor(Math.random() * 5),
+    mobile: index + 5 + Math.floor(Math.random() * 5),
+}))
+
+const chartConfig = {
+    desktop: {
+        label: "Clicks",
+        color: "hsl(var(--chart-1))",
+    },
+    mobile: {
+        label: "Impressions",
+        color: "hsl(var(--chart-2))",
+    },
+} satisfies ChartConfig
+
+export function Component() {
+    const {theme} = useTheme()
+    const classNamesLight = "bg-gradient-to-br from-rose-100 via-teal-100 to-violet-100";
+    const classNamesDark = "bg-gradient-to-br from-black via-gray-900 to-gray-800";
+
+    const [clasNames, setClassNames] = useState(theme === "dark" ? classNamesDark : classNamesLight)
+
+    useEffect(() => {
+        setClassNames(theme === "dark" ? classNamesDark : classNamesLight);
+    }, [theme])
+
+    return (
+        <Card className={clasNames}>
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    <LineChart
+                        accessibilityLayer
+                        data={chartLengthX}
+                        margin={{
+                            top: 20,
+                            left: 12,
+                            right: 12,
+                        }}
+                    >
+                        <CartesianGrid vertical={false}/>
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="line"/>}
+                        />
+                        <Line
+                            dataKey="desktop"
+                            type={"bump"}
+                            stroke="var(--color-desktop)"
+                            strokeWidth={2}
+                            dot={{
+                                fill: "var(--color-desktop)",
+                                display: "none",
+                            }}
+                            activeDot={{
+                                r: 6,
+                            }}
+                        >
+                        </Line>
+                        <Line
+                            dataKey="mobile"
+                            type={"bump"}
+                            stroke="var(--color-mobile)"
+                            strokeWidth={2}
+                            dot={{
+                                fill: "var(--color-mobile)",
+                                display: "none",
+                            }}
+                            activeDot={{
+                                r: 6,
+                            }}
+                        >
+                        </Line>
+                    </LineChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
+    )
 }
