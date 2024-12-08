@@ -156,6 +156,7 @@ export async function createListing(
 export type ProfileState = {
     errors?: {
         resume?: string[]
+        listingsId?: string[]
     }
     message?: string | null
 }
@@ -167,12 +168,14 @@ const profileSchema = z.object({
         .refine(
             (file) => ["application/pdf"].includes(file.type),
             "Only .pdf formats are supported"
-        )
+        ),
+    listingsId: z.string()
 })
 
 export async function createProfile(prevState: ProfileState, formData: FormData) {
     const validatedFields = profileSchema.safeParse({
         resume: formData.get("resume"),
+        listingsId: formData.get("listingsId")
     });
     if (!validatedFields.success) {
         return {
@@ -183,6 +186,8 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
 
     const resumeFile = formData.get("resume") as File
     const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
+
+    const {listingsId} = validatedFields.data
 
     try {
         const User = await user();
@@ -197,6 +202,18 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
                         profile: {
                             create: {
                                 resume: resumeBuffer
+                            }
+                        }
+                    }
+                })
+                await prisma.profile.update({
+                    where: {
+                        userId: User.id
+                    },
+                    data: {
+                        application: {
+                            create: {
+                                listingsId: listingsId
                             }
                         }
                     }

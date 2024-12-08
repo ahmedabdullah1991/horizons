@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
-import {createCompany, createListing, ListingState, prevState} from "@/lib/actions";
+import {createCompany, createListing, createProfile, ListingState, prevState, ProfileState} from "@/lib/actions";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {
@@ -407,13 +407,19 @@ export function Themes() {
 
 interface ApplicationCardProps {
     companyName?: string
+    listingsId?: string
 }
 
 export const ApplicationCard: React.FC<ApplicationCardProps> = ({
-                                                                    companyName
+                                                                    companyName, listingsId
                                                                 }) => {
     const [file, setFile] = useState<File | null>(null)
     const [error, setError] = useState<string | null>(null)
+    const initialState: ProfileState = {
+        errors: {}, message: null,
+    }
+    const [state, formAction] = useFormState(createProfile, initialState)
+
     const MAX_FILE_SIZE = 16 * 1024 * 1024
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const selectedFile = event.target.files?.[0]
@@ -450,21 +456,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
             title={"Application Form"}
             description={"Fill out the form below to apply for the job position. All fields are required."}
             className={"w-full max-w-md"}
-            footer={<form action={""}>
-                <section className={"flex justify-end"}>
-                    <Button type={"submit"}>Submit</Button>
-                </section>
+            children2={<form action={formAction}>
+                <Button type={"submit"}>Submit</Button>
             </form>}
         >
-            <form className="space-y-4">
-                <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                        id="email"
-                        type="email"
-                        placeholder="ahmed.devv@proton.me"
-                    />
-                </div>
+            <form action={formAction} className="space-y-4">
                 <div className="space-y-2">
                     <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
                     <Input
@@ -477,7 +473,10 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                     />
                     {file?.name}
                     {error && <Label className={"text-red-600"}>{error}</Label>}
+                    {state.errors?.resume && state.errors.resume.map((error: string) => (
+                        <Label key={error} className={"text-red-600"}>{error}</Label>))}
                 </div>
+                <Input name={"listingsId"} value={listingsId} readOnly={true} className={"hidden"}/>
             </form>
         </ReusableCard>
     </div>)
