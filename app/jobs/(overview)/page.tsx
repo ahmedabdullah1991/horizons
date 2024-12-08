@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Jobs} from "@/lib/data";
+import {Jobs, Company} from "@/lib/data";
 import {ReusableCard} from "@/components/components";
 import {Label} from "@/components/ui/label";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -11,18 +11,21 @@ import {Badge} from "@/components/ui/badge";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
 
+interface Listing {
+    id: string
+    createdAt: Date
+    title: string
+    department: string
+    location: string
+    type: string
+    companyName: string,
+}
+
+interface CompanyId {
+    companyId: string
+}
+
 export default function Page() {
-
-    interface Listing {
-        id: string
-        createdAt: Date
-        title: string
-        department: string
-        location: string
-        type: string
-        companyName: string,
-    }
-
     useEffect(() => {
         const data = () => {
             Jobs().then((data) => {
@@ -34,12 +37,26 @@ export default function Page() {
             })
         }
         data()
+        const fetchData = async () => {
+            try {
+                const companyData = await Company();
+                if (companyData && companyData.companyId) {
+                    setCompany({ companyId: companyData.companyId });
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+        fetchData().catch((error) => {
+            console.error('Error fetching data:', error);
+        });
     }, []);
 
     const handleJobClick = (job: Listing) => {
         setSelectedJob(job)
     }
 
+    const [company, setCompany] = useState<CompanyId>({companyId: ""})
     const [data, setData] = useState<Listing[]>([])
     const [selectedJob, setSelectedJob] = useState<Listing | null>(null)
     const skills = ["React", "TypeScript", "Next.js", "Tailwind"]
@@ -59,7 +76,7 @@ export default function Page() {
                                     <Label className="text-muted-foreground">{value.department}</Label>
                                 </div>
                             </div>
-                        </>} footer={"remove"}
+                        </>}
                         >
                             <section className="grid gap-4">
                                 <div className="flex flex-wrap gap-2 sm:gap-4 text-muted-foreground text-sm">
@@ -95,7 +112,7 @@ export default function Page() {
                             </div>
                         </div>
                     </>}
-                                                   children2={<Link
+                                                   children2={company?.companyId ? null : <Link
                                                        href={{
                                                            pathname: `/jobs/${selectedJob.id}`,
                                                        }}

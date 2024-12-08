@@ -1,33 +1,29 @@
 "use server"
 
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {ScrollArea} from "@/components/ui/scroll-area"
-import {ApplicationsChart} from "@/components/charts";
-import {Company, Listings} from "@/lib/data";
-import {ReusableCard} from "@/components/components";
-import {Button} from "@/components/ui/button";
-import Link from 'next/link'
+import {Company, Profile} from "@/lib/data";
 
-export default async function Dashboard() {
-    const listings = await Listings()
+import {ReusableCard} from "@/components/components";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card";
+import {ApplicationsChart} from "@/components/charts";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
+import {Button} from "@/components/ui/button";
+
+export default async function Page() {
     const company = await Company()
-    const business = company && company.companyData ? true : false
+    const profile = await Profile()
 
     return (
         <main className="flex-1 overflow-auto p-4 lg:p-8">
             <div className="mb-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <ReusableCard
-                    title={"PROFILE TYPE"}
-                    description={business ? "Business/Company" : "User"}
-                    children2={<Link
-                        href={"/generate"}><Button>{business ? "POST A JOB" : "REGISTER AS BUSINESS"}</Button></Link>}
-                />
-                <ReusableCard
-                    title={"Total Applications"}
-                    description={"Total Applications"}
-                    children2={<Button variant={"link"}>{}</Button>}
-                />
+                {company && company.companyId && (
+                    <ReusableCard title={"PROFILE TYPE"}
+                                  children2={
+                                      <Button>{company.companyId ? "POST A JOB" : "REGISTER AS BUSINESS"}</Button>}/>
+                )}
+                {profile && profile.profileResume && (
+                    <ReusableCard title={"RE-UPLOAD RESUME"}/>
+                )}
             </div>
             <Card className="mb-6">
                 <CardHeader>
@@ -60,40 +56,6 @@ export default async function Dashboard() {
                                     <TableCell>{application.date}</TableCell>
                                     <TableCell>{application.status}</TableCell>
                                 </TableRow>))}
-                            </TableBody>
-                        </Table>
-                    </ScrollArea>
-                </CardContent>
-            </Card>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Active Job Postings</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <ScrollArea className="h-[300px]">
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Title</TableHead>
-                                    <TableHead>Department</TableHead>
-                                    <TableHead>Applicants</TableHead>
-                                    <TableHead>Date Posted</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {listings ? listings.map((value, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{value.title}</TableCell>
-                                        <TableCell>{value.department}</TableCell>
-                                        <TableCell>{value.location}</TableCell>
-                                        <TableCell>{value.type}</TableCell>
-                                    </TableRow>
-                                )) : <TableRow>
-                                    <TableCell>No Job Postings</TableCell>
-                                    <TableCell>Start posting your jobs</TableCell>
-                                    <TableCell>to get started</TableCell>
-                                    <TableCell>with HORIZONS</TableCell>
-                                </TableRow>}
                             </TableBody>
                         </Table>
                     </ScrollArea>

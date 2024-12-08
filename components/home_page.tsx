@@ -25,7 +25,6 @@ import {
 import {Card, CardContent} from "@/components/ui/card"
 import {CartesianGrid, Line, LineChart} from "recharts"
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
-import {useTheme} from "next-themes"
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table";
 
 const orbitron = Orbitron({subsets: ["latin"]})
@@ -362,18 +361,9 @@ const chartConfig = {
 } satisfies ChartConfig
 
 export function Component() {
-    const {theme} = useTheme()
-    const classNamesLight = "bg-gradient-to-br from-rose-100 via-teal-100 to-violet-100";
-    const classNamesDark = "bg-gradient-to-br from-black via-gray-900 to-gray-800";
-
-    const [clasNames, setClassNames] = useState(theme === "dark" ? classNamesDark : classNamesLight)
-
-    useEffect(() => {
-        setClassNames(theme === "dark" ? classNamesDark : classNamesLight);
-    }, [theme])
 
     return (
-        <Card className={clasNames}>
+        <Card>
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <LineChart

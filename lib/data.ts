@@ -32,9 +32,8 @@ async function company() {
     try {
         const data = await Data()
         if (!data) {
-            console.error("Error fetching user data");
             return null
-        } else if (data?.userData) {
+        } else {
             const company = await prisma.company.findUnique({
                 where: {
                     userId: data.userData
@@ -50,7 +49,6 @@ async function company() {
                 listings = company.listing
                 return {companyData, companyId, listings}
             } else {
-                console.error("Error fetching company data");
                 return null
             }
         }
@@ -119,7 +117,6 @@ async function jobs() {
             }
         })
         if (!listings) {
-            console.error("No listings found");
             return null
         } else if (listings) {
             listingData = listings
@@ -134,28 +131,31 @@ async function jobs() {
 export const Jobs = jobs
 
 async function profile() {
-    let profileData
+    let profileData, profileResume
     try {
         const data = await Data()
         if (!data) {
-            console.error("Error fetching data")
             return null
         } else {
-            const profile = await prisma.profile.findUniqueOrThrow({
+            const profile = await prisma.profile.findUnique({
                 where: {
                     userId: data.userData
                 },
                 select: {
                     id: true,
+                    resume: true
                 }
             })
             if (profile) {
                 profileData = profile.id
+                profileResume = profile.resume
             } else {
                 return null
             }
         }
-        return profileData
+        return {
+            profileData, profileResume
+        }
     }
     catch (e) {
         console.error(e)
