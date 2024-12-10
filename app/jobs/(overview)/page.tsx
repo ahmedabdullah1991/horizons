@@ -63,7 +63,7 @@ export default function Page() {
     return (<>
             <div
                 className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
-                <div className={"w-1/2 h-[750px] overflow-y-scroll flex flex-col gap-2"}>
+                <div className={"w-1/2 h-[700px] overflow-y-scroll flex flex-col gap-2"}>
                     {data.map((value, index) => (<div key={index} onClick={() => handleJobClick(value)}>
                         <ReusableCard key={index} title={<>
                             <div className="flex flex-row items-center gap-4">
@@ -115,6 +115,7 @@ export default function Page() {
                                                    children2={company?.companyId ? null : <Link
                                                        href={{
                                                            pathname: `/jobs/${selectedJob.id}`,
+
                                                        }}
                                                        scroll={false}
                                                        prefetch={true}

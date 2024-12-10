@@ -220,7 +220,7 @@ const ContentSections = () => {
                     Get hired in days, not months!
                 </Label>
             </div>
-            <Label className="text-sm lg:text-base text-muted">
+            <Label className="text-sm lg:text-base text-muted-foreground">
                 HORIZONS is a dynamic platform that connects
                 people with companies. Our user-friendly
                 interface allows you to search and apply
@@ -256,7 +256,7 @@ const ContentSections = () => {
                                     className={"text-sm leading-none"}>{value.text}</Label>
                             </div>
                             <div className={"flex flex-row gap-2"}>
-                                {value.badges.map((value, index) => (<Badge key={index}>{value.badge}</Badge>))}
+                                {value.badges.map((value, index) => (<Badge key={index} variant={"destructive"}>{value.badge}</Badge>))}
                             </div>
                             <div>
                                 <Label className={"text-sm"}>Posted on {value.posted}</Label>

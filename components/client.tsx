@@ -405,13 +405,14 @@ export function Themes() {
     </fieldset>);
 }
 
-interface ApplicationCardProps {
-    companyName?: string
+interface ProfileCardProps {
     listingsId?: string
+    companyId?: string
+    children?: React.ReactNode
 }
 
-export const ApplicationCard: React.FC<ApplicationCardProps> = ({
-                                                                    companyName, listingsId
+export const ProfileCard: React.FC<ProfileCardProps> = ({
+                                                                    children, listingsId, companyId
                                                                 }) => {
     const [file, setFile] = useState<File | null>(null)
     const [error, setError] = useState<string | null>(null)
@@ -441,24 +442,11 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
     }
 
     return (<div className="p-4 flex flex-col items-center justify-center space-y-4">
+        <>{children}</>
         <ReusableCard
-            className={"w-full max-w-md"}
-            header={<main className={"flex items-center space-x-4 p-6"}>
-                <Image src={""} alt={""} width={64} height={64}
-                       className={"border-2 bg-gradient-to-br from-teal-400 to-cyan-500 rounded-full"}
-                       style={{objectFit: "contain"}}/>
-                <Label>
-                    {companyName}
-                </Label>
-            </main>}
-        />
-        <ReusableCard
-            title={"Application Form"}
+            title={"Profile Form"}
             description={"Fill out the form below to apply for the job position. All fields are required."}
             className={"w-full max-w-md"}
-            children2={<form action={formAction}>
-                <Button type={"submit"}>Submit</Button>
-            </form>}
         >
             <form action={formAction} className="space-y-4">
                 <div className="space-y-2">
@@ -476,12 +464,45 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({
                     {state.errors?.resume && state.errors.resume.map((error: string) => (
                         <Label key={error} className={"text-red-600"}>{error}</Label>))}
                 </div>
-                <Input name={"listingsId"} value={listingsId} readOnly={true} className={"hidden"}/>
+                <Input name={"listingsId"} value={listingsId} readOnly={true}/>
+                <Input name={"companyId"} value={companyId} readOnly={true}/>
+                <Button type={"submit"}>Submit</Button>
             </form>
         </ReusableCard>
     </div>)
 }
 
+interface ApplicationCardProps {
+    listingsId?: string
+    children?: React.ReactNode
+}
+
+export const ApplicationCard: React.FC<ApplicationCardProps> = ({listingsId, children}) => {
+
+    return (<div className="p-4 flex flex-col items-center justify-center space-y-4">
+        <>{children}</>
+        <ReusableCard
+            title={"Application Form"}
+            description={"Fill out the form below to apply for the job position. All fields are required."}
+            className={"w-full max-w-md"}
+        >
+            <form className="space-y-4">
+                <div className="space-y-2">
+                    <Label htmlFor="resume">Upload Resume (Max 16MB)</Label>
+                    <Input
+                        id="resume"
+                        name="resume"
+                        type="file"
+                        accept=".pdf"
+                        className="cursor-pointer"
+                    />
+                </div>
+                <Input name={"listingsId"} value={listingsId} readOnly={true}/>
+                <Button type={"submit"}>Submit</Button>
+            </form>
+        </ReusableCard>
+    </div>)
+}
 
 const quickLinks = [{href: '/about', label: 'About Us'}, {href: '/services', label: 'Services'}, {
     href: '/products', label: 'Products'
