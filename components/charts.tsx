@@ -1,30 +1,107 @@
-'use client'
+"use client"
 
-import {Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from "recharts"
+import * as React from "react"
+import {Bar, BarChart, CartesianGrid, XAxis} from "recharts"
 
-const data = [
-    { name: "Jan", total: 167 },
-    { name: "Feb", total: 190 },
-    { name: "Mar", total: 210 },
-    { name: "Apr", total: 252 },
-    { name: "May", total: 265 },
-    { name: "Jun", total: 280 },
-    { name: "Jul", total: 290 },
-    { name: "Aug", total: 305 },
-    { name: "Sep", total: 270 },
-    { name: "Oct", total: 285 },
-    { name: "Nov", total: 320 },
-    { name: "Dec", total: 345 },
-]
+import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card"
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent,} from "@/components/ui/chart"
 
-export function ApplicationsChart() {
-    return (<ResponsiveContainer width="100%" height="100%">
-            <LineChart data={data}>
-                <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false}/>
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false}
-                       tickFormatter={(value) => `${value}`}/>
-                <Tooltip/>
-                <Line type="monotone" dataKey="total" stroke="#8884d8" strokeWidth={2}/>
-            </LineChart>
-        </ResponsiveContainer>)
+const chartConfig = {
+    views: {
+        label: "Applications",
+    }, desktop: {
+        label: "Desktop", color: "hsl(var(--chart-1))",
+    }, mobile: {
+        label: "Mobile", color: "hsl(var(--chart-2))",
+    },
+} satisfies ChartConfig
+
+interface ChartDataEntry {
+    date: string
+    desktop: number
+    mobile: number
+}
+
+interface ChartProps {
+    chartData: ChartDataEntry[]
+    chartDataDesktop: number
+    chartDataMobile: number
+}
+
+export function ProfilesChart({chartData, chartDataDesktop, chartDataMobile}: ChartProps) {
+    const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop")
+
+    const total = React.useMemo(() => ({
+        desktop: chartDataDesktop, mobile: chartDataMobile
+    }), [chartDataDesktop, chartDataMobile])
+
+    return (<Card>
+            <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+                <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+                    <CardTitle>BAR CHART - INTERACTIVE</CardTitle>
+                    <CardDescription>
+                        Showing total visitors for the last 2 months
+                    </CardDescription>
+                </div>
+                <div className="flex">
+                    {["desktop", "mobile"].map((key) => {
+                        const chart = key as keyof typeof chartConfig
+                        return (<button
+                                key={chart}
+                                data-active={activeChart === chart}
+                                className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left even:border-l data-[active=true]:bg-muted/50 sm:border-l sm:border-t-0 sm:px-8 sm:py-6"
+                                onClick={() => setActiveChart(chart)}
+                            >
+                <span className="text-xs text-muted-foreground">
+                  {chartConfig[chart].label}
+                </span>
+                                <span className="text-lg font-bold leading-none sm:text-3xl">
+                  {total[key as keyof typeof total].toLocaleString()}
+                </span>
+                            </button>)
+                    })}
+                </div>
+            </CardHeader>
+            <CardContent className="px-2 sm:p-6">
+                <ChartContainer
+                    config={chartConfig}
+                    className="aspect-auto h-[250px] w-full"
+                >
+                    <BarChart
+                        accessibilityLayer
+                        data={chartData}
+                        margin={{
+                            left: 12, right: 12,
+                        }}
+                    >
+                        <CartesianGrid vertical={false}/>
+                        <XAxis
+                            dataKey="date"
+                            tickLine={false}
+                            axisLine={false}
+                            tickMargin={8}
+                            minTickGap={32}
+                            tickFormatter={(value) => {
+                                const date = new Date(value)
+                                return date.toLocaleDateString("en-US", {
+                                    month: "short", day: "numeric",
+                                })
+                            }}
+                        />
+                        <ChartTooltip
+                            content={<ChartTooltipContent
+                                className="w-[150px]"
+                                nameKey="views"
+                                labelFormatter={(value) => {
+                                    return new Date(value).toLocaleDateString("en-US", {
+                                        month: "short", day: "numeric", year: "numeric",
+                                    })
+                                }}
+                            />}
+                        />
+                        <Bar dataKey={activeChart} fill={`var(--color-${activeChart})`}/>
+                    </BarChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>)
 }

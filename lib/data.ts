@@ -13,7 +13,7 @@ async function data() {
         const data = await prisma.user.findUnique({
             where: {kindeId: users.id},
             select: {
-                id: true, profile: {
+                id: true, email: true, profile: {
                     select: {
                         id: true,
                     }
@@ -24,7 +24,7 @@ async function data() {
             console.error("Error fetching user data");
             return null;
         }
-        return {userData: data.id, userProfile: data?.profile?.id};
+        return {userData: data, userProfile: data?.profile?.id};
     } catch (error) {
         console.error('Error fetching user data:', error);
         // return { error: { message: error.message } };
@@ -42,7 +42,7 @@ async function company() {
         } else {
             const company = await prisma.company.findUnique({
                 where: {
-                    userId: data.userData
+                    userId: data.userData.id
                 }, select: {
                     id: true,
                     companyName: true,
@@ -72,7 +72,6 @@ async function listings() {
     try {
         const company = await Company()
         if (!company) {
-            console.error("No company found");
             return null
         } else {
             const companyID = company.companyId
@@ -117,6 +116,7 @@ async function jobs() {
                 department: true,
                 type: true,
                 createdAt: true,
+                companyId: true,
                 companyName: true
             }
         })
@@ -134,7 +134,7 @@ async function jobs() {
 export const Jobs = jobs
 
 async function profile() {
-    let profileData, profileResume
+    let profileID, profileResume, profileApplications
     try {
         const data = await Data()
         if (!data) {
@@ -142,22 +142,24 @@ async function profile() {
         } else {
             const profile = await prisma.profile.findUnique({
                 where: {
-                    userId: data.userData
+                    userId: data.userData.id
                 },
                 select: {
                     id: true,
-                    resume: true
+                    resume: true,
+                    applications: true
                 }
             })
             if (profile) {
-                profileData = profile.id
+                profileID = profile.id
                 profileResume = profile.resume
+                profileApplications = profile.applications
             } else {
                 return null
             }
         }
         return {
-            profileData, profileResume
+            profileID, profileResume, profileApplications
         }
     } catch (e) {
         console.error(e)
@@ -168,20 +170,43 @@ async function profile() {
 export const Profile = profile
 
 interface Companies {
-    companyName?: string
+    listingsId?: string
 }
 
-async function companies({companyName}: Companies){
+async function companies({listingsId}: Companies){
     const companies = await prisma.company.findUnique({
         where: {
-            companyName: companyName
+            id: listingsId
         }, select: {
             id: true,
         }
     })
     return {
-        returnedCompanyId: companies?.id
+        companyId: companies?.id
     }
 }
 
 export const Companies = companies
+
+interface Applications {
+    profileId?: string
+}
+
+async function applications({profileId}: Applications) {
+    const applications = await prisma.application.findMany({
+        where: {
+            applicantsId: profileId
+        }, select: {
+            id: true,
+            applicantsId: true,
+            requestsId: true,
+            listingId: true,
+            createdAt: true,
+        }
+    })
+    return {
+        profileData: applications
+    }
+}
+
+export const Applications = applications

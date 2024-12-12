@@ -5,15 +5,14 @@ import {revalidatePath} from "next/cache"
 import {user} from "@/lib/kinde-imports"
 import {z} from "zod"
 import {PrismaClient} from "@prisma/client"
-import {Company, Data, Profile} from "@/lib/data"
+import {Companies, Company, Data, Profile} from "@/lib/data"
 
 const prisma = new PrismaClient()
 
 const schema = z.object({
     companyName: z
         .string({
-            invalid_type_error: "Invalid Company Name",
-            required_error: "Company Name is required",
+            invalid_type_error: "Invalid Company Name", required_error: "Company Name is required",
         })
         .min(5, "Must be 5 characters or more.")
         .max(30, "Must be 30 characters or less.")
@@ -48,8 +47,7 @@ export async function createCompany(prevState: prevState, formData: FormData) {
                 await prisma.user.update({
                     where: {
                         kindeId: User.id,
-                    },
-                    data: {
+                    }, data: {
                         company: {
                             create: {
                                 companyName: companyName
@@ -72,18 +70,15 @@ const listingSchema = z.object({
         .string()
         .min(5, {message: "Title should be 5 characters or more"})
         .max(30, {message: "Title should be 30 characters or less"})
-        .trim(),
-    department: z
+        .trim(), department: z
         .string()
         .min(10, {message: "Department should be 10 characters or more"})
         .max(30, {message: "Department should be 30 characters or less"})
-        .trim(),
-    location: z
+        .trim(), location: z
         .string()
         .min(3, {message: "Location should be 3 characters or more"})
         .max(50, {message: "Location should be 50 characters or less"})
-        .trim(),
-    type: z
+        .trim(), type: z
         .string()
         .min(3, {
             message: "Employment type should be 3 characters or more",
@@ -102,10 +97,7 @@ export type ListingState = {
     message?: string | null
 }
 
-export async function createListing(
-    prevState: ListingState,
-    formData: FormData
-) {
+export async function createListing(prevState: ListingState, formData: FormData) {
     const validatedFields = listingSchema.safeParse({
         title: formData.get("title"),
         department: formData.get("department"),
@@ -125,29 +117,26 @@ export async function createListing(
     try {
         const User = await user()
         const users = await prisma.user.findUniqueOrThrow({
-            where: {kindeId: User.id},
-            select: {id: true},
+            where: {kindeId: User.id}, select: {id: true},
         })
 
         const company = await Company()
         const name = company?.companyData
+        const companyId = company?.companyId
 
-        if (name) {
+        if (name && companyId) {
             await prisma.company.update({
-                where: {userId: users.id},
-                data: {
+                where: {userId: users.id}, data: {
+                    listings: {increment: 1},
                     listing: {
                         create: {
-                            title,
-                            department,
-                            location,
-                            type,
-                            companyName: name,
+                            title, department, location, type, companyName: name, companyId: companyId
                         },
                     },
                 },
             })
         }
+
     } catch (error) {
         console.error("Failed to create listing:", error)
         return {
@@ -161,8 +150,8 @@ export async function createListing(
 export type ProfileState = {
     errors?: {
         resume?: string[]
+        listingId?: string[]
         listingsId?: string[]
-        companyId?: string[]
     }
     message?: string | null
 }
@@ -171,71 +160,79 @@ const profileSchema = z.object({
     resume: z
         .instanceof(File)
         .refine((file) => file.size <= 16000000, `Max file size is 16MB`)
-        .refine(
-            (file) => ["application/pdf"].includes(file.type),
-            "Only .pdf formats are supported"
-        ),
-    listingsId: z.string(),
-    companyId: z.string()
+        .refine((file) => ["application/pdf"].includes(file.type), "Only .pdf formats are supported"),
+    listingId: z.string(),
+    listingsId: z.string()
 })
 
 export async function createProfile(prevState: ProfileState, formData: FormData) {
-    const data = await Data()
-    const dataId = data?.userData
-    const company = await Company()
+
     const validatedFields = profileSchema.safeParse({
-        resume: formData.get("resume"),
-        listingsId: formData.get("listingsId"),
-        companyId: formData.get("companyId")
+        resume: formData.get("resume"), listingId: formData.get("listingId"), listingsId: formData.get("listingsId")
     });
+
     if (!validatedFields.success) {
         return {
             errors: validatedFields.error.flatten().fieldErrors,
             message: "Missing or invalid fields. Failed to create profile.",
         };
     }
+
     const resumeFile = formData.get("resume") as File
     const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
-
-    const {listingsId, companyId} = validatedFields.data
+    const {listingId, listingsId} = validatedFields.data
 
     try {
+
         const User = await user();
+
         if (User) {
+
+            const data = await Data()
+            const dataId = data?.userData
+            const company = await Company()
+
             if (company) {
                 redirect("/jobs");
             } else {
                 if (dataId) {
+
+                    const companies = await Companies({listingsId: listingsId})
+                    const companyId = companies?.companyId;
+
                     const profile = await prisma.profile.upsert({
                         where: {
-                            userId: dataId
+                            userId: dataId.id
                         }, update: {
-                            resume: resumeBuffer
+                            resume: resumeBuffer, applications: {increment: 1}
                         }, create: {
-                            userId: dataId,
-                            resume: resumeBuffer
+                            userId: dataId.id, resume: resumeBuffer, applications: 1
                         }
                     })
+
                     await prisma.application.create({
                         data: {
                             applicants: {
-                                connect: { id: profile.id },
+                                connect: {id: profile.id},
                             },
                             requests: {
-                                connect: { id: companyId }, // Assuming listingsId is the Company id
+                                connect: {id: companyId},
                             },
-                            listingsId: listingsId,
+                            listingId: listingId,
                         },
                     });
                 }
             }
         }
-    } catch (e) {
+    }
+
+    catch (e) {
         console.error(e);
         return {
             message: "An error occurred while creating the profile.",
         };
     }
+
     revalidatePath("/dashboard");
     redirect("/dashboard");
 }

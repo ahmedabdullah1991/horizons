@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import {useEffect, useState} from "react";
-import {Jobs, Company} from "@/lib/data";
+import {Company, Jobs} from "@/lib/data";
 import {ReusableCard} from "@/components/components";
 import {Label} from "@/components/ui/label";
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
@@ -18,6 +18,7 @@ interface Listing {
     department: string
     location: string
     type: string
+    companyId: string
     companyName: string,
 }
 
@@ -41,7 +42,7 @@ export default function Page() {
             try {
                 const companyData = await Company();
                 if (companyData && companyData.companyId) {
-                    setCompany({ companyId: companyData.companyId });
+                    setCompany({companyId: companyData.companyId});
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -115,6 +116,11 @@ export default function Page() {
                                                    children2={company?.companyId ? null : <Link
                                                        href={{
                                                            pathname: `/jobs/${selectedJob.id}`,
+                                                           query: {
+                                                               listingsCompanyId: selectedJob.companyId,
+                                                               listingsCompanyName: selectedJob.companyName,
+                                                               listingsId: selectedJob.id
+                                                           }
 
                                                        }}
                                                        scroll={false}

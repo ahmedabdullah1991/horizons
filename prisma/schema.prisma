@@ -18,11 +18,12 @@ model User {
 }
 
 model Profile {
-  id          String        @id @default(auto()) @map("_id") @db.ObjectId
-  user        User          @relation(fields: [userId], references: [id])
-  userId      String        @unique @db.ObjectId
-  resume      Bytes?
-  application Application[]
+  id           String        @id @default(auto()) @map("_id") @db.ObjectId
+  user         User          @relation(fields: [userId], references: [id])
+  userId       String        @unique @db.ObjectId
+  resume       Bytes?
+  applications Int           @default(0)
+  application  Application[]
 }
 
 model Company {
@@ -30,17 +31,21 @@ model Company {
   user        User          @relation(fields: [userId], references: [id])
   userId      String        @unique @db.ObjectId
   companyName String        @unique
+  listings    Int           @default(0)
   listing     Listing[]
   application Application[]
 }
 
 model Application {
-  id           String  @id @default(auto()) @map("_id") @db.ObjectId
-  applicants   Profile @relation(fields: [applicantsId], references: [id])
-  applicantsId String  @unique @db.ObjectId
-  requests     Company @relation(fields: [requestsId], references: [id])
-  requestsId   String  @db.ObjectId
-  listingsId   String
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
+  applicants   Profile  @relation(fields: [applicantsId], references: [id])
+  applicantsId String   @db.ObjectId
+  requests     Company  @relation(fields: [requestsId], references: [id])
+  requestsId   String   @db.ObjectId
+  listingId    String
+  createdAt    DateTime @default(now())
+
+  @@unique([applicantsId, listingId])
 }
 
 model Listing {
@@ -55,6 +60,7 @@ model Listing {
   location    String
   type        String
   companyName String
+  companyId   String
   application Int        @default(0)
   requests    Requests[]
 
