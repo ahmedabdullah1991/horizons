@@ -190,6 +190,7 @@ export const Companies = companies
 
 interface Applications {
     profileId?: string
+    requestsId?: string
 }
 
 async function applications({profileId}: Applications) {
@@ -206,7 +207,27 @@ async function applications({profileId}: Applications) {
     })
     return {
         profileData: applications
+
     }
 }
 
 export const Applications = applications
+
+async function requests({requestsId}: Applications) {
+    const requests = await prisma.application.findMany({
+        where: {
+            requestsId: requestsId
+        }, select: {
+            id: true,
+            applicantsId: true,
+            requestsId: true,
+            listingId: true,
+            createdAt: true,
+        }
+    })
+    return {
+        requestsData: requests
+    }
+}
+
+export const Requests = requests

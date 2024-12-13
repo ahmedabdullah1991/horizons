@@ -20,23 +20,22 @@ interface CardProps {
 }
 
 export const ReusableCard: React.FC<CardProps> = ({
-    header, title, description, content,
-    children, footer, children2, className,
+    header, title, description,
+    children, footer, className,
     headerClassName, contentClassName,
     footerClassName, removeHeader,
-    removeContent, removeFooter
                                                 }) => {
-    return (<Card className={cn(className)}>
-            {!removeHeader && (header || title || description) && (<CardHeader className={headerClassName}>
+    return (<Card className={cn(className, "flex flex-col justify-between")}>
+            {!removeHeader && (header || title || description) && (<CardHeader className={cn(headerClassName)}>
                     {header || (<>
                             {title && <CardTitle>{title}</CardTitle>}
                             {description && <CardDescription>{description}</CardDescription>}
                         </>)}
                 </CardHeader>)}
-            {!removeContent && (content || children) && (
-                <CardContent className={contentClassName}>{content || children}</CardContent>)}
-            {!removeFooter && (footer || children2) && (<CardFooter className={cn("flex justify-end", footerClassName)}>
-                    {footer || children2}
+            {children && (
+                <CardContent className={cn(contentClassName)}>{children}</CardContent>)}
+            {footer && (<CardFooter className={cn("flex justify-end w-full", footerClassName)}>
+                    {footer}
                 </CardFooter>)}
         </Card>)
 }
