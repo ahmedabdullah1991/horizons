@@ -1,6 +1,7 @@
 "use server"
 
-import {Applications, Company, Jobs, Listings, Profile, Requests} from "@/lib/data";
+import {Company, Jobs, Profile, Requests} from "@/lib/data";
+import {Data, Applications} from "@/lib/datas";
 
 import prisma from "@/lib/db";
 import {ReusableCard} from "@/components/components";
@@ -12,7 +13,7 @@ import {Button} from "@/components/ui/button";
 interface ApplicationModel {
     applicantsId: string
     requestsId: string
-    listingId: string
+    profileListingId: string
     createdAt: Date
 }
 
@@ -24,18 +25,22 @@ interface RequestModel {
 }
 
 export default async function Page() {
-
+    const data = await Data()
     const company = await Company()
     const profile = await Profile()
-    const listings = await Listings()
     const jobs = await Jobs()
 
-    let {listingId, createdAt} = {} as ApplicationModel
-    const applications = await Applications({profileId: profile?.profileID})
+    let {profileListingId, createdAt} = {} as ApplicationModel
+    const applications = await Applications({applicantsId: data?.profileData?.id})
     const requests = await Requests({requestsId: company?.companyId})
 
-    applications?.profileData?.map((value) => {
+    {/*applications?.profileData?.map((value) => {
         listingId = value.listingId
+        createdAt = value.createdAt
+    })*/}
+
+    applications?.applicationsData?.map((value)=> {
+        profileListingId = value.listingId
         createdAt = value.createdAt
     })
 
@@ -76,7 +81,7 @@ export default async function Page() {
     } else {
         profileApplicationsNumber = 0
     }
-    const filteredJobs = jobs?.filter((data) => data.id === listingId)
+    const filteredJobs = jobs?.filter((data) => data.id === profileListingId)
     const cFilteredJobs = jobs?.filter((data) => data.id === ClistingId)
     const applicationCreatedAt = createdAt ? createdAt.toISOString().split('T')[0] : null
 
@@ -115,18 +120,18 @@ export default async function Page() {
         {
             title: "TOTAL APPLICATIONS",
             description: "The total number of applications you have submitted.",
-            button: profileApplicationsNumber
+            button: data?.profileData?.applications
         },
     ] || company && [
         {title: "BUSINESS PROFILE", description: "The total number of active listings.", button: "POST A JOB"},
-        {title: "TOTAL ACTIVE LISTINGS", description: "Business/Company", button: listings?.length},
+        {title: "TOTAL ACTIVE LISTINGS", description: "Business/Company", button: data?.listingsData?.length},
     ] || [
         {
             title: "REGISTER AS A BUSINESS/COMPANY",
             description: "Register now to post jobs and hire.",
             button: "REGISTER"
         },
-        {title: "TOTAL ACTIVE LISTINGS", description: "The total number of active listings.", button: listings?.length},
+        {title: "TOTAL ACTIVE LISTINGS", description: "The total number of active listings.", button: data?.listingsData?.length},
     ]
 
     return (<main className="flex-1 overflow-auto p-4 lg:p-8 space-y-4">
@@ -139,8 +144,8 @@ export default async function Page() {
         <ProfilesChart chartData={(profile && profileChartData) || (company && companyChartData) || (randomChartData)} chartDataDesktop={1}
                                    chartDataMobile={1}/>
         <ReusableCard
-            title={profile && profile.profileID ? "APPLICATIONS SUBMITTED" : "LISTINGS POSTED"}
-            description={profile && profile.profileID ? "The list of applications you have submitted." : "The list of jobs you have posted."}
+            title={data?.profileData ? "APPLICATIONS SUBMITTED" : "LISTINGS POSTED"}
+            description={data?.profileData ? "The list of applications you have submitted." : "The list of jobs you have posted."}
             children2={<Button variant={"outline"}>VIEW ALL</Button>}
         >
             <ScrollArea className="max-h-[300px]">
@@ -156,15 +161,15 @@ export default async function Page() {
                     <TableBody>
                         {(() => {
                             switch (true) {
-                                case listings && listings.length > 0:
-                                    return listings.slice(0, 3).map((value, index) => (
+                                case data?.listingsData?.length !== 0:
+                                    return data?.listingsData?.slice(0, 3).map((value, index) => (
                                         <TableRow key={`listing-${index}`}>
                                             <TableCell>{value.title}</TableCell>
                                             <TableCell>{value.department}</TableCell>
                                             <TableCell>{value.type}</TableCell>
                                             <TableCell>{value.location}</TableCell>
                                         </TableRow>));
-                                case applications && applications.profileData.length > 0:
+                                case data?.profileData !== null:
                                     return filteredJobs?.map((value, index) => (<TableRow key={index}>
                                         <TableCell>{value.title}</TableCell>
                                         <TableCell>{value.department}</TableCell>
