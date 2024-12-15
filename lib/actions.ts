@@ -5,7 +5,7 @@ import {revalidatePath} from "next/cache"
 import {user} from "@/lib/kinde-imports"
 import {z} from "zod"
 import {PrismaClient} from "@prisma/client"
-import {Companies, Company, Data, Profile} from "@/lib/data"
+import {Data} from "@/lib/datas"
 
 const prisma = new PrismaClient()
 
@@ -27,8 +27,9 @@ export type prevState = {
 }
 
 export async function createCompany(prevState: prevState, formData: FormData) {
-    const User = await user()
-    const profile = await Profile()
+    const users = await user()
+    const data = await Data()
+
     const validatedFields = schema.safeParse({
         companyName: formData.get("companyName"),
     })
@@ -40,13 +41,13 @@ export async function createCompany(prevState: prevState, formData: FormData) {
     }
     const {companyName} = validatedFields.data
     try {
-        if (User) {
-            if (profile) {
+        if (users) {
+            if (data?.profile?.id) {
                 redirect("app/dashboard")
-            } else if (!profile) {
+            } else {
                 await prisma.user.update({
                     where: {
-                        kindeId: User.id,
+                        kindeId: users.id,
                     }, data: {
                         company: {
                             create: {
@@ -115,27 +116,14 @@ export async function createListing(prevState: ListingState, formData: FormData)
     const {title, department, location, type} = validatedFields.data
 
     try {
-        const User = await user()
-        const users = await prisma.user.findUniqueOrThrow({
-            where: {kindeId: User.id}, select: {id: true},
-        })
-
-        const company = await Company()
-        const name = company?.companyData
-        const companyId = company?.companyId
-
-        if (name && companyId) {
+        const data = await Data()
+        const dataId = data?.user?.id
+        const companyName = data?.company?.companyName
+        if (dataId && companyName) {
             await prisma.company.update({
-                where: {userId: users.id}, data: {
-                    listings: {increment: 1},
-                    listing: {
-                        create: {
-                            title, department, location, type, companyName: name, companyId: companyId
-                        },
-                    },
-                },
+                where: {userId: dataId}, data: {listings: {increment: 1}, listing: {create: {title: title, department: department, location: location, type: type, companyName: companyName}}}
             })
-        }
+        } else {}
 
     } catch (error) {
         console.error("Failed to create listing:", error)
@@ -162,13 +150,12 @@ const profileSchema = z.object({
         .refine((file) => file.size <= 16000000, `Max file size is 16MB`)
         .refine((file) => ["application/pdf"].includes(file.type), "Only .pdf formats are supported"),
     listingId: z.string(),
-    listingsId: z.string()
 })
 
 export async function createProfile(prevState: ProfileState, formData: FormData) {
 
     const validatedFields = profileSchema.safeParse({
-        resume: formData.get("resume"), listingId: formData.get("listingId"), listingsId: formData.get("listingsId")
+        resume: formData.get("resume"), listingId: formData.get("listingId")
     });
 
     if (!validatedFields.success) {
@@ -180,27 +167,20 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
 
     const resumeFile = formData.get("resume") as File
     const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
-    const {listingId, listingsId} = validatedFields.data
+    const {listingId} = validatedFields.data
 
     try {
-
-        const User = await user();
-
-        if (User) {
-
+        const users = await user();
+        if (users) {
             const data = await Data()
-            const dataId = data?.userData
-            const company = await Company()
+            const dataId = data?.user?.id
 
-            if (company) {
+            if (data?.user?.id) {
                 redirect("/jobs");
             } else {
                 if (dataId) {
 
-                    const companies = await Companies({listingsId: listingsId})
-                    const companyId = companies?.companyId;
-
-                    const profile = await prisma.profile.upsert({
+                    {/*const profile = await prisma.profile.upsert({
                         where: {
                             userId: dataId.id
                         }, update: {
@@ -208,9 +188,13 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
                         }, create: {
                             userId: dataId.id, resume: resumeBuffer, applications: 1
                         }
-                    })
+                    })*/}
 
-                    await prisma.application.create({
+                    {/*const profile = await prisma.profile.upsert({
+                        where: {userId: dataId}, create: {userId: dataId, resume: resumeBuffer, applications: 1}, update: {resume: resumeBuffer, applications: {increment: 1}, application: {create: {}}}
+                    })*/}
+
+                    {/*await prisma.application.create({
                         data: {
                             applicants: {
                                 connect: {id: profile.id},
@@ -220,7 +204,7 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
                             },
                             listingId: listingId,
                         },
-                    });
+                    })*/}
                 }
             }
         }
