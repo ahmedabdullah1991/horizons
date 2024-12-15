@@ -1,13 +1,13 @@
-import {CompanyNameInputCard, JobPositionInputCard} from "@/components/client";
-import {Company} from "@/lib/data";
+import {CompanyNameInputCard, JobPositionInputCard} from "@/components/client"
+import {Data} from "@/lib/datas";
 
 export default async function Page() {
-    const company = await Company()
-    if (!company?.companyData) {
+    const data = await Data()
+    if (!data?.company) {
         return (
             <CompanyNameInputCard/>
         )
-    } else if (company && company.companyData && company.companyData.length > 0) {
+    } else if (data?.company) {
         return (
             <JobPositionInputCard/>
         )
