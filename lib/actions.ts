@@ -138,8 +138,8 @@ export async function createListing(prevState: ListingState, formData: FormData)
 export type ProfileState = {
     errors?: {
         resume?: string[]
-        listingId?: string[]
         listingsId?: string[]
+        companyId?: string[]
     }
     message?: string | null
 }
@@ -149,13 +149,13 @@ const profileSchema = z.object({
         .instanceof(File)
         .refine((file) => file.size <= 16000000, `Max file size is 16MB`)
         .refine((file) => ["application/pdf"].includes(file.type), "Only .pdf formats are supported"),
-    listingId: z.string(),
+    listingsId: z.string(), companyId: z.string(),
 })
 
 export async function createProfile(prevState: ProfileState, formData: FormData) {
 
     const validatedFields = profileSchema.safeParse({
-        resume: formData.get("resume"), listingId: formData.get("listingId")
+        resume: formData.get("resume"), listingsId: formData.get("listingsId"), companyId: formData.get("companyId")
     });
 
     if (!validatedFields.success) {
@@ -165,9 +165,9 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
         };
     }
 
-    //const resumeFile = formData.get("resume") as File
-    //const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
-    //const {listingId} = validatedFields.data
+    const resumeFile = formData.get("resume") as File
+    const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
+    const {listingsId, companyId} = validatedFields.data
 
     try {
         const users = await user();
@@ -179,44 +179,33 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
                 redirect("/jobs");
             } else {
                 if (dataId) {
-
-                    {/*const profile = await prisma.profile.upsert({
-                        where: {
-                            userId: dataId.id
-                        }, update: {
-                            resume: resumeBuffer, applications: {increment: 1}
-                        }, create: {
-                            userId: dataId.id, resume: resumeBuffer, applications: 1
-                        }
-                    })*/}
-
-                    {/*const profile = await prisma.profile.upsert({
-                        where: {userId: dataId}, create: {userId: dataId, resume: resumeBuffer, applications: 1}, update: {resume: resumeBuffer, applications: {increment: 1}, application: {create: {}}}
-                    })*/}
-
-                    {/*await prisma.application.create({
+                    const profile = await prisma.profile.upsert({
+                        where: {userId: dataId}, create: {userId: dataId, resume: resumeBuffer, applications: 1},
+                        update: {resume: resumeBuffer, applications: {increment: 1}}
+                    })
+                    await prisma.application.create({
                         data: {
-                            applicants: {
-                                connect: {id: profile.id},
-                            },
-                            requests: {
-                                connect: {id: companyId},
-                            },
-                            listingId: listingId,
-                        },
-                    })*/}
+                            profileId: profile.id,
+                            listingsId: listingsId,
+                            companyId: companyId,
+                        }
+                    })
+                    await prisma.request.create({
+                        data: {
+                            listingsId: listingsId,
+                            profileId: profile.id,
+                        }
+                    })
                 }
             }
         }
     }
-
     catch (e) {
         console.error(e);
         return {
             message: "An error occurred while creating the profile.",
         };
     }
-
     revalidatePath("/dashboard");
     redirect("/dashboard");
 }

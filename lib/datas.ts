@@ -59,3 +59,43 @@ async function listings() {
 }
 
 export const Listings = listings
+
+interface Applications {
+    profileId?: string
+}
+
+async function applications({profileId}: Applications) {
+    try {
+        const data = await prisma.application.findMany({
+            where: {profileId: profileId}, select: {id: true, createdAt: true, profileId: true, listingsId: true, companyId: true}
+        })
+        return {
+            applications: data
+        }
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+export const Applications = applications
+
+interface Requests {
+    listingsId?: string
+}
+
+async function requests({listingsId}: Requests) {
+    try {
+        const data = await prisma.request.findMany({
+            where: {listingsId: listingsId}, select: {id: true, createdAt: true, listingsId: true, profileId: true}
+        })
+        return {
+            requests: data
+        }
+    }
+    catch (error) {
+        console.error(error)
+    }
+}
+
+export const Requests = requests

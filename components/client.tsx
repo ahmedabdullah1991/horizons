@@ -406,14 +406,14 @@ export function Themes() {
 }
 
 interface ProfileCardProps {
-    listingId?: string
     listingsId?: string
+    companyId?: string
     children?: React.ReactNode
 }
 
 export const ProfileCard: React.FC<ProfileCardProps> = ({
-                                                                    children, listingId, listingsId
-                                                                }) => {
+                                                            children, listingsId, companyId
+                                                        }) => {
     const [file, setFile] = useState<File | null>(null)
     const [error, setError] = useState<string | null>(null)
     const initialState: ProfileState = {
@@ -464,7 +464,7 @@ export const ProfileCard: React.FC<ProfileCardProps> = ({
                     {state.errors?.resume && state.errors.resume.map((error: string) => (
                         <Label key={error} className={"text-red-600"}>{error}</Label>))}
                 </div>
-                <Input name={"listingId"} value={listingId} readOnly={true}/>
+                <Input name={"companyId"} value={companyId} readOnly={true}/>
                 <Input name={"listingsId"} value={listingsId} readOnly={true}/>
                 <Button type={"submit"}>Submit</Button>
             </form>

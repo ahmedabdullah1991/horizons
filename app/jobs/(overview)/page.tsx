@@ -5,12 +5,13 @@ import ListingsComponent from "@/app/jobs/client";
 
 async function ListingsData() {
     const data = await Listings()
+
     const listings = data?.listings.map((value)=> {
         return {
             id: value.id,
-            title: value.title,
             companyId: value.companyId,
             companyName: value.companyName,
+            title: value.title,
             department: value.department,
             location: value.location,
             type: value.type,
@@ -20,7 +21,7 @@ async function ListingsData() {
 
     return (
         <>
-            <ListingsComponent listings={listings}/>
+            <ListingsComponent listings={listings || []}/>
         </>
     )
 }

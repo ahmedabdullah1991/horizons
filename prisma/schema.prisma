@@ -53,11 +53,11 @@ model Listing {
 }
 
 model Request {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  createdAt DateTime @default(now())
-  listing   Listing  @relation(fields: [listingId], references: [id])
-  listingId String   @db.ObjectId
-  profileId String
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  createdAt  DateTime @default(now())
+  listing    Listing  @relation(fields: [listingsId], references: [id])
+  listingsId String   @db.ObjectId
+  profileId  String
 }
 
 model Application {
