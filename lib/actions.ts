@@ -165,9 +165,9 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
         };
     }
 
-    const resumeFile = formData.get("resume") as File
-    const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
-    const {listingId} = validatedFields.data
+    //const resumeFile = formData.get("resume") as File
+    //const resumeBuffer = Buffer.from(await resumeFile.arrayBuffer())
+    //const {listingId} = validatedFields.data
 
     try {
         const users = await user();
