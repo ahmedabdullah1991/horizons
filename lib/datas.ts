@@ -13,9 +13,9 @@ async function data(){
             where: {kindeId: currentUser.id},
             select: {
                 id: true, email: true, firstName: true, lastName: true,
-                profile: {select: {id: true, resume: true, applications: true,}},
+                profile: {select: {id: true, resume: true, applications: true, application: {select: {id: true, createdAt: true, profileId: true, listingsId: true, companyId: true}}}},
                 company: {select: {id: true, userId: true, companyName: true, listings: true,
-                        listing: {select: {id: true, companyId: true, companyName: true, updatedAt: true, createdAt: true, title: true, department: true, type: true, location: true,}}
+                        listing: {select: {id: true, companyId: true, companyName: true, updatedAt: true, createdAt: true, title: true, department: true, type: true, location: true, request: {select: {id: true, createdAt: true, listingsId: true, profileId: true}}}}
                     }
                 }
             }
@@ -33,6 +33,10 @@ async function data(){
             company: data && data.company? data.company : null,
             listings: data && data.company && data.company.listing ? data.company.listing : null,
             profile: data && data.profile ? data.profile : null,
+            application: data && data.profile && data.profile.application ? data.profile.application : null,
+            request: data && data.company && data.company.listing && data.company.listing.map((value) => {
+                return value.request
+            }) || null,
         }
     }
     catch (error) {
@@ -44,11 +48,7 @@ export const Data = data
 
 async function listings() {
     try {
-        const data = await prisma.listing.findMany({
-            select: {
-                id: true, companyId: true, companyName: true, title: true, location: true, department: true, type: true, createdAt: true
-            }
-        })
+        const data = await prisma.listing.findMany({})
         return {
             listings: data
         }

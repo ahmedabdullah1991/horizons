@@ -26,9 +26,10 @@ interface ChartProps {
     chartData: ChartDataEntry[]
     chartDataDesktop: number
     chartDataMobile: number
+    description: string
 }
 
-export function ProfilesChart({chartData, chartDataDesktop, chartDataMobile}: ChartProps) {
+export function ProfilesChart({chartData, chartDataDesktop, chartDataMobile, description}: ChartProps) {
     const [activeChart, setActiveChart] = React.useState<keyof typeof chartConfig>("desktop")
 
     const total = React.useMemo(() => ({
@@ -40,7 +41,7 @@ export function ProfilesChart({chartData, chartDataDesktop, chartDataMobile}: Ch
                 <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                     <CardTitle>BAR CHART - INTERACTIVE</CardTitle>
                     <CardDescription>
-                        Showing total visitors for the last 2 months
+                        {description}
                     </CardDescription>
                 </div>
                 <div className="flex">
