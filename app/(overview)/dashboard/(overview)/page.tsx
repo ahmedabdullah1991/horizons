@@ -23,11 +23,6 @@ interface Application {
     applicationsCreatedAt: Date
 }
 
-interface Request {
-    requestsCreatedAt: Date
-    requestsNumber: number
-}
-
 export default async function Page() {
     const data = await Data()
     const specificListings = await prisma.listing.findMany({
@@ -37,14 +32,6 @@ export default async function Page() {
     let { applicationsCreatedAt } = {} as Application
     data?.application?.map((value) => {
         applicationsCreatedAt = value.createdAt
-    })
-
-    let { requestsCreatedAt, requestsNumber } = {} as Request
-    data?.listings?.map((value) => {
-        value.request.map((value) => {
-            requestsCreatedAt = value.createdAt
-        })
-        requestsNumber = value.request.length
     })
 
     const profileIds: string[] = []
@@ -75,6 +62,20 @@ export default async function Page() {
     const specificCompanyListings = await prisma.listing.findMany({
         where: { id: { in: listingsIds } },
     })
+    
+    interface RequestDate {
+        requestDate: Date
+    }
+
+    const requestDates: RequestDate[] = []
+    const requestsLength = []
+    data?.listings?.map((value) => {
+        value.request.map((value) => {
+            requestDates.push({requestDate: value.createdAt})
+            requestsLength.push({requestLength: value.id})
+        })
+    })
+    const ISORequestDates = requestDates.map((value) => value.requestDate.toISOString().split("T")[0])
 
     const foo = (data?.profile && [
         {
@@ -121,15 +122,12 @@ export default async function Page() {
     const dates = []
     const today = new Date()
     const twoMonthsAgo = new Date(today)
-    twoMonthsAgo.setMonth(today.getMonth() - 2)
+    twoMonthsAgo.setMonth(today.getMonth() - 1)
 
     let dateString
     const profileApplicationsNumber = data?.profile?.applications
     const applicationCreatedAt = applicationsCreatedAt
         ? applicationsCreatedAt.toISOString().split("T")[0]
-        : ""
-    const requestCreatedAt = requestsCreatedAt
-        ? requestsCreatedAt.toISOString().split("T")[0]
         : ""
     while (twoMonthsAgo <= today) {
         dateString = twoMonthsAgo.toISOString().split("T")[0]
@@ -137,16 +135,14 @@ export default async function Page() {
             dates.push({
                 date: dateString,
                 desktop: profileApplicationsNumber || 0,
-                mobile: profileApplicationsNumber || 0,
             })
-        } else if (requestCreatedAt === dateString) {
+        } else if (ISORequestDates.includes(dateString)) {
             dates.push({
                 date: dateString,
-                desktop: requestsNumber,
-                mobile: requestsNumber,
+                desktop: requestsLength.length,
             })
         } else {
-            dates.push({ date: dateString, desktop: 0, mobile: 0 })
+            dates.push({ date: dateString, desktop: 0})
         }
         twoMonthsAgo.setDate(twoMonthsAgo.getDate() + 1)
     }
@@ -154,28 +150,18 @@ export default async function Page() {
     const P_C_D = dates.map((value) => ({
         date: value.date,
         desktop: value.desktop,
-        mobile: Math.random() * 100,
     }))
     const C_C_D = dates.map((value) => ({
         date: value.date,
         desktop: value.desktop,
-        mobile: value.mobile,
     }))
     const R_C_D = dates.map((value) => ({
         date: value.date,
         desktop: Math.random() * 100,
-        mobile: Math.random() * 100,
     }))
 
     return (
         <main className={"flex-1 overflow-auto p-4 lg:p-8 space-y-4"}>
-            <div>
-                {specificUsers.map((value, index) => (
-                    <div key={index}>
-                        <div>{value.email}</div>
-                    </div>
-                ))}
-            </div>
             <div className={"grid gap-4 sm:grid-cols-2 lg:grid-cols-4"}>
                 {foo.map((value, index) => (
                     <ReusableCard
@@ -198,12 +184,11 @@ export default async function Page() {
                     (data?.company && C_C_D) ||
                     R_C_D
                 }
-                chartDataDesktop={1}
-                chartDataMobile={1}
+                chartDataDesktop={requestsLength.length}
                 description={
                     data?.profile
-                        ? "Showing total applications for the last two months"
-                        : "The list of jobs you have posted."
+                        ? "Showing total applications for the last month"
+                        : "Showing total requests for the last month"
                 }
             />
             <ReusableCard
@@ -217,7 +202,7 @@ export default async function Page() {
                 }
                 footer={<Button variant={"outline"}>VIEW ALL</Button>}
             >
-                <ScrollArea className="max-h-[300px]">
+                <ScrollArea>
                     <Table>
                         <TableHeader>
                             <TableRow>
