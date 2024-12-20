@@ -2,6 +2,7 @@ import * as React from "react";
 import {Listings} from "@/lib/datas";
 import {Suspense} from "react";
 import ListingsComponent from "@/app/jobs/client";
+import Skeleton from "@/app/jobs/(overview)/loading";
 
 async function ListingsData() {
     const data = await Listings()
@@ -29,7 +30,7 @@ async function ListingsData() {
 export default function Page() {
     return (
         <>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Skeleton/>}>
                 <ListingsData/>
             </Suspense>
         </>

@@ -1,13 +1,10 @@
 "use client"
 
 import React, {RefObject, useEffect, useRef, useState} from "react";
-import Link from "next/link";
 
 import {Orbitron} from "next/font/google";
 
-import {useKindeBrowserClient} from "@kinde-oss/kinde-auth-nextjs";
 import {Label} from "@/components/ui/label";
-import {Button} from "@/components/ui/button";
 import AvatarCircles from "@/components/ui/avatar-circles";
 import {ReusableCard} from "@/components/components";
 import {Carousel, CarouselContent, CarouselItem} from "@/components/ui/carousel";
@@ -204,7 +201,6 @@ const Company_Section = () => {
 }
 
 const ContentSections = () => {
-    const {isAuthenticated} = useKindeBrowserClient()
     return (<section className={"container max-w-3xl mx-auto px-4 flex flex-col space-y-20 my-36"}>
         <div className="flex flex-col gap-6">
             <AvatarCirclesComponent/>
@@ -226,8 +222,6 @@ const ContentSections = () => {
                 interface allows you to search and apply
                 effortlessly.
             </Label>
-            {!isAuthenticated && <Link href={"/api/auth/login?"}><Button className={"bg-[#0000B8] text-white w-max"}
-                                                                         variant={"link"}>REGISTER</Button></Link>}
         </div>
         <ReusableCard
             className="relative min-h-36 col-span-8 row-span-2"

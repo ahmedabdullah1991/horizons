@@ -31,8 +31,7 @@ export default function ListingsComponent({listings}: {listings: Listing[]}) {
 
     return (
         <>
-            <div
-                className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
+            <div className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
                 <div className={"w-1/2 h-[700px] overflow-y-scroll flex flex-col gap-2"}>
                     {listings.map((value, index) => (
                         <div key={index} onClick={() => handleClick(value)}>
