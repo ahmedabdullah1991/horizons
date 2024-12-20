@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card"
+import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card"
 import {cn} from "@/lib/utils";
 
 interface CardProps {
@@ -20,22 +20,20 @@ interface CardProps {
 }
 
 export const ReusableCard: React.FC<CardProps> = ({
-    header, title, description,
-    children, footer, className,
+    header, children, footer, className,
     headerClassName, contentClassName,
-    footerClassName, removeHeader,
+    footerClassName
                                                 }) => {
-    return (<Card className={cn(className, "flex flex-col justify-between")}>
-            {!removeHeader && (header || title || description) && (<CardHeader className={cn(headerClassName)}>
-                    {header || (<>
-                            {title && <CardTitle>{title}</CardTitle>}
-                            {description && <CardDescription>{description}</CardDescription>}
-                        </>)}
+    return (
+        <Card className={cn(className, "flex flex-col justify-between min-h-full")}>
+            {header && (<CardHeader className={cn(headerClassName)}>
+                    {header}
                 </CardHeader>)}
             {children && (
                 <CardContent className={cn(contentClassName)}>{children}</CardContent>)}
             {footer && (<CardFooter className={cn("flex justify-end w-full", footerClassName)}>
                     {footer}
                 </CardFooter>)}
-        </Card>)
+        </Card>
+    )
 }

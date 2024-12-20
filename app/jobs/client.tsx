@@ -10,6 +10,7 @@ import {Briefcase, DollarSign, MapPin} from "lucide-react";
 import {Badge} from "@/components/ui/badge";
 import Link from "next/link";
 import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
 
 interface Listing {
     id?: string
@@ -31,15 +32,18 @@ export default function ListingsComponent({listings}: {listings: Listing[]}) {
 
     return (
         <>
+            <div className={"max-w-6xl mx-auto px-4"}>
+                <SearchInput/>
+            </div>
             <div className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
-                <div className={"w-1/2 h-[700px] overflow-y-scroll flex flex-col gap-2"}>
+                <div className={"w-1/2 h-[560px] overflow-y-scroll flex flex-col gap-4"}>
                     {listings.map((value, index) => (
                         <div key={index} onClick={() => handleClick(value)}>
                             <MainContent mainContent={{id: value.id, title: value.title, companyName: value.companyName, department: value.department, location: value.location, type: value.type}}/>
                         </div>
                     ))}
                 </div>
-                <div className={"w-full"}>
+                <div className={"w-full h-[560px]"}>
                     {selected && (
                         <Content content={{
                             id: selected.id,
@@ -52,10 +56,17 @@ export default function ListingsComponent({listings}: {listings: Listing[]}) {
                     )}
                 </div>
             </div>
-            <div className={"overflow-y-scroll h-[700px] max-w-6xl mx-auto space-y-4 p-4 lg:hidden"}>
+            <div className={"overflow-y-scroll h-[596px] flex flex-col gap-4 max-w-6xl mx-auto p-4 lg:hidden"}>
                 {listings.map((value, index) => (
                     <div key={index}>
-                        <MainContent mainContent={{id: value.id, title: value.title, companyName: value.companyName, department: value.department, location: value.location, type: value.type}}/>
+                        <Content content={{
+                            id: value.id,
+                            title: value.title,
+                            companyName: value.companyName,
+                            department: value.department,
+                            location: value.location,
+                            type: value.type
+                        }}/>
                     </div>
                 ))}
             </div>
@@ -66,7 +77,7 @@ export default function ListingsComponent({listings}: {listings: Listing[]}) {
 const MainContent = ({mainContent}: {mainContent: Listing}) => {
     return (
         <>
-            <ReusableCard header={<Header header={{title: mainContent.title, companyName: mainContent.companyName}}/>}>
+            <ReusableCard header={<Header header={{title: mainContent.title, companyName: mainContent.companyName}}/>} className={"h-60"} footer={<Footer/>}>
                 <Section section={{department: mainContent.department, location: mainContent.location, type: mainContent.type}}/>
             </ReusableCard>
         </>
@@ -76,7 +87,7 @@ const MainContent = ({mainContent}: {mainContent: Listing}) => {
 const Header = ({header}: { header: Listing }) => {
     return (
         <>
-            <div className="flex flex-row items-center gap-4">
+            <header className="flex flex-row items-center gap-4">
                 <Avatar className="w-12 h-12">
                     <AvatarImage src={""} alt={""}/>
                     <AvatarFallback className={"bg-gradient-to-br from-teal-400 to-cyan-500"}/>
@@ -85,7 +96,7 @@ const Header = ({header}: { header: Listing }) => {
                     <Label>{header.title}</Label>
                     <Label className="text-muted-foreground">{header.companyName}</Label>
                 </div>
-            </div>
+            </header>
         </>
     )
 }
@@ -103,7 +114,7 @@ const Section = ({section}: {section: Listing}) => {
                         {section.department}
                     </div>
                     <div className="flex items-center">
-                        <MapPin className="mr-1 h-4 w-4"/>
+                        <DollarSign className="mr-1 h-4 w-4"/>
                         {section.location}
                     </div>
                     <div className="flex items-center">
@@ -111,23 +122,26 @@ const Section = ({section}: {section: Listing}) => {
                         {section.type}
                     </div>
                 </div>
-                <div className={"flex flex-wrap gap-2"}>
-                    {skills.map((skill) => (
-                        <Badge key={skill} variant="outline" className={"text-foreground"}>
-                                {skill}
-                            </Badge>
-                        )
-                    )}
-                </div>
             </section>
         </>
     )
 }
 
+const Footer = () => (
+    <footer className={"flex flex-row flex-wrap gap-2 w-full justify-between"}>
+        {skills.map((skill) => (
+                <Badge key={skill} variant="outline" className={"text-foreground"}>
+                    {skill}
+                </Badge>
+            )
+        )}
+    </footer>
+)
+
 const Content = ({content}: {content: Listing}) => {
     return (
         <>
-            <ReusableCard header={<ContentHeader contentTitle={{title: content.title, companyName: content.companyName}}/>} footer={<ContentFooter contentFooter={{id: content.id}}/>}>
+            <ReusableCard header={<ContentHeader contentTitle={{title: content.title, companyName: content.companyName}}/>} footer={<ContentFooter contentFooter={{id: content.id}}/>} className={"h-full"}>
                 <ContentSection contentSection={{department: content.department, location: content.location, type: content.type}}/>
             </ReusableCard>
         </>
@@ -161,7 +175,7 @@ const ContentFooter = ({contentFooter}: {contentFooter: Listing}) => {
                 scroll={false}
                 prefetch={true}
             >
-                <Button>APPLY</Button>
+                <Button className={"font-bold"}>APPLY</Button>
             </Link>
         </>
     )
@@ -171,34 +185,76 @@ const ContentSection = ({contentSection}: {contentSection: Listing}) => {
     return (
         <>
             <section className="grid gap-4">
-                <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                <div className="flex flex-wrap gap-2 text-muted-foreground text-sm">
                     <div className="flex items-center">
-                        <MapPin className="mr-1 h-4 w-4 text-black"/>
+                        <MapPin className="mr-1 h-4 w-4"/>
+                        {contentSection.department}
+                    </div>
+                    <div className="flex items-center">
+                        <DollarSign className="mr-1 h-4 w-4"/>
                         {contentSection.location}
                     </div>
                     <div className="flex items-center">
-                        <Briefcase className="mr-1 h-4 w-4 text-black"/>
+                        <Briefcase className="mr-1 h-4 w-4"/>
                         {contentSection.type}
                     </div>
-                    <div className="flex items-center">
-                        <DollarSign className="mr-1 h-4 w-4 text-black"/>
-                        {contentSection.department}
-                    </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className={"flex flex-wrap gap-2"}>
                     {skills.map((skill) => (
-                        <Badge key={skill} variant="outline">
+                        <Badge key={skill} variant="outline" className={"text-foreground"}>
                             {skill}
-                        </Badge>
-                    ))}
+                        </Badge>)
+                    )}
                 </div>
                 <div className={"text-muted-foreground"}>
-                    <Label>
-                        Horizons is a platform that connects employers and job seekers.
-                        It is a place where employers can post job listings and job seekers can apply for the jobs.
-                    </Label>
+                    <Label>HORIZONS is a platform that connects employers and job seekers.
+                        It is a place where employers can post job listings and job seekers can apply for the jobs.</Label>
                 </div>
             </section>
         </>
     )
+}
+
+interface Content {
+    title?: string
+    department?: string
+}
+
+function SearchInput() {
+
+    const [search, setSearch] = useState<string>("")
+    const [results, setResults] = useState<Content[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const handleSearch = async (e: React.FormEvent) => {
+        e.preventDefault()
+        if (!search) {
+            return null
+        }
+        setIsLoading(true)
+        try {
+            const response = await fetch(`/api/search?search=${search}`)
+            const data = await response.json()
+            setResults(data)
+            setIsLoading(false)
+        }
+        catch (e) {
+            console.error(e)
+            return null
+        }
+    }
+
+    return (<>
+            <form onSubmit={handleSearch}>
+                <main>
+                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={"Search jobs"}/>
+                </main>
+            </form>
+            <main>
+                {isLoading && <p>Loading...</p>}
+                {results.map((value, index) => (<li key={index}>
+                        <h3>{value.title}</h3>
+                        <p>{value.department}</p>
+                    </li>))}
+            </main>
+        </>)
 }

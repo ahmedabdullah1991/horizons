@@ -121,7 +121,12 @@ export async function createListing(prevState: ListingState, formData: FormData)
         const companyName = data?.company?.companyName
         if (dataId && companyName) {
             await prisma.company.update({
-                where: {userId: dataId}, data: {listings: {increment: 1}, listing: {create: {title: title, department: department, location: location, type: type, companyName: companyName}}}
+                where: {userId: dataId}, data: {
+                    listings: 
+                    {increment: 1}, 
+                    listing:
+                    {create: 
+                        {title: title, department: department, location: location, type: type, companyName: companyName}}}
             })
         } else {}
 
@@ -175,37 +180,33 @@ export async function createProfile(prevState: ProfileState, formData: FormData)
             const data = await Data()
             const dataId = data?.user?.id
 
-            if (data?.user?.id) {
-                redirect("/jobs");
-            } else {
-                if (dataId) {
-                    const profile = await prisma.profile.upsert({
-                        where: {userId: dataId}, create: {userId: dataId, resume: resumeBuffer, applications: 1},
-                        update: {resume: resumeBuffer, applications: {increment: 1}}
-                    })
-                    await prisma.application.create({
-                        data: {
-                            profileId: profile.id,
-                            listingsId: listingsId,
-                            companyId: companyId,
-                        }
-                    })
-                    await prisma.request.create({
-                        data: {
-                            listingsId: listingsId,
-                            profileId: profile.id,
-                        }
-                    })
-                }
+            if (dataId) {
+                const profile = await prisma.profile.upsert({
+                    where: {userId: dataId}, create: {userId: dataId, resume: resumeBuffer, applications: 1},
+                    update: {resume: resumeBuffer, applications: {increment: 1}}
+                })
+                await prisma.application.create({
+                    data: {
+                        profileId: profile.id,
+                        listingsId: listingsId,
+                        companyId: companyId,
+                    }
+                })
+                await prisma.request.create({
+                    data: {
+                        listingsId: listingsId,
+                        profileId: profile.id,
+                    }
+                })
             }
         }
     }
     catch (e) {
-        console.error(e);
+        console.error(e)
         return {
             message: "An error occurred while creating the profile.",
-        };
+        }
     }
-    revalidatePath("/dashboard");
-    redirect("/dashboard");
+    revalidatePath("/dashboard")
+    redirect("/dashboard")
 }
