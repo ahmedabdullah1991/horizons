@@ -1,16 +1,18 @@
 "use client"
 
+import Link from "next/link"
 import * as React from "react"
-import {useState} from "react"
+import {useCallback, useEffect, useState, Suspense} from "react"
+import {debounce} from "lodash"
 
-import {ReusableCard} from "@/components/components";
-import {Label} from "@/components/ui/label";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Briefcase, DollarSign, MapPin} from "lucide-react";
-import {Badge} from "@/components/ui/badge";
-import Link from "next/link";
-import {Button} from "@/components/ui/button";
-import {Input} from "@/components/ui/input";
+import {ReusableCard} from "@/components/components"
+import {Label} from "@/components/ui/label"
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Briefcase, DollarSign, MapPin, Search} from "lucide-react"
+import {Badge} from "@/components/ui/badge"
+import {Button} from "@/components/ui/button"
+import {Input} from "@/components/ui/input"
+import {SearchJobsSkeleton} from "@/app/jobs/(overview)/loading"
 
 interface Listing {
     id?: string
@@ -23,6 +25,15 @@ interface Listing {
     type?: string
 }
 
+interface Content {
+    id?: string
+    title?: string
+    companyName?: string,
+    department?: string
+    location?: string
+    type?: string
+}
+
 export default function ListingsComponent({listings}: {listings: Listing[]}) {
 
     const [selected, setSelected] = useState<Listing | null>(null)
@@ -30,55 +41,117 @@ export default function ListingsComponent({listings}: {listings: Listing[]}) {
         setSelected(listing)
     }
 
+    const [search, setSearch] = useState<string>("")
+    const [results, setResults] = useState<Content[]>([])
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+
+    const handleSearch = useCallback(
+        debounce(async (searchTerm: string) => {
+            if (!searchTerm) {
+                setResults([])
+                setIsLoading(false)
+                return
+            }
+            setIsLoading(true)
+            try {
+                const response = await fetch(`/api/search?search=${encodeURIComponent(searchTerm)}`)
+                if (!response.ok) return
+                const data = await response.json()
+                setResults(data)
+            } catch (error) {
+                console.error(error)
+            } finally {
+                setIsLoading(false)
+            }
+        }, 300),
+        [])
+
+    useEffect(() => {
+        handleSearch(search)
+    }, [search, handleSearch])
+
     return (
         <>
-            <div className={"max-w-6xl mx-auto px-4"}>
-                <SearchInput/>
-            </div>
-            <div className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
-                <div className={"w-1/2 h-[560px] overflow-y-scroll flex flex-col gap-4"}>
-                    {listings.map((value, index) => (
-                        <div key={index} onClick={() => handleClick(value)}>
-                            <MainContent mainContent={{id: value.id, title: value.title, companyName: value.companyName, department: value.department, location: value.location, type: value.type}}/>
+            <section className={"container max-w-6xl mx-auto px-4 flex flex-row items-center gap-2"}>
+                <Search className={"w-6 h-6 text-muted-foreground"}/>
+                <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={`Search jobs`}/>
+            </section>
+            <section className={"flex-row items-start justify-between container max-w-6xl mx-auto gap-4 p-4 hidden lg:flex"}>
+                {search === "" && (
+                    <>
+                        <div className={"w-1/2 h-[560px] overflow-y-scroll flex flex-col gap-4"}>
+                            {listings.map((value, index) => (
+                                <div key={index} onClick={() => handleClick(value)}>
+                                    <MainContent mainContent={{
+                                        id: value.id,
+                                        title: value.title,
+                                        companyName: value.companyName,
+                                        department: value.department,
+                                        location: value.location,
+                                        type: value.type
+                                    }}/>
+                                </div>
+                            ))}
                         </div>
-                    ))}
-                </div>
-                <div className={"w-full h-[560px]"}>
-                    {selected && (
-                        <Content content={{
-                            id: selected.id,
-                            title: selected.title,
-                            companyName: selected.companyName,
-                            department: selected.department,
-                            location: selected.location,
-                            type: selected.type
-                        }}/>
-                    )}
-                </div>
-            </div>
-            <div className={"overflow-y-scroll h-[596px] flex flex-col gap-4 max-w-6xl mx-auto p-4 lg:hidden"}>
-                {listings.map((value, index) => (
-                    <div key={index}>
-                        <Content content={{
-                            id: value.id,
-                            title: value.title,
-                            companyName: value.companyName,
-                            department: value.department,
-                            location: value.location,
-                            type: value.type
-                        }}/>
-                    </div>
-                ))}
-            </div>
+                        <div className={"w-full h-[560px]"}>
+                            {selected && (
+                                <Content content={{
+                                    id: selected.id,
+                                    title: selected.title,
+                                    companyName: selected.companyName,
+                                    department: selected.department,
+                                    location: selected.location,
+                                    type: selected.type
+                                }}/>
+                            )}
+                        </div>
+                        <div
+                            className={"overflow-y-scroll h-[596px] flex flex-col gap-4 max-w-6xl mx-auto p-4 lg:hidden"}>
+                            {listings.map((value, index) => (
+                                <div key={index}>
+                                    <Content content={{
+                                        id: value.id,
+                                        title: value.title,
+                                        companyName: value.companyName,
+                                        department: value.department,
+                                        location: value.location,
+                                        type: value.type
+                                    }}/>
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )}
+                {search !== "" && (<div className={"h-[560px] w-full overflow-y-scroll grid grid-cols-2 gap-4"}>
+                    {isLoading && <SearchJobsSkeleton/>}
+                    {results.map((value, index) => (<div key={index}>
+                        <Suspense fallback={<SearchJobsSkeleton/>}>
+                            <MainContent mainContent={{
+                                id: value.id,
+                                title: value.title,
+                                companyName: value.companyName,
+                                department: value.department,
+                                location: value.location,
+                                type: value.type
+                            }}/>
+                        </Suspense>
+                    </div>))}
+                </div>)}
+            </section>
         </>
     )
 }
 
-const MainContent = ({mainContent}: {mainContent: Listing}) => {
+const MainContent = ({mainContent}: { mainContent: Listing }) => {
     return (
         <>
-            <ReusableCard header={<Header header={{title: mainContent.title, companyName: mainContent.companyName}}/>} className={"h-60"} footer={<Footer/>}>
-                <Section section={{department: mainContent.department, location: mainContent.location, type: mainContent.type}}/>
+            <ReusableCard header={<Header header={{title: mainContent.title, companyName: mainContent.companyName}}/>}
+                          className={"h-60"} footer={<Footer/>}>
+                <Section section={{
+                    department: mainContent.department,
+                    location: mainContent.location,
+                    type: mainContent.type
+                }}/>
             </ReusableCard>
         </>
     )
@@ -103,14 +176,14 @@ const Header = ({header}: { header: Listing }) => {
 
 const skills = ["React", "TypeScript", "Next.js", "Tailwind"]
 
-const Section = ({section}: {section: Listing}) => {
+const Section = ({section}: { section: Listing }) => {
 
     return (
         <>
             <section className="grid gap-4">
                 <div className="flex flex-wrap gap-2 text-muted-foreground text-sm">
                     <div className="flex items-center">
-                        <MapPin className="mr-1 h-4 w-4"/>
+                    <MapPin className="mr-1 h-4 w-4"/>
                         {section.department}
                     </div>
                     <div className="flex items-center">
@@ -213,48 +286,4 @@ const ContentSection = ({contentSection}: {contentSection: Listing}) => {
             </section>
         </>
     )
-}
-
-interface Content {
-    title?: string
-    department?: string
-}
-
-function SearchInput() {
-
-    const [search, setSearch] = useState<string>("")
-    const [results, setResults] = useState<Content[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!search) {
-            return null
-        }
-        setIsLoading(true)
-        try {
-            const response = await fetch(`/api/search?search=${search}`)
-            const data = await response.json()
-            setResults(data)
-            setIsLoading(false)
-        }
-        catch (e) {
-            console.error(e)
-            return null
-        }
-    }
-
-    return (<>
-            <form onSubmit={handleSearch}>
-                <main>
-                    <Input value={search} onChange={(e) => setSearch(e.target.value)} placeholder={"Search jobs"}/>
-                </main>
-            </form>
-            <main>
-                {isLoading && <p>Loading...</p>}
-                {results.map((value, index) => (<li key={index}>
-                        <h3>{value.title}</h3>
-                        <p>{value.department}</p>
-                    </li>))}
-            </main>
-        </>)
 }
