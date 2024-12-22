@@ -7,11 +7,7 @@ import {Orbitron} from "next/font/google";
 import {usePathname} from "next/navigation";
 import {Check, FileText, Home, Menu, Minus, Settings} from "lucide-react";
 import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    navigationMenuTriggerStyle,
+    NavigationMenu, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu"
 import {Label} from "@/components/ui/label";
 import {ReusableCard} from "@/components/components";
@@ -36,7 +32,6 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {useTheme} from "next-themes";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import Image from "next/image";
-import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@/components/ui/collapsible";
 import 'react-phone-number-input/style.css'
 
 
@@ -402,7 +397,7 @@ export function Themes() {
             </span>
             </label>))}
         </RadioGroup>
-    </fieldset>);
+    </fieldset>)
 }
 
 interface ProfileCardProps {
@@ -504,93 +499,14 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({listingsId, chi
     </div>)
 }
 
-const quickLinks = [{href: '/about', label: 'About Us'}, {href: '/services', label: 'Services'}, {
-    href: '/products', label: 'Products'
-}, {href: '/contact', label: 'Contact Us'},]
-
-const legalLinks = [{href: '/privacy', label: 'Privacy Policy'}, {
-    href: '/terms', label: 'Terms of Service'
-}, {href: '/cookies', label: 'Cookie Policy'},]
-
 export function Footer() {
-    const [state, setState] = React.useState(false)
-
     return (<>
-        <Collapsible open={state}>
-            {!state && (<CollapsibleTrigger className={"mx-auto w-full py-8 border-t"} onClick={() => setState(true)}>
+        <footer className={"border-t"}>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="text-center text-sm">
-                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved - Legal Notice</p>
                 </div>
-            </CollapsibleTrigger>)}
-            {state && (<CollapsibleContent onClick={() => setState(false)}>
-                <footer className={"border-t"}>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {/* Company Info */}
-                            <div>
-                                <Link href="/" className="flex items-center mb-4">
-                                    <span className="sr-only">HORIZONS</span>
-                                    <svg className="h-8 w-auto" fill="none" viewBox="0 0 24 24"
-                                         stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                                              d="M13 10V3L4 14h7v7l9-11h-7z"/>
-                                    </svg>
-                                    <span className="ml-2 text-sm font-medium">HORIZONS</span>
-                                </Link>
-                                <p className="text-sm">
-                                    We are dedicated to providing the best service to our customers.
-                                </p>
-                            </div>
-
-                            <div className={"flex flex-col gap-4"}>
-                                <Label className="text-sm font-semibold">QUICK LINKS</Label>
-                                <ul className="space-y-2 text-sm">
-                                    {quickLinks.map((link) => (<li key={link.href}>
-                                        <Link href={link.href}
-                                              className="hover:text-white transition-colors">
-                                            {link.label}
-                                        </Link>
-                                    </li>))}
-                                </ul>
-                            </div>
-
-
-                            <div className={"flex flex-col gap-4"}>
-                                <Label className="text-sm font-semibold mb-4">LEGAL</Label>
-                                <ul className="space-y-2 text-sm">
-                                    {legalLinks.map((link) => (<li key={link.href}>
-                                        <Link href={link.href}
-                                              className="hover:text-white transition-colors">
-                                            {link.label}
-                                        </Link>
-                                    </li>))}
-                                </ul>
-                            </div>
-
-                            <div>
-                                <h3 className="text-sm font-semibold mb-4">STAY CONNECTED</h3>
-                                <form className="space-y-2">
-                                    <Input
-                                        type="email"
-                                        placeholder="Enter your email"
-                                        aria-label="Email for newsletter"
-                                    />
-                                    <Button type="submit" className="w-full">
-                                        Subscribe
-                                    </Button>
-                                </form>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 pt-8 border-t border-gray-800">
-                        </div>
-
-                        <div className="text-center text-sm">
-                            <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved.</p>
-                        </div>
-                    </div>
-                </footer>
-            </CollapsibleContent>)}
-        </Collapsible>
+            </div>
+        </footer>
     </>)
 }

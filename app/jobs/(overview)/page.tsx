@@ -5,8 +5,8 @@ import ListingsComponent from "@/app/jobs/client";
 import Skeleton from "@/app/jobs/(overview)/loading";
 
 async function ListingsData() {
-    const data = await Listings()
 
+    const data = await Listings()
     const listings = data?.listings.map((value)=> {
         return {
             id: value.id,
