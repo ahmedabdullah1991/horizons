@@ -84,7 +84,7 @@ const Company_Section = () => {
             <ReusableCard
                 className="row-span-1 lg:row-span-2 max-h-96 overflow-hidden"
                 header={
-                    <div className={"flex flex-col gap-2"}>
+                    <div className={"flex flex-col gap-2 bg-card z-10"}>
                         <Label className={"text-xl"}>PREMIUM ANALYTICS</Label>
                         <Label className={"text-muted-foreground"}>GAIN INSIGHTS INTO YOU HIRING PROCESS WITH OUR ANALYTICS AND REPORTING TOOLS.</Label>
                     </div>
