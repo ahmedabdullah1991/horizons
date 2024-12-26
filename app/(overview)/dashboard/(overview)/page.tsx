@@ -1,5 +1,7 @@
 "use server"
 
+import React from "react"
+
 import { Data} from "@/lib/datas"
 import prisma from "@/lib/db"
 
@@ -14,7 +16,6 @@ import {
     TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import Link from "next/link"
 import { ProfilesChart } from "@/components/charts"
 import { Badge } from "@/components/ui/badge"
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip"
@@ -79,43 +80,30 @@ export default async function Page() {
 
     const foo = (data?.profile && [
         {
-            title: "UPDATE RESUME",
-            link: "",
-            description: "You can update your resume here.",
             button: "UPDATE",
+            description: "",
         },
         {
-            title: "TOTAL APPLICATIONS",
-            link: "",
-            description: "The total number of applications you have submitted.",
             button: data?.profile?.applications,
+            description: "The number of applications you have submitted",
         },
     ]) ||
         (data?.company && [
             {
-                title: "BUSINESS PROFILE",
-                link: "/generate",
-                description: "",
                 button: "POST A JOB",
+                description: "",
             },
             {
-                title: "TOTAL ACTIVE LISTINGS",
-                link: "",
-                description: "Business/Company",
                 button: data?.company?.listings,
+                description: "The number of listings you have posted",
             },
         ]) || [
             {
-                title: "REGISTER AS A BUSINESS",
-                link: "/generate",
-                description: "Register now to post jobs and hire.",
                 button: "REGISTER",
             },
             {
-                title: "TOTAL ACTIVE LISTINGS",
-                link: "",
-                description: "The total number of active listings.",
                 button: data?.company?.listings,
+                description: "The number of listings you have posted",
             },
         ]
 
@@ -162,21 +150,28 @@ export default async function Page() {
 
     return (
         <main className={"flex-1 overflow-auto p-4 lg:p-8 space-y-4"}>
-            <div className={"grid gap-4 sm:grid-cols-2 lg:grid-cols-4"}>
-                {foo.map((value, index) => (
-                    <ReusableCard
-                        key={index}
-                        title={value.title}
-                        description={value.description}
-                        footer={
-                            <Link href={value.link}>
-                                <Button variant={"outline"}>
-                                    {value.button}
-                                </Button>
-                            </Link>
+            <div className={"flex flex-wrap gap-4"}>
+                <TooltipProvider>
+                    {foo.map((value, index) => {
+                        const button = (
+                            <Button key={index} variant={index === 1 ? "outline" : "default"}>
+                                {value.button}
+                            </Button>
+                        )
+
+                        if (index === 1 && value.description) {
+                            return (
+                                <Tooltip key={index}>
+                                    <TooltipTrigger asChild>{button}</TooltipTrigger>
+                                    <TooltipContent className={"text-white bg-transparent border border-input"}>
+                                        <p>{value.description}</p>
+                                    </TooltipContent>
+                                </Tooltip>
+                            )
                         }
-                    />
-                ))}
+                        return button
+                    })}
+                </TooltipProvider>
             </div>
             <ProfilesChart
                 chartData={

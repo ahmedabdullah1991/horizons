@@ -45,61 +45,63 @@ interface Navigation {
 
 export function Navigation(props: Navigation) {
     const pathname = usePathname()
-    return (<div className={"flex flex-row justify-between p-4 border-b"}>
-        <NavigationMenu>
-            <NavigationMenuList>
-                <NavigationMenuItem>
-                    <NavigationMenuLink
-                        className={`${orbitron.className} ${navigationMenuTriggerStyle()} hover:bg-transparent hover:underline`}
-                        href={"/"}>
-                        HORIZONS
-                    </NavigationMenuLink>
-                </NavigationMenuItem>
-            </NavigationMenuList>
-        </NavigationMenu>
-        {pathname === "/" && (<>
-            <NavigationMenu className={"hidden lg:flex"}>
+    return (<div className={"border-b"}>
+        <div className={"flex flex-row justify-between max-w-6xl mx-auto py-2"}>
+            <NavigationMenu>
                 <NavigationMenuList>
                     <NavigationMenuItem>
-                        {props.children}
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                        <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}
-                                            href={"/jobs"}>
-                            JOB POSTINGS
+                        <NavigationMenuLink
+                            className={`${orbitron.className} ${navigationMenuTriggerStyle()} hover:bg-transparent hover:underline`}
+                            href={"/"}>
+                            HORIZONS
                         </NavigationMenuLink>
                     </NavigationMenuItem>
                 </NavigationMenuList>
             </NavigationMenu>
-            <div className={"lg:hidden"}>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="ghost"><Menu/></Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent className="w-56">
-                        <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
-                        <DropdownMenuSeparator/>
-                        <DropdownMenuGroup>
-                            <Link href={props.trigger === "EMPLOYERS" ? "/api/auth/login" : "/dashboard"}>
-                                <DropdownMenuItem>{props.trigger}
-                                    <DropdownMenuShortcut></DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                            </Link>
-                            <Link href={"/jobs"}>
-                                <DropdownMenuItem>JOBS
-                                    <DropdownMenuShortcut></DropdownMenuShortcut>
-                                </DropdownMenuItem>
-                            </Link>
-                        </DropdownMenuGroup>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-            </div>
-        </>)}
-        {pathname !== "/" && (<>
-            <Dropdown>
-                {props.logout}
-            </Dropdown>
-        </>)}
+            {pathname === "/" && (<>
+                <NavigationMenu className={"hidden lg:flex"}>
+                    <NavigationMenuList>
+                        <NavigationMenuItem>
+                            {props.children}
+                        </NavigationMenuItem>
+                        <NavigationMenuItem>
+                            <NavigationMenuLink className={`${navigationMenuTriggerStyle()}`}
+                                                href={"/jobs"}>
+                                JOB POSTINGS
+                            </NavigationMenuLink>
+                        </NavigationMenuItem>
+                    </NavigationMenuList>
+                </NavigationMenu>
+                <div className={"lg:hidden"}>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="ghost"><Menu/></Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56">
+                            <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
+                            <DropdownMenuSeparator/>
+                            <DropdownMenuGroup>
+                                <Link href={props.trigger === "EMPLOYERS" ? "/api/auth/login" : "/dashboard"}>
+                                    <DropdownMenuItem>{props.trigger}
+                                        <DropdownMenuShortcut></DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </Link>
+                                <Link href={"/jobs"}>
+                                    <DropdownMenuItem>JOBS
+                                        <DropdownMenuShortcut></DropdownMenuShortcut>
+                                    </DropdownMenuItem>
+                                </Link>
+                            </DropdownMenuGroup>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                </div>
+            </>)}
+            {pathname !== "/" && (<>
+                <Dropdown>
+                    {props.logout}
+                </Dropdown>
+            </>)}
+        </div>
     </div>)
 }
 
@@ -502,7 +504,7 @@ export const ApplicationCard: React.FC<ApplicationCardProps> = ({listingsId, chi
 export function Footer() {
     return (<>
         <footer className={"border-t"}>
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
                 <div className="text-center text-sm">
                     <p>&copy; {new Date().getFullYear()} HORIZONS. All rights reserved - Legal Notice</p>
                 </div>
