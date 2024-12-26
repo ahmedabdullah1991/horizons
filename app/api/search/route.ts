@@ -5,7 +5,15 @@ export async function GET(req: Request) {
     const search = url.searchParams.get("search")
 
     if (!search) {
-        return null
+        return new Response(JSON.stringify({ error: "No search query provided" }), {
+            status: 400,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        })
     }
 
     try {
@@ -32,6 +40,14 @@ export async function GET(req: Request) {
     }
     catch (e) {
         console.error(e)
-        return null
+        return new Response(JSON.stringify({ error: "An error occurred while searching for jobs" }), {
+            status: 500,
+            headers: {
+                "Content-Type": "application/json",
+                "Access-Control-Allow-Origin": "*",
+                "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+                "Access-Control-Allow-Headers": "Content-Type, Authorization",
+            }
+        })
     }
 }
