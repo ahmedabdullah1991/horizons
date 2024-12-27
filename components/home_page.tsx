@@ -14,8 +14,8 @@ const orbitron = Orbitron({subsets: ["latin"]})
 
 export default function HomePage() {
     return (<>
-            <ContentSections/>
-        </>)
+        <ContentSections/>
+    </>)
 }
 
 const avatars = [{

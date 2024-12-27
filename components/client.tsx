@@ -271,14 +271,68 @@ export function CompanyNameInputCard() {
     </Card>)
 }
 
+{/*
+"use client";
+
+import { Label } from "@/components/ui/label";
+import { Slider } from "@/components/ui/slider";
+import { useState } from "react";
+
+export default function SliderDemo() {
+  const [value, setValue] = useState([25, 75]);
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <Label className="leading-6">Dual range slider with output</Label>
+        <output className="text-sm font-medium tabular-nums">
+          {value[0]} - {value[1]}
+        </output>
+      </div>
+      <Slider value={value} onValueChange={setValue} aria-label="Dual range slider with output" />
+    </div>
+  );
+}
+*/}
+
+import { Slider } from "@/components/ui/slider";
+
+const MIN_SALARY = 0
+const MAX_SALARY = 200000
+const STEP = 500
+
 export function JobPositionInputCard() {
     const initialState: ListingState = {
         errors: {}, message: null,
     }
     const [state, forAction] = useFormState(createListing, initialState)
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = React.useState({
         title: '', type: '', department: '', location: ''
     })
+    const [minSalary, setMinSalary] = React.useState(30000)
+    const [maxSalary, setMaxSalary] = React.useState(100000)
+
+    const handleMinChange = (value: number[]) => {
+        setMinSalary(value[0])
+        if (value[0] > maxSalary) {
+            setMaxSalary(value[0])
+        }
+    }
+    const handleMaxChange = (value: number[]) => {
+        setMaxSalary(value[0])
+        if (value[0] < minSalary) {
+            setMinSalary(value[0])
+        }
+    }
+    const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.max(MIN_SALARY, Math.min(parseInt(e.target.value) || MIN_SALARY, maxSalary))
+        setMinSalary(value)
+    }
+
+    const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = Math.min(MAX_SALARY, Math.max(parseInt(e.target.value) || MIN_SALARY, minSalary))
+        setMaxSalary(value)
+    }
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
         setFormData(prev => ({...prev, [name]: value}))
@@ -286,6 +340,7 @@ export function JobPositionInputCard() {
     const handleSelectChange = (name: string) => (value: string) => {
         setFormData(prev => ({...prev, [name]: value}))
     }
+
     return (<Card className="w-full max-w-md mx-auto my-16">
         <CardHeader>
             <CardTitle>Job Position Information</CardTitle>
@@ -345,6 +400,31 @@ export function JobPositionInputCard() {
                         />
                         {state.errors?.location && state.errors.location.map((error: string) => (
                             <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
+                    </div>
+                    <div className={"flex flex-col gap-4"}>
+                        {/*<Label>Salary Range
+                            <output className="text-sm font-medium tabular-nums">
+                                {minSalary.toLocaleString().replaceAll(",", ".").slice(0, -2)+"K"}-{maxSalary.toLocaleString().replaceAll(",", ".").slice(0, -2)+"K"}
+                            </output>
+                        </Label>*/}
+                        <div className={"flex flex-row justify-between gap-2"}>
+                            <Label>Salary Range</Label>
+                            <div className={"flex flex-row gap-2 w-1/2"}>
+                                <Input value={minSalary} onChange={handleMinInputChange} min={MIN_SALARY} max={maxSalary} step={STEP}/>
+                                <Input value={maxSalary} onChange={handleMaxInputChange} min={minSalary} max={MAX_SALARY} step={STEP}/>
+                            </div>
+                        </div>
+                        <div className={"flex flex-row gap-2"}>
+                            <Slider id={"minSalary"} name={"minSalary"} min={MIN_SALARY} max={MAX_SALARY} step={STEP} value={[minSalary]} onValueChange={handleMinChange}
+                                    className={"[&>:last-child>span]:h-5 [&>:last-child>span]:w-4 [&>:last-child>span]:rounded"}
+                            />
+                            <Slider id={"maxSalary"} name={"maxSalary"} min={0} max={200000} step={STEP} value={[maxSalary]} onValueChange={handleMaxChange}
+                                    className={"[&>:last-child>span]:h-5 [&>:last-child>span]:w-4 [&>:last-child>span]:rounded"}
+                            />
+                        </div>
+                        <div>
+                            {minSalary}-{maxSalary}
+                        </div>
                     </div>
                     <Label className={"text-red-600 text-right"}>{state.message}</Label>
                 </div>
