@@ -86,6 +86,9 @@ const listingSchema = z.object({
         })
         .max(20, {message: "Employment type should be 20 characters or less"})
         .trim(),
+        rangeX: z.number().int().positive(),
+        rangeY: z.number().int().positive(),
+        skills: z.string().array().nonempty({message: "At least one skill is required"}),
 })
 
 export type ListingState = {
@@ -94,16 +97,23 @@ export type ListingState = {
         department?: string[]
         location?: string[]
         type?: string[]
+        rangeX?: string[]
+        rangeY?: string[]
+        skills?: string[]
     }
     message?: string | null
 }
 
 export async function createListing(prevState: ListingState, formData: FormData) {
+
     const validatedFields = listingSchema.safeParse({
         title: formData.get("title"),
         department: formData.get("department"),
         location: formData.get("location"),
         type: formData.get("type"),
+        rangeX: Number(formData.get("rangeX")),
+        rangeY: Number(formData.get("rangeY")),
+        skills: Array.from(formData.getAll("skills"))
     })
 
     if (!validatedFields.success) {
@@ -113,7 +123,7 @@ export async function createListing(prevState: ListingState, formData: FormData)
         }
     }
 
-    const {title, department, location, type} = validatedFields.data
+    const {title, department, location, type, rangeX, rangeY, skills} = validatedFields.data
 
     try {
         const data = await Data()
@@ -126,10 +136,9 @@ export async function createListing(prevState: ListingState, formData: FormData)
                     {increment: 1}, 
                     listing:
                     {create: 
-                        {title: title, department: department, location: location, type: type, companyName: companyName}}}
+                        {title: title, department: department, location: location, type: type, companyName: companyName, salaryRange: [rangeX, rangeY], skills: skills}}}
             })
         } else {}
-
     } catch (error) {
         console.error("Failed to create listing:", error)
         return {

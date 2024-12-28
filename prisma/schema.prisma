@@ -46,6 +46,8 @@ model Listing {
   department  String
   location    String
   type        String
+  salaryRange Int[]     @default([0, 0])
+  skills      String[]  @default([])
   requests    Int       @default(0)
   request     Request[]
 

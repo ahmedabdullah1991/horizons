@@ -33,7 +33,8 @@ import {useTheme} from "next-themes";
 import {RadioGroup, RadioGroupItem} from "@/components/ui/radio-group";
 import Image from "next/image";
 import 'react-phone-number-input/style.css'
-
+import {Slider} from "@/components/ui/slider";
+import {TagInput} from "emblor";
 
 const orbitron = Orbitron({subsets: ["latin"]})
 
@@ -189,45 +190,6 @@ export function Sidebar({children}: Readonly<{ children: React.ReactNode }>) {
     </>)
 }
 
-const titleNames = [{href: "/jobs", label: "JOBS"}, {href: "/dashboard", label: "DASHBOARD"}, {
-    href: "/profile", label: "PROFILE"
-}, {href: "/generate", label: "GENERATE"}, {
-    href: "/profile/preferences", label: "PREFERENCES"
-}, {href: "/profile/account", label: "ACCOUNT"}]
-
-export const Titles = () => {
-    const pathname = usePathname()
-    return (<>
-        {pathname !== "/" && (<>
-            <div className={"p-4 border-b flex flex-row justify-between items-center"}>
-                <div className={"px-4"}>
-                    {titleNames.map((value, index) => (
-                        <Label key={index}>{pathname === value.href && value.label}</Label>))}
-                </div>
-                {pathname === "/profile" && (<>
-                    <div className={"lg:hidden"}>
-                        <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                                <Button variant="ghost"><Menu/></Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent className="w-56">
-                                <DropdownMenuLabel>Navigation Menu</DropdownMenuLabel>
-                                <DropdownMenuSeparator/>
-                                <DropdownMenuGroup>
-                                    {pathnames1.map((value, index) => (<DropdownMenuItem key={index}
-                                                                                         className={clsx("", pathname === value.href && "text-[#007FFF]")}>
-                                        {value.label}
-                                    </DropdownMenuItem>))}
-                                </DropdownMenuGroup>
-                            </DropdownMenuContent>
-                        </DropdownMenu>
-                    </div>
-                </>)}
-            </div>
-        </>)}
-    </>)
-}
-
 export function CompanyNameInputCard() {
     const [companyName, setCompanyName] = useState('')
     const initialState: prevState = {message: null, errors: {}}
@@ -271,35 +233,14 @@ export function CompanyNameInputCard() {
     </Card>)
 }
 
-{/*
-"use client";
-
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { useState } from "react";
-
-export default function SliderDemo() {
-  const [value, setValue] = useState([25, 75]);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between gap-2">
-        <Label className="leading-6">Dual range slider with output</Label>
-        <output className="text-sm font-medium tabular-nums">
-          {value[0]} - {value[1]}
-        </output>
-      </div>
-      <Slider value={value} onValueChange={setValue} aria-label="Dual range slider with output" />
-    </div>
-  );
+interface Tag {
+    id: string
+    text: string
 }
-*/}
-
-import { Slider } from "@/components/ui/slider";
-
-const MIN_SALARY = 0
-const MAX_SALARY = 200000
-const STEP = 500
+const initialTags: Tag[] = [
+    {"id": "4010647202", "text": "Sports"},
+    {"id": "81544724", "text": "Programming"},
+    {"id": "3412564034", "text": "Travel"}]
 
 export function JobPositionInputCard() {
     const initialState: ListingState = {
@@ -307,32 +248,10 @@ export function JobPositionInputCard() {
     }
     const [state, forAction] = useFormState(createListing, initialState)
     const [formData, setFormData] = React.useState({
-        title: '', type: '', department: '', location: ''
+        title: '', type: '', department: '', location: '', skills: ''
     })
-    const [minSalary, setMinSalary] = React.useState(30000)
-    const [maxSalary, setMaxSalary] = React.useState(100000)
-
-    const handleMinChange = (value: number[]) => {
-        setMinSalary(value[0])
-        if (value[0] > maxSalary) {
-            setMaxSalary(value[0])
-        }
-    }
-    const handleMaxChange = (value: number[]) => {
-        setMaxSalary(value[0])
-        if (value[0] < minSalary) {
-            setMinSalary(value[0])
-        }
-    }
-    const handleMinInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.max(MIN_SALARY, Math.min(parseInt(e.target.value) || MIN_SALARY, maxSalary))
-        setMinSalary(value)
-    }
-
-    const handleMaxInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = Math.min(MAX_SALARY, Math.max(parseInt(e.target.value) || MIN_SALARY, minSalary))
-        setMaxSalary(value)
-    }
+    const [rangeX, setRangeX] = React.useState(30000)
+    const [rangeY, setRangeY] = React.useState(100000)
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const {name, value} = e.target
         setFormData(prev => ({...prev, [name]: value}))
@@ -340,6 +259,11 @@ export function JobPositionInputCard() {
     const handleSelectChange = (name: string) => (value: string) => {
         setFormData(prev => ({...prev, [name]: value}))
     }
+    const [tags, setTags] = useState < Tag[] > (initialTags);
+    const [activeTagIndex, setActiveTagIndex] = useState < number | null > (null);
+
+    const RANGE_X = rangeX > 1000 ? (`$`+rangeX.toLocaleString().replace(",", ".").slice(0, -2)+`K`):(rangeX)
+    const RANGE_Y = rangeY > 1000 ? (`$`+rangeY.toLocaleString().replace(",", ".").slice(0, -2)+`K`):(rangeY)
 
     return (<Card className="w-full max-w-md mx-auto my-16">
         <CardHeader>
@@ -368,10 +292,10 @@ export function JobPositionInputCard() {
                                 <SelectValue placeholder="Select job type"/>
                             </SelectTrigger>
                             <SelectContent position="popper">
-                                <SelectItem value="full-time">Full-time</SelectItem>
-                                <SelectItem value="part-time">Part-time</SelectItem>
-                                <SelectItem value="contract">Contract</SelectItem>
-                                <SelectItem value="internship">Internship</SelectItem>
+                                <SelectItem value="Full-time">Full-time</SelectItem>
+                                <SelectItem value="Part-time">Part-time</SelectItem>
+                                <SelectItem value="Contract">Contract</SelectItem>
+                                <SelectItem value="Internship">Internship</SelectItem>
                             </SelectContent>
                         </Select>
                         {state.errors?.type && state.errors.type.map((error: string) => (
@@ -401,30 +325,61 @@ export function JobPositionInputCard() {
                         {state.errors?.location && state.errors.location.map((error: string) => (
                             <Label key={error} className={"text-red-600 text-right"}>{error}</Label>))}
                     </div>
-                    <div className={"flex flex-col gap-4"}>
-                        {/*<Label>Salary Range
-                            <output className="text-sm font-medium tabular-nums">
-                                {minSalary.toLocaleString().replaceAll(",", ".").slice(0, -2)+"K"}-{maxSalary.toLocaleString().replaceAll(",", ".").slice(0, -2)+"K"}
-                            </output>
-                        </Label>*/}
-                        <div className={"flex flex-row justify-between gap-2"}>
-                            <Label>Salary Range</Label>
-                            <div className={"flex flex-row gap-2 w-1/2"}>
-                                <Input value={minSalary} onChange={handleMinInputChange} min={MIN_SALARY} max={maxSalary} step={STEP}/>
-                                <Input value={maxSalary} onChange={handleMaxInputChange} min={minSalary} max={MAX_SALARY} step={STEP}/>
+                    <div className={"flex flex-col gap-2"}>
+                        <div className={"flex flex-col gap-4"}>
+                            <div className={"flex flex-row justify-between items-center"}>
+                                <Label>Salary Range</Label>
+                                <Label className={"text-right tabular-nums"}>{rangeX > rangeY ? (`${RANGE_Y}-${RANGE_X}`):(`${RANGE_X}-${RANGE_Y}`)}</Label>
                             </div>
-                        </div>
-                        <div className={"flex flex-row gap-2"}>
-                            <Slider id={"minSalary"} name={"minSalary"} min={MIN_SALARY} max={MAX_SALARY} step={STEP} value={[minSalary]} onValueChange={handleMinChange}
-                                    className={"[&>:last-child>span]:h-5 [&>:last-child>span]:w-4 [&>:last-child>span]:rounded"}
+                            {/* hidden through css */}
+                            <Input id={"rangeX"} name={"rangeX"} min={0} max={200000} step={500} value={rangeX} readOnly={true} className={"hidden"}/>
+                            <Input id={"rangeY"} name={"rangeY"} min={0} max={200000} step={500} value={rangeY} readOnly={true} className={"hidden"}/>
+                            {/* hidden through css */}
+                            <Slider
+                                id={"rangeX"}
+                                name={"rangeX"}
+                                min={0}
+                                max={200000}
+                                step={500}
+                                value={[rangeX]}
+                                onValueChange={(value: number[]) => setRangeX(value[0])}
+                                className="[&>:last-child>span]:rounded h-2"
                             />
-                            <Slider id={"maxSalary"} name={"maxSalary"} min={0} max={200000} step={STEP} value={[maxSalary]} onValueChange={handleMaxChange}
-                                    className={"[&>:last-child>span]:h-5 [&>:last-child>span]:w-4 [&>:last-child>span]:rounded"}
+                            <Slider
+                                id={"rangeY"}
+                                name={"rangeY"}
+                                min={0}
+                                max={200000}
+                                step={500}
+                                value={[rangeY]}
+                                onValueChange={(value: number[]) => setRangeY(value[0])}
+                                className="[&>:last-child>span]:rounded h-2"
                             />
                         </div>
-                        <div>
-                            {minSalary}-{maxSalary}
-                        </div>
+                    </div>
+                    <div className={"flex flex-col gap-2"}>
+                        <Label htmlFor={"skills"}>Skills</Label>
+                        <TagInput
+                            id="skills"
+                            name="skills"
+                            tags={tags}
+                            setTags = {
+                                (newTags) => {
+                                    setTags(newTags)
+                                }
+                            }
+                            placeholder="Add a skill"
+                            styleClasses={{
+                                tagList: {
+                                    container: "gap-1",
+                                }, tag: {
+                                    body: "relative h-7 bg-background border border-input hover:bg-background rounded-md font-medium text-xs ps-2 pe-7",
+                                    closeButton: "absolute -inset-y-px -end-px p-0 flex size-7",}}}
+                            activeTagIndex = {activeTagIndex}
+                            setActiveTagIndex = {setActiveTagIndex}
+                            inlineTags={true}
+                            inputFieldPosition="top"
+                        />
                     </div>
                     <Label className={"text-red-600 text-right"}>{state.message}</Label>
                 </div>
@@ -440,7 +395,7 @@ const items = [{
     id: "radio-18-r1", value: "r1", label: "Light", image: "/ui-light.webp", theme: "light"
 }, {id: "radio-18-r2", value: "r2", label: "Dark", image: "/ui-dark.webp", theme: "dark"}, {
     id: "radio-18-r3", value: "r3", label: "System", image: "/ui-system.webp", theme: "system"
-},];
+},]
 
 export function Themes() {
     const {setTheme} = useTheme();
